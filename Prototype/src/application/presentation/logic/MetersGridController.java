@@ -22,7 +22,7 @@ import javafx.scene.text.Text;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -36,22 +36,22 @@ public class MetersGridController extends TableController{
 	private GridPane metersGrid;
 	
 	@FXML
-	private ChoiceBox<String> meterNameFilter;
+	private ComboBox<String> meterNameFilter;
 	
 	@FXML
-	private ChoiceBox<String> meterTypeFilter;
+	private ComboBox<String> meterTypeFilter;
 	
 	@FXML
-	private ChoiceBox<String> networkIDFilter;
+	private ComboBox<String> networkIDFilter;
 	
 	@FXML
-	private ChoiceBox<String> locationFilter;
+	private ComboBox<String> locationFilter;
 	
 	@FXML
-	private ChoiceBox<String> socketFilter;
+	private ComboBox<String> socketFilter;
 	
 	@FXML 
-	private ChoiceBox<String> lanFilter;
+	private ComboBox<String> lanFilter;
 	
 	
 	public MetersGridController() {

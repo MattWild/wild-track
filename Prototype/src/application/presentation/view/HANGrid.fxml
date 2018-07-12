@@ -32,13 +32,13 @@
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
    	          <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="Unit ID" />
-                  <ChoiceBox fx:id="unitIDFilter" prefWidth="150.0" />
+                  <ComboBox fx:id="unitIDFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="2">
    	          <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="Device Name" />
-   	             <ChoiceBox fx:id="deviceNameFilter" prefWidth="150.0" />
+   	             <ComboBox fx:id="deviceNameFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="3">
@@ -56,7 +56,7 @@
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="5">
    	          <children>
    	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
-   	             <ChoiceBox fx:id="locationFilter" prefWidth="150.0" />
+   	             <ComboBox fx:id="locationFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="6">

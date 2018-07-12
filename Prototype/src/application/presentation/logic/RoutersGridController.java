@@ -7,7 +7,7 @@ import application.entities.Entry;
 import application.entities.Meter;
 import application.entities.Router;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 
 public class RoutersGridController extends TableController {
@@ -15,16 +15,16 @@ public class RoutersGridController extends TableController {
 	private GridPane routersGrid;
 	
 	@FXML
-	private ChoiceBox<String> radioTypeFilter;
+	private ComboBox<String> radioTypeFilter;
 	
 	@FXML
-	private ChoiceBox<String> networkIDFilter;
+	private ComboBox<String> networkIDFilter;
 	
 	@FXML
-	private ChoiceBox<String> locationFilter;
+	private ComboBox<String> locationFilter;
 	
 	@FXML 
-	private ChoiceBox<String> lanFilter;
+	private ComboBox<String> lanFilter;
 	
 	
 	public RoutersGridController() {

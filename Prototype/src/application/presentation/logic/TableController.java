@@ -14,7 +14,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 
 public abstract class TableController {
@@ -31,12 +31,12 @@ public abstract class TableController {
 	private boolean paused;
 	protected Main main;
 	protected GridPane grid;
-	protected List<ChoiceBox<String>> filters;
+	protected List<ComboBox<String>> filters;
 	protected Map<CheckBox, Entry> entries;
 	
 	public TableController(TableType type) {
 		this.type = type;
-		filters = new ArrayList<ChoiceBox<String>>();
+		filters = new ArrayList<ComboBox<String>>();
 		entries = new HashMap<CheckBox, Entry>();
 		paused = false;
 	}
@@ -58,16 +58,15 @@ public abstract class TableController {
 	public void refresh() {
 		paused = true;
 		
-		for (ChoiceBox<String> filter : filters) {
+		for (ComboBox<String> filter : filters) {
 			try {
-				List<String> options = new ArrayList<String>();
+				List<String> options = filter.getItems();
+				options.clear();
 				options.add("All");
 				List<Object> raw = main.getMainDBController().getDistinctColumn(type, filters.indexOf(filter));
 				for (Object option : raw)
 					options.add((String) option);
-				filter.getItems().clear();
 				
-				filter.getItems().addAll(options);
 				filter.getSelectionModel().selectFirst();
 				filter.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
 					@Override

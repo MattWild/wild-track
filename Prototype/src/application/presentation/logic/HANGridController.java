@@ -7,7 +7,7 @@ import application.entities.Entry;
 import application.entities.HANDevice;
 import application.entities.Meter;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 
 public class HANGridController extends TableController {
@@ -15,13 +15,13 @@ public class HANGridController extends TableController {
 	private GridPane HANGrid;
 	
 	@FXML
-	private ChoiceBox<String> unitIDFilter;
+	private ComboBox<String> unitIDFilter;
 	
 	@FXML
-	private ChoiceBox<String> deviceNameFilter;
+	private ComboBox<String> deviceNameFilter;
 	
 	@FXML
-	private ChoiceBox<String> locationFilter;
+	private ComboBox<String> locationFilter;
 	
 	
 	public HANGridController() {

@@ -34,31 +34,31 @@
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
    	          <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="LAN Address" />
-                  <ChoiceBox fx:id="lanFilter" prefWidth="150.0" />
+                  <ComboBox fx:id="lanFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="2">
    	          <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="Meter Name" />
-   	             <ChoiceBox fx:id="meterNameFilter" prefWidth="150.0" />
+   	             <ComboBox fx:id="meterNameFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="3">
    	          <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="Meter Type" />
-   	             <ChoiceBox fx:id="meterTypeFilter" prefWidth="150.0" />
+   	             <ComboBox fx:id="meterTypeFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="4">
    	          <children>
    	             <Label alignment="CENTER" contentDisplay="CENTER" text="Network ID" />
-   	             <ChoiceBox fx:id="networkIDFilter" prefWidth="150.0" />
+   	             <ComboBox fx:id="networkIDFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="6">
    	          <children>
    	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
-   	             <ChoiceBox fx:id="locationFilter" prefWidth="150.0" />
+   	             <ComboBox fx:id="locationFilter" prefWidth="150.0" />
    	          </children>
    	       </VBox>
    	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="8">
@@ -76,7 +76,7 @@
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="7">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="Socket Form" />
-                  <ChoiceBox fx:id="socketFilter" prefWidth="150.0" />
+                  <ComboBox fx:id="socketFilter" prefWidth="150.0" />
                </children>
             </VBox>
    	    </children>

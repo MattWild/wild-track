@@ -6,7 +6,7 @@ import java.util.List;
 import application.entities.Entry;
 import application.entities.Socket;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 
 public class SocketsGridController extends TableController {
@@ -14,16 +14,16 @@ public class SocketsGridController extends TableController {
 	private GridPane socketsGrid;
 	
 	@FXML
-	private ChoiceBox<String> idFilter;
+	private ComboBox<String> idFilter;
 	
 	@FXML
-	private ChoiceBox<String> formFilter;
+	private ComboBox<String> formFilter;
 	
 	@FXML
-	private ChoiceBox<String> nloadFilter;
+	private ComboBox<String> nloadFilter;
 	
 	@FXML
-	private ChoiceBox<String> locationFilter;
+	private ComboBox<String> locationFilter;
 	
 	
 	public SocketsGridController() {

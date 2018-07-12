@@ -7,7 +7,7 @@ import application.entities.Collector;
 import application.entities.Entry;
 import application.entities.Meter;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 
 public class CollectorsGridController extends TableController{
@@ -16,19 +16,19 @@ public class CollectorsGridController extends TableController{
 	private GridPane collectorsGrid;
 	
 	@FXML 
-	private ChoiceBox<String> ipFilter;
+	private ComboBox<String> ipFilter;
 	
 	@FXML
-	private ChoiceBox<String> networkIDFilter;
+	private ComboBox<String> networkIDFilter;
 	
 	@FXML
-	private ChoiceBox<String> collectorAppFilter;
+	private ComboBox<String> collectorAppFilter;
 	
 	@FXML
-	private ChoiceBox<String> collectorTypeFilter;
+	private ComboBox<String> collectorTypeFilter;
 	
 	@FXML
-	private ChoiceBox<String> locationFilter;
+	private ComboBox<String> locationFilter;
 	
 	
 	public CollectorsGridController() {
