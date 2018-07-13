@@ -73,9 +73,9 @@ public abstract class TableController {
 			}
 			
 			filter.getSelectionModel().selectFirst();
-			filter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-				filter.getSelectionModel()
-				main.getObjectLayer().setDataFilter(type, newValue);
+			filter.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+				filter.getSelectionModel().select(newValue.intValue());
+				main.getObjectLayer().setDataFilter(type, getFilters());
 			});
 		}
 		
@@ -87,6 +87,8 @@ public abstract class TableController {
 		
 		table.setItems(main.getObjectLayer().getEntries(type));
 	}
+
+	protected abstract List<String> getFilters();
 
 	protected abstract void initialize();
 }
