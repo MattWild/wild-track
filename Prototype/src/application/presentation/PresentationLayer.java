@@ -1,15 +1,15 @@
 package application.presentation;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import application.Main;
 import application.entities.Entry;
 import application.presentation.logic.AddDeviceDialogueController;
-import application.presentation.logic.AddMetersDialogueController;
 import application.presentation.logic.AddNoteDialogueController;
 import application.presentation.logic.DeleteDeviceDialogueController;
-import application.presentation.logic.DeleteMetersDialogueController;
 import application.presentation.logic.RootLayoutController;
 import application.presentation.logic.TableController;
 import application.presentation.logic.TableController.TableType;
@@ -27,10 +27,12 @@ public class PresentationLayer {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	private Map<TableType,TableController> grids;
 	private Main main;
 
 	public PresentationLayer(Main main) {
 		this.main = main;
+		grids = new HashMap<TableType, TableController>();
 	}
 
 	public void showMain(Stage stage) {
@@ -49,11 +51,15 @@ public class PresentationLayer {
 			
 			RootLayoutController controller = loader.getController();
 			controller.setMain(main);
-			for (TableType type : TableType.values())
-				controller.setUpTable(type);
+			//for (TableType type : TableType.values())
+				controller.setUpTable(TableType.Meters);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setGrid(TableType type, TableController controller) {
+		grids.put(type, controller);
 	}
 	
 	public void showError(String errorTitle, String errorMsg) {
@@ -104,6 +110,8 @@ public class PresentationLayer {
 				break;
 			}
 			dialogStage.showAndWait();
+			
+			grids.get(type).refresh();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -145,6 +153,8 @@ public class PresentationLayer {
 			controller.setStage(dialogStage);
 			controller.setEntries(entries);
 			dialogStage.showAndWait();
+			
+			grids.get(type).refresh();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -185,6 +195,8 @@ public class PresentationLayer {
 			controller.setMain(main);
 			controller.setStage(dialogStage);
 			dialogStage.showAndWait();
+			
+			grids.get(type).refresh();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

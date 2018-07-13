@@ -1,6 +1,7 @@
 package application.presentation.logic;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,11 @@ public abstract class MenuController {
 			scroll.setContent(anchor);
 			controller = loader.getController();
 			controller.setMain(main);
-			controller.populateTable();
+			try {
+				controller.populateTable();
+			} catch (SQLException e) {
+				main.errorHandle(e);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

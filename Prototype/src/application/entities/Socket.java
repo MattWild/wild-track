@@ -12,23 +12,9 @@ import javafx.scene.control.TextField;
 
 public class Socket extends Entry {
 
-	public Socket(Main app, String idString, String formString, String nloadString, String locString) {
+	public Socket(Main app) {
 		super(app);
 		children = new ArrayList<Node>();
-		
-		children.add(new Label(idString));
-		
-		TextField formField = new TextField(formString);
-		formField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(formField);
-		
-		TextField nloadField = new TextField(nloadString);
-		nloadField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(nloadField);
-				
-		TextField locField = new TextField(locString);
-		locField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(locField);
 	}
 
 	@Override
@@ -53,4 +39,20 @@ public class Socket extends Entry {
 		return -1;
 	}
 
+	public void init(int id, String idString, String formString, String nloadString, String locString) {
+		setId(id);
+		children.add(new Label(idString));
+		
+		TextField formField = new TextField(formString);
+		formField.setOnKeyPressed(new FieldUpdateHandler());
+		children.add(formField);
+		
+		TextField nloadField = new TextField(nloadString);
+		nloadField.setOnKeyPressed(new FieldUpdateHandler());
+		children.add(nloadField);
+				
+		TextField locField = new TextField(locString);
+		locField.setOnKeyPressed(new FieldUpdateHandler());
+		children.add(locField);
+	}
 }

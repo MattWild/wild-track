@@ -18,15 +18,15 @@ public abstract class DeleteDeviceDialogueController {
 	protected Stage stage;
 	
 	protected void finalDelete(TableType type) {
-		List<String> lans = new ArrayList<String>();
+		List<Integer> lans = new ArrayList<Integer>();
 		
 		for(CheckBox cb : getCB()) {
-			if (cb.isSelected()) lans.add(cb.getText());
+			if (cb.isSelected()) lans.add((Integer) cb.getUserData());
 		}
 		
 		if (!lans.isEmpty())
 			try {
-				main.getMainDBController().delete(type, lans.toArray(new String[] {}));
+				main.getMainDBController().delete(type, lans);
 			} catch (SQLException e) {
 				main.errorHandle(e);
 			}
@@ -39,6 +39,7 @@ public abstract class DeleteDeviceDialogueController {
 		
 		for (int i = 0; i < entries.size(); i++) {
 			CheckBox cb = new CheckBox(((Label) entries.get(i).getChildren().get(0)).getText());
+			cb.setUserData(entries.get(i).getId());
 			cb.setSelected(true);
 			
 			getCB().add(cb);

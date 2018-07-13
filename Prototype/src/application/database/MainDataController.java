@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import application.entities.Entry;
 import application.presentation.logic.MetersGridController;
 import application.presentation.logic.TableController;
 import application.presentation.logic.TableController.TableType;
@@ -23,7 +25,7 @@ public class MainDataController extends DataController {
 		initSQLDB(ipAddress, user, pass, dbName);
 	}
 
-	public void updateTableFromEnvironment(TableType type, List<List<Object>> temp) throws SQLException {
+	public void updateTableFromEnvironment(TableType type, List<List<Object>> values) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
@@ -37,7 +39,7 @@ public class MainDataController extends DataController {
 		default:
 			break;
 		}
-		Iterator<List<Object>> iter = temp.iterator();
+		Iterator<List<Object>> iter = values.iterator();
 		
 		while (iter.hasNext()) {
 			List<Object> record = iter.next();
@@ -51,33 +53,33 @@ public class MainDataController extends DataController {
 		stmt.executeBatch();
 	}
 	
-	public void updateTableFromTable(TableType type, List<List<Object>> temp) throws SQLException {
-		System.out.println(temp);
+	public void updateTableFromTable(TableType type, List<List<Object>> values) throws SQLException {
+		System.out.println(values);
 		
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
-			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromApp ?,?,?");
+			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromApp ?,?,?,?");
 			break;
 			
 		case Collectors:
-			stmt = db.generatePreparedSatement("EXEC UpdateCollectorsFromApp ?,?,?,?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC UpdateCollectorsFromApp ?,?,?,?,?,?,?,?");
 			break;
 			
 		case Routers:
-			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromApp ?,?");
+			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromApp ?,?,?");
 			break;
 			
 		case HANDevices:
-			stmt = db.generatePreparedSatement("EXEC UpdateHanDevicesFromApp ?,?,?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC UpdateHanDevicesFromApp ?,?,?,?,?,?,?");
 			break;
 			
 		case Sockets:
-			stmt = db.generatePreparedSatement("EXEC UpdateSocketsFromApp ?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC UpdateSocketsFromApp ?,?,?,?,?");
 			break;
 		}
 		
-		Iterator<List<Object>> iter = temp.iterator();
+		Iterator<List<Object>> iter = values.iterator();
 		
 		while (iter.hasNext()) {
 			List<Object> record = iter.next();
@@ -91,41 +93,43 @@ public class MainDataController extends DataController {
 		stmt.executeBatch();
 	}
 
-	public ResultSet getTableData(TableType type, List<String> selected) throws SQLException {
+	public List<List<Object>> getTableData(TableType type) throws SQLException {
 		PreparedStatement stmt = null;
 		switch(type) {
 		case Meters:
-			stmt = db.generatePreparedSatement("EXEC Main_Meters ?,?,?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC Main_Meters");
 			break;
 			
 		case Collectors:
-			stmt = db.generatePreparedSatement("EXEC Main_Collectors ?,?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC Main_Collectors");
 			break;
 			
 		case Routers:
-			stmt = db.generatePreparedSatement("EXEC Main_Routers ?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC Main_Routers");
 			break;
 			
 		case HANDevices:
-			stmt = db.generatePreparedSatement("EXEC Main_HANDevices ?,?,?");
+			stmt = db.generatePreparedSatement("EXEC Main_HANDevices");
 			break;
 			
 		case Sockets:
-			stmt = db.generatePreparedSatement("EXEC Main_Sockets ?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC Main_Sockets");
 			break;
 		}
 		
-		for(int i = 0; i < selected.size(); i++) {
-			String filter = selected.get(i);
-			if (filter == null) {
-				stmt.setString(i + 1, "NULL");
-			} else if (filter.compareTo("All") == 0) {
-				stmt.setNull(i + 1, Types.VARCHAR);
-			} else {
-				stmt.setString(i + 1, filter);
+		
+		ResultSet set = stmt.executeQuery();
+		List<List<Object>> values = new ArrayList<List<Object>>();
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> fields = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				fields.add(set.getObject(j + 1));
 			}
+			values.add(fields);
 		}
-		return stmt.executeQuery();
+		
+		return values;
 	}
 
 	public List<Object> getDistinctColumn(TableType type, int indexOf) throws SQLException {
@@ -288,38 +292,45 @@ public class MainDataController extends DataController {
 		stmt.executeUpdate();
 	}
 	
-	public void add(TableType type, String[] identifiers) throws SQLException {
+	public void add(TableType type, List<List<Object>> values) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
-			stmt = db.generatePreparedSatement("EXEC AddMeter ?");
+			stmt = db.generatePreparedSatement("EXEC AddMeter ?,?,?");
 			break;
 			
 		case Collectors:
-			stmt = db.generatePreparedSatement("EXEC AddCollector ?");
+			stmt = db.generatePreparedSatement("EXEC AddCollector ?,?,?,?,?,?,?");
 			break;
 			
 		case Routers:
-			stmt = db.generatePreparedSatement("EXEC AddRouter ?");
+			stmt = db.generatePreparedSatement("EXEC AddRouter ?,?");
 			break;
 			
 		case HANDevices:
-			stmt = db.generatePreparedSatement("EXEC AddHANDevice ?");
+			stmt = db.generatePreparedSatement("EXEC AddHANDevice ?,?,?,?,?,?");
 			break;
 			
 		case Sockets:
-			stmt = db.generatePreparedSatement("EXEC AddSocket ?");
+			stmt = db.generatePreparedSatement("EXEC AddSocket ?,?,?,?");
 			break;
 		}
 		
-		for(String identifier : identifiers) {
-			stmt.setString(1, identifier);
+		Iterator<List<Object>> iter = values.iterator();
+		
+		while (iter.hasNext()) {
+			List<Object> record = iter.next();
+			
+			for (int i = 0 ; i < record.size(); i++) {
+				stmt.setObject(i + 1, record.get(i));
+			}
 			stmt.addBatch();
-		}
+		} 
+		
 		stmt.executeBatch();
 	}
 	
-	public void delete(TableType type, String[] identifiers) throws SQLException {
+	public void delete(TableType type, List<Integer> ids) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
@@ -342,14 +353,14 @@ public class MainDataController extends DataController {
 			stmt = db.generatePreparedSatement("EXEC DeleteSocket ?");
 			break;
 		}
-		for(String identifier : identifiers) {
-			stmt.setString(1, identifier);
+		for(int identifier : ids) {
+			stmt.setInt(1, identifier);
 			stmt.addBatch();
 		}
 		stmt.executeBatch();
 	}
 	
-	public void addNoteTo(TableType type, String identifier, String note) throws SQLException {
+	public void addNoteTo(TableType type, int id, String note) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
@@ -363,7 +374,7 @@ public class MainDataController extends DataController {
 		default:
 			break;
 		}
-		stmt.setString(1, identifier);
+		stmt.setInt(1, id);
 		stmt.setString(2, note);
 		stmt.executeUpdate();
 	}

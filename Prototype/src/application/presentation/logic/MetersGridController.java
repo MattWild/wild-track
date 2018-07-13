@@ -15,6 +15,7 @@ import application.Main;
 import application.database.MainDataController;
 import application.entities.Entry;
 import application.entities.Meter;
+import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -25,6 +26,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -33,25 +36,49 @@ import javafx.scene.layout.GridPane;
 public class MetersGridController extends TableController{
 
 	@FXML
-	private GridPane metersGrid;
+	private TableView<Entry> metersTable;
+	
+	@FXML
+	private TableColumn<Entry,Property> lanColumn;
+	
+	@FXML 
+	private ComboBox<String> lanFilter;
+	
+	@FXML
+	private TableColumn<Entry,Property> meterNameColumn;
 	
 	@FXML
 	private ComboBox<String> meterNameFilter;
 	
 	@FXML
+	private TableColumn<Entry,Property> meterTypeColumn;
+	
+	@FXML
 	private ComboBox<String> meterTypeFilter;
+	
+	@FXML
+	private TableColumn<Entry,Property> netIdColumn;
 	
 	@FXML
 	private ComboBox<String> networkIDFilter;
 	
 	@FXML
+	private TableColumn<Entry,Property> otherCRCsColumn;
+	
+	@FXML
+	private TableColumn<Entry,Property> locColumn;
+	
+	@FXML
 	private ComboBox<String> locationFilter;
+	
+	@FXML
+	private TableColumn<Entry,Property> socketColumn;
 	
 	@FXML
 	private ComboBox<String> socketFilter;
 	
-	@FXML 
-	private ComboBox<String> lanFilter;
+	@FXML
+	private TableColumn<Entry,Property> notesColumn;
 	
 	
 	public MetersGridController() {
@@ -61,7 +88,7 @@ public class MetersGridController extends TableController{
 
 	@Override
 	protected void initialize() {
-		this.grid = metersGrid;
+		this.table = metersTable;
 
 		this.filters.add(lanFilter);
 		this.filters.add(meterNameFilter);
@@ -69,24 +96,14 @@ public class MetersGridController extends TableController{
 		this.filters.add(networkIDFilter);
 		this.filters.add(locationFilter);
 		this.filters.add(socketFilter);
-	}
-
-	protected List<String> getFilters() {
-		List<String> result = new ArrayList<String>();
 		
-		result.add(lanFilter.getSelectionModel().getSelectedItem());
-		result.add(meterNameFilter.getSelectionModel().getSelectedItem());
-		result.add(meterTypeFilter.getSelectionModel().getSelectedItem());
-		result.add(networkIDFilter.getSelectionModel().getSelectedItem());
-		result.add(locationFilter.getSelectionModel().getSelectedItem());
-		result.add(socketFilter.getSelectionModel().getSelectedItem());
-		
-		return result;
-	}
-
-
-	@Override
-	protected Entry generateEntry(List<String> fields) {
-		return new Meter(main, fields.get(0), fields.get(1), fields.get(2), fields.get(3), fields.get(4), fields.get(5), fields.get(6), fields.get(7));
+		this.columns.add(lanColumn);
+		this.columns.add(meterNameColumn);
+		this.columns.add(meterTypeColumn);
+		this.columns.add(netIdColumn);
+		this.columns.add(otherCRCsColumn);
+		this.columns.add(locColumn);
+		this.columns.add(socketColumn);
+		this.columns.add(notesColumn);
 	}
 }

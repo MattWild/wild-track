@@ -17,6 +17,7 @@ import application.database.DataController;
 import application.database.MainDataController;
 import application.database.SQLDB;
 import application.entities.Entry;
+import application.object.ObjectLayer;
 import application.presentation.PresentationLayer;
 import application.presentation.logic.AddMetersDialogueController;
 import application.presentation.logic.AddNoteDialogueController;
@@ -48,8 +49,6 @@ public class Main extends Application {
 	private MainDataController mainController;
 	private Map<Integer, CentralServicesDataController> environmentControllers;
 	private PresentationLayer presentationLayer;
-	
-
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -180,5 +179,10 @@ public class Main extends Application {
 		e.printStackTrace();
 		if (presentationLayer != null)
 			presentationLayer.showError(e.toString(), e.getMessage());
+	}
+
+	public ObjectLayer getObjectLayer() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
