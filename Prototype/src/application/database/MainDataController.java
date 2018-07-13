@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import application.entities.Entry;
+import application.objects.entities.Entry;
 import application.presentation.logic.MetersGridController;
 import application.presentation.logic.TableController;
 import application.presentation.logic.TableController.TableType;
