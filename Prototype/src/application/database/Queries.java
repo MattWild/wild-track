@@ -2,7 +2,7 @@ package application.database;
 
 public class Queries {
 
-	private static final String SQL_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate, custom1, custom2, notes from (\r\n" + 
+	/*private static final String SQL_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate, custom1, custom2, notes from (\r\n" + 
 			"	select distinct Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, Meters.custom1, Meters.custom2, Notes.notes, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
 			"	inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
 			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
@@ -24,9 +24,19 @@ public class Queries {
 			"		select CONVERT(VARCHAR(max), note) as note, endpointID from EndpointNotes\r\n" + 
 			"	) as Notes2) as Notes on Notes.endpointId = Endpoints.endPointId\r\n" + 
 			"	cross join GridStreamNtwrks\r\n" + 
+			") as result where rn = 1";*/
+	
+	private static final String SQL_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate from (\r\n" + 
+			"	select Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
+			"	inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
+			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
+			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
+			"	left join RFEndpointProperties on RFEndpointProperties.endpointId = Endpoints.endPointId\r\n" + 
+			"	left join MeterModels on RFEndpointProperties.meterModelId = MeterModels.meterModelId\r\n" + 
+			"	cross join GridStreamNtwrks\r\n" + 
 			") as result where rn = 1";
 	
-	private static final String ORACLE_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate, custom1, custom2, notes from (\r\n" + 
+	/*private static final String ORACLE_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate, custom1, custom2, notes from (\r\n" + 
 			"	select Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, GridStreamNtwrks.gridStreamNtwrkQT as CRC, Meters.custom1, Meters.custom2, IDReadingLatestValues.latestValueDate, Notes.notes, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
 			"    inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
 			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
@@ -36,8 +46,20 @@ public class Queries {
 			"    left join (select endpointID, LISTAGG(note, '; ') WITHIN GROUP (ORDER BY NULL) notes from EndpointNotes GROUP BY endpointID) Notes on Notes.endpointID = Endpoints.ENDPOINTID\r\n" + 
 			"	cross join GridStreamNtwrks\r\n" + 
 			") result where rn = 1";
+	 */
 	
-	private static final String SQL_ROUTERS = 
+	private static final String ORACLE_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate from (\r\n" + 
+			"	select Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
+			"   inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
+			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
+			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
+			"	left join RFEndpointProperties on RFEndpointProperties.endpointId = Endpoints.endPointId\r\n" + 
+			"	left join MeterModels on RFEndpointProperties.meterModelId = MeterModels.meterModelId\r\n" + 
+			"   left join (select endpointID, LISTAGG(note, '; ') WITHIN GROUP (ORDER BY NULL) notes from EndpointNotes GROUP BY endpointID) Notes on Notes.endpointID = Endpoints.ENDPOINTID\r\n" + 
+			"	cross join GridStreamNtwrks\r\n" + 
+			") result where rn = 1";
+	
+	/*private static final String SQL_ROUTERS = 
 			"select meterNo, meterName, CRC, latestValueDate, custom1, notes from (\r\n" + 
 			"	select distinct Meters.meterNo, MeterModels.name as meterName, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, Meters.custom1, Notes.notes, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
 			"	inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
@@ -62,8 +84,19 @@ public class Queries {
 			"	cross join GridStreamNtwrks\r\n" + 
 			"	where MeterTypes.MeterTypeID in (4,5)\r\n" +
 			") as result where rn = 1";
+	 */
+	private static final String SQL_ROUTERS = 
+			"select meterNo, routerName, CRC, latestValueDate from (\r\n" + 
+			"	select distinct Meters.meterNo, EndpointModels.name as routerName, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
+			"	inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
+			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
+			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
+			"	left join EndPointModels on endpointmodels.endPointModelId = endpoints.endPointModelId\r\n" + 
+			"	cross join GridStreamNtwrks\r\n" + 
+			"	where MeterTypes.MeterTypeID in (4,5)\r\n" +
+			") as result where rn = 1";
 	
-	private static final String ORACLE_ROUTERS = "select meterNo, meterName, CRC, latestValueDate, custom1, notes from (\r\n" + 
+	/*private static final String ORACLE_ROUTERS = "select meterNo, meterName, CRC, latestValueDate, custom1, notes from (\r\n" + 
 			"	select distinct Meters.meterNo, MeterModels.name as meterName, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, Meters.custom1, Notes.notes, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
 			"    inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
 			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
@@ -72,6 +105,17 @@ public class Queries {
 			"	left join MeterModels on RFEndpointProperties.meterModelId = MeterModels.meterModelId\r\n" + 
 			"    left join (select endpointID, LISTAGG(note, '; ') WITHIN GROUP (ORDER BY NULL) notes from EndpointNotes GROUP BY endpointID) Notes on Notes.endpointID = Endpoints.ENDPOINTID\r\n" + 
 			"	cross join GridStreamNtwrks\r\n" + 
+			"	where MeterTypes.meterTypeID in (4,5)\r\n" + 
+			") result where rn = 1";
+	 */
+	
+	private static final String ORACLE_ROUTERS = "select meterNo, routerName, CRC, latestValueDate from (\r\n" + 
+			"	select distinct Meters.meterNo, EndpointModels.name as routerName, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
+			"   inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
+			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
+			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
+			"	left join EndPointModels on endpointmodels.endPointModelId = endpoints.endPointModelId\r\n" + 
+			"   cross join GridStreamNtwrks\r\n" + 
 			"	where MeterTypes.meterTypeID in (4,5)\r\n" + 
 			") result where rn = 1";
 	
@@ -105,7 +149,7 @@ public class Queries {
 			"cross join GridStreamNtwrks\r\n" + 
 			"where EndpointModels.name like '%Router%';";
 
-	private static final String SQL_UPDATEENVIRONMENTMETERS = "DECLARE\r\n" + 
+	/*private static final String SQL_UPDATEENVIRONMENTMETERS = "DECLARE\r\n" + 
 			"@lan_address VARCHAR(50) = ?,\r\n" + 
 			"@loc VARCHAR(50) = ?,\r\n" + 
 			"@sock VARCHAR(50) = ?\r\n" + 
@@ -124,9 +168,9 @@ public class Queries {
 			"SET custom1 = loc,\r\n" +
 			"    custom2 = sock\r\n" +
 			"WHERE meterNo = lan_address;\r\n" + 
-			"END;";
+			"END;";*/
 	
-	private static final String ORACLE_ENVIRONCONNPARAM = null;
+	//private static final String ORACLE_ENVIRONCONNPARAM = null;
 	
 	private static final String SQL_ENVIRONIDFROMCRC = "SELECT id from Environments where CRC = ?";
 	
@@ -136,7 +180,7 @@ public class Queries {
 	
 	private static final String ORACLE_CLEARMETERENVIRONRELATIONS = null;
 
-	private static final String SQL_ADDNOTEENVIRONMENT = "DECLARE @endpointID int;\r\n" + 
+	/*private static final String SQL_ADDNOTEENVIRONMENT = "DECLARE @endpointID int;\r\n" + 
 			"\r\n" + 
 			"BEGIN\r\n" + 
 			"	set @endpointID = (select EndpointID from Endpoints\r\n" + 
@@ -176,7 +220,7 @@ public class Queries {
 			"\r\n" + 
 			"UPDATE Meters\r\n" + 
 			"SET custom1 = @loc\r\n" +
-			"WHERE meterNo = @lan_address";
+			"WHERE meterNo = @lan_address";*/
 	
 	public static String getMetersDataQuery(boolean sql) {
 		if (sql) {
@@ -193,13 +237,14 @@ public class Queries {
 	public static String getRoutersQuery() {
 		return ROUTERS_QUERY;
 	}
-	public static String updateEnvironmentMetersTable(boolean sql) {
+	
+	/*public static String updateEnvironmentMetersTable(boolean sql) {
 		if (sql) {
 			return SQL_UPDATEENVIRONMENTMETERS;
 		} else {
 			return ORACLE_UPDATEENVIRONMENTMETERS;
 		}
-	}
+	}*/
 	
 	public static String environmentIDfromCRC(boolean sql) {
 		if (sql) {
@@ -217,13 +262,13 @@ public class Queries {
 		}
 	}
 
-	public static String addNoteEnvironment(boolean sql) {
+	/*public static String addNoteEnvironment(boolean sql) {
 		if (sql) {
 			return SQL_ADDNOTEENVIRONMENT;
 		} else {
 			return ORACLE_ADDNOTEENVIRONMENT;
 		}
-	}
+	}*/
 
 	public static String getRoutersDataQuery(boolean sql) {
 		if (sql) {
@@ -233,11 +278,12 @@ public class Queries {
 		}
 	}
 
+	/*
 	public static String updateEnvironmentRoutersTable(boolean sql) {
 		if (sql) {
 			return SQL_UPDATEENVIRONMENTROUTERS;
 		} else {
 			return ORACLE_UPDATEENVIRONMENTROUTERS;
 		}
-	}
+	}*/
 }

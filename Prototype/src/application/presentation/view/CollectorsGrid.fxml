@@ -12,67 +12,179 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.presentation.logic.CollectorsGridController">
    <children>
-   	<GridPane fx:id="collectorsGrid" alignment="TOP_CENTER" hgap="10.0" stylesheets="@../../application.css" vgap="10.0">
-   	   <columnConstraints>
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="74.0" />
-   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="67.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="79.0" />
-   	       <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" />
-   	   </columnConstraints>
-   	   <rowConstraints>
-   	     <RowConstraints minHeight="-Infinity" prefHeight="80.0" vgrow="SOMETIMES" />
-   	   </rowConstraints>
-   	    <opaqueInsets>
-   	       <Insets />
-   	    </opaqueInsets>
-   	    <children>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="IP Address" />
-                  <ComboBox fx:id="ipFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="2">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Radios" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="5">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Collector Type" />
-   	             <ComboBox fx:id="collectorTypeFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="3">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Network ID" />
-   	             <ComboBox fx:id="networkIDFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="6">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
-   	             <ComboBox fx:id="locationFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="7">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Comments" />
-   	             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
-   	          </children>
-   	       </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="4">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Collector App" />
-                  <ComboBox fx:id="collectorAppFilter" prefWidth="150.0" />
-               </children>
-            </VBox>
-   	    </children>
-   	 </GridPane>
+   <BorderPane>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                        <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#add" text="Add New" />
+                        <MenuItem mnemonicParsing="false" onAction="#remove" text="Remove" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <center>
+		   	<GridPane fx:id="collectorsGrid" alignment="TOP_CENTER" stylesheets="@../../application.css">
+		   	   <columnConstraints>
+		            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
+		   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+		   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
+		   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="90.0" />
+		            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="120.0" />
+		   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+		   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+		   	       <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" />
+		   	   </columnConstraints>
+		   	   <rowConstraints>
+		   	     <RowConstraints maxHeight="108.0" minHeight="-Infinity" prefHeight="80.0" vgrow="NEVER" />
+		            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="NEVER" />
+		            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="NEVER" />
+		            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="600.0" vgrow="ALWAYS" />
+		   	   </rowConstraints>
+		   	    <opaqueInsets>
+		   	       <Insets />
+		   	    </opaqueInsets>
+		   	    <children>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
+		   	          <children>
+		                  <Label alignment="CENTER" contentDisplay="CENTER" text="IP Address" />
+		                  <MenuButton fx:id="ipFilter" prefWidth="150.0" />
+		   	          </children>
+		               <opaqueInsets>
+		                  <Insets />
+		               </opaqueInsets>
+		               <GridPane.margin>
+		                  <Insets left="10.0" right="10.0" />
+		               </GridPane.margin>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="2">
+		   	          <children>
+		                  <Label alignment="CENTER" contentDisplay="CENTER" text="Radios" />
+		                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
+		   	          </children>
+		               <opaqueInsets>
+		                  <Insets />
+		               </opaqueInsets>
+		               <GridPane.margin>
+		                  <Insets left="10.0" right="10.0" />
+		               </GridPane.margin>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="5">
+		   	          <children>
+		                  <Label alignment="CENTER" contentDisplay="CENTER" text="Collector Type" />
+		   	             <MenuButton fx:id="collectorTypeFilter" prefWidth="150.0" />
+		   	          </children>
+		               <opaqueInsets>
+		                  <Insets />
+		               </opaqueInsets>
+		               <GridPane.margin>
+		                  <Insets left="10.0" right="10.0" />
+		               </GridPane.margin>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="3">
+		   	          <children>
+		   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Network ID" />
+		   	             <MenuButton fx:id="networkIDFilter" prefWidth="150.0" />
+		   	          </children>
+		               <opaqueInsets>
+		                  <Insets />
+		               </opaqueInsets>
+		               <GridPane.margin>
+		                  <Insets left="10.0" right="10.0" />
+		               </GridPane.margin>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="6">
+		   	          <children>
+		   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
+		   	             <MenuButton fx:id="locationFilter" prefWidth="150.0" />
+		   	          </children>
+		               <opaqueInsets>
+		                  <Insets />
+		               </opaqueInsets>
+		               <GridPane.margin>
+		                  <Insets left="10.0" right="10.0" />
+		               </GridPane.margin>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="7">
+		   	          <children>
+		   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Comments" />
+		   	             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
+		   	          </children>
+		               <opaqueInsets>
+		                  <Insets />
+		               </opaqueInsets>
+		               <GridPane.margin>
+		                  <Insets left="10.0" right="10.0" />
+		               </GridPane.margin>
+		   	       </VBox>
+		            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="4">
+		               <children>
+		                  <Label alignment="CENTER" contentDisplay="CENTER" text="Collector App" />
+		                  <MenuButton fx:id="collectorAppFilter" prefWidth="150.0" />
+		               </children>
+		               <opaqueInsets>
+		                  <Insets />
+		               </opaqueInsets>
+		               <GridPane.margin>
+		                  <Insets left="10.0" right="10.0" />
+		               </GridPane.margin>
+		            </VBox>
+		            <AnchorPane GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+		               <children>
+		                  <TableView fx:id="collectorsTable" editable="true"  styleClass="noheader" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		                     <columns>
+		                        <TableColumn fx:id="ipColumn" prefWidth="100.0" text="IP Address" />
+		                        <TableColumn fx:id="radiosColumn" prefWidth="150.0" sortable="false" text="Radios" />
+		                        <TableColumn fx:id="netIdColumn" prefWidth="90.0" sortable="false" text="Network ID" />
+		                        <TableColumn fx:id="appColumn" prefWidth="120.0" sortable="false" text="Collector App" />
+		                        <TableColumn fx:id="typeColumn" prefWidth="100.0" sortable="false" text="Collector Type" />
+		                        <TableColumn fx:id="locColumn" prefWidth="100.0" text="Location" />
+		                        <TableColumn fx:id="notesColumn" prefWidth="500.0" sortable="false" text="Comments" />
+		                     </columns>
+		                  </TableView>
+		               </children>
+		            </AnchorPane>
+		            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity"  GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+		               <children>
+		                  <TableView fx:id="addCollectorsTable" editable="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" styleClass="noheader" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		                     <columns>
+		                        <TableColumn fx:id="addIpColumn" prefWidth="100.0" resizable="false" text="IP Address" />
+		                        <TableColumn fx:id="addRadiosColumn" prefWidth="150.0" resizable="false" sortable="false" text="Radios" />
+		                        <TableColumn fx:id="addNetIdColumn" prefWidth="90.0" resizable="false" sortable="false" text="Network ID" />
+		                        <TableColumn fx:id="addAppColumn" prefWidth="120.0" resizable="false" sortable="false" text="Collector App" />
+		                        <TableColumn fx:id="addTypeColumn" prefWidth="100.0" resizable="false" sortable="false" text="Collector Type" />
+		                        <TableColumn fx:id="addLocColumn" prefWidth="100.0" resizable="false" text="Location" />
+		                        <TableColumn fx:id="addNotesColumn" prefWidth="500.0" resizable="false" sortable="false" text="Comments" />
+		                     </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+		                  </TableView>
+		               </children>
+		               <GridPane.margin>
+		                  <Insets bottom="5.0" />
+		               </GridPane.margin>
+		            </AnchorPane>
+		            <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+		               <children>
+		                  <Button fx:id="addCollectorsButton" mnemonicParsing="false" text="Add" />
+		                  <Button fx:id="cancelAddCollectorsButton" mnemonicParsing="false" text="Cancel" />
+		               </children>
+		               <padding>
+		                  <Insets left="20.0" />
+		               </padding>
+		            </HBox>
+		   	    </children>
+		   	 </GridPane>
+		   	</center>
+      </BorderPane>
    </children>
 </AnchorPane>

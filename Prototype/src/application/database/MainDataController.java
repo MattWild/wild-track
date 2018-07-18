@@ -1,23 +1,13 @@
 package application.database;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLType;
-import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import application.objects.entities.Entry;
-import application.presentation.logic.MetersGridController;
-import application.presentation.logic.TableController;
 import application.presentation.logic.TableController.TableType;
-import javafx.scene.control.ChoiceBox;
 
 public class MainDataController extends DataController {
 	
@@ -29,11 +19,11 @@ public class MainDataController extends DataController {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
-			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromEnvironment ?,?,?,?,?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromEnvironment ?,?,?,?,?");
 			break;
 			
 		case Routers:
-			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromEnvironment ?,?,?,?,?,?");
+			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromEnvironment ?,?,?,?");
 			break;
 			
 		default:
@@ -316,6 +306,7 @@ public class MainDataController extends DataController {
 			break;
 		}
 		
+		System.out.println(values);
 		Iterator<List<Object>> iter = values.iterator();
 		
 		while (iter.hasNext()) {

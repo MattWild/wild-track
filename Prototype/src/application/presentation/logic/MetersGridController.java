@@ -1,84 +1,117 @@
 package application.presentation.logic;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import application.Main;
-import application.database.MainDataController;
-import application.entities.Entry;
-import application.entities.Meter;
-import javafx.beans.property.Property;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import application.objects.entities.Entry;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.text.Text;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public class MetersGridController extends TableController{
 
 	@FXML
+	private GridPane metersGrid;
+	
+	@FXML
 	private TableView<Entry> metersTable;
 	
 	@FXML
-	private TableColumn<Entry,Property> lanColumn;
+	private TableColumn<Entry,String> lanColumn;
 	
 	@FXML 
-	private ComboBox<String> lanFilter;
+	private MenuButton lanFilter;
 	
 	@FXML
-	private TableColumn<Entry,Property> meterNameColumn;
+	private TableColumn<Entry,String> meterNameColumn;
 	
 	@FXML
-	private ComboBox<String> meterNameFilter;
+	private MenuButton meterNameFilter;
 	
 	@FXML
-	private TableColumn<Entry,Property> meterTypeColumn;
+	private TableColumn<Entry,String> meterTypeColumn;
 	
 	@FXML
-	private ComboBox<String> meterTypeFilter;
+	private MenuButton meterTypeFilter;
 	
 	@FXML
-	private TableColumn<Entry,Property> netIdColumn;
+	private TableColumn<Entry,String> netIdColumn;
 	
 	@FXML
-	private ComboBox<String> networkIDFilter;
+	private MenuButton networkIDFilter;
 	
 	@FXML
-	private TableColumn<Entry,Property> otherCRCsColumn;
+	private TableColumn<Entry,String> otherCRCsColumn;
 	
 	@FXML
-	private TableColumn<Entry,Property> locColumn;
+	private TableColumn<Entry,String> locColumn;
 	
 	@FXML
-	private ComboBox<String> locationFilter;
+	private MenuButton locationFilter;
 	
 	@FXML
-	private TableColumn<Entry,Property> socketColumn;
+	private TableColumn<Entry,String> socketColumn;
 	
 	@FXML
-	private ComboBox<String> socketFilter;
+	private MenuButton socketFilter;
 	
 	@FXML
-	private TableColumn<Entry,Property> notesColumn;
+	private TableColumn<Entry,String> notesColumn;
+	
+
+	
+	@FXML
+	private TableView<Entry> addMetersTable;
+	
+	@FXML
+	private TableColumn<Entry,String> addLanColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addMeterNameColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addMeterTypeColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addNetIdColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addOtherCRCsColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addLocColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addSocketColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addNotesColumn;
+	
+	@FXML
+	private Button addMeterButton;
+	
+	@FXML
+	private Button cancelAddMeterButton;
+	
+	@FXML
+	private void save(ActionEvent event) {
+		save();
+	}
+	
+	@FXML
+	private void refresh(ActionEvent event) {
+		refresh();
+	}
+	
+	@FXML
+	private void add(ActionEvent event) {
+		startAdd();
+	}
+	
+	@FXML
+	private void remove(ActionEvent event) {
+		remove();
+	}
 	
 	
 	public MetersGridController() {
@@ -89,6 +122,8 @@ public class MetersGridController extends TableController{
 	@Override
 	protected void initialize() {
 		this.table = metersTable;
+		this.addTable = addMetersTable;
+		this.grid = metersGrid;
 
 		this.filters.add(lanFilter);
 		this.filters.add(meterNameFilter);
@@ -105,5 +140,43 @@ public class MetersGridController extends TableController{
 		this.columns.add(locColumn);
 		this.columns.add(socketColumn);
 		this.columns.add(notesColumn);
+		
+		this.addColumns.add(addLanColumn);
+		this.addColumns.add(addMeterNameColumn);
+		this.addColumns.add(addMeterTypeColumn);
+		this.addColumns.add(addNetIdColumn);
+		this.addColumns.add(addOtherCRCsColumn);
+		this.addColumns.add(addLocColumn);
+		this.addColumns.add(addSocketColumn);
+		this.addColumns.add(addNotesColumn);
+		
+		this.addButton = addMeterButton;
+		this.cancelAddButton = cancelAddMeterButton;
+	}
+
+
+	@Override
+	protected void optionalColumnSetup(int i) {
+		switch (i) {
+		case 5:
+		case 6:
+		case 7:
+			setupEditableColumn(i);
+			break;
+		}
+	}
+
+
+	@Override
+	protected void optionalAddColumnSetup(int i) {
+		switch (i) {
+		case 0:
+		case 5:
+		case 6:
+			setupEditableAddColumn(i);
+			break;
+		default:
+			setupNonEditableAddColumn(i);
+		}
 	}
 }

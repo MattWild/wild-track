@@ -12,115 +12,171 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.presentation.logic.MetersGridController">
    <children>
-   	<GridPane fx:id="metersGrid" alignment="TOP_CENTER" stylesheets="@../../application.css">
-   	   <columnConstraints>
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="-Infinity" prefWidth="90.0" />
-   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="90.0" />
-   	       <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" />
-   	   </columnConstraints>
-   	   <rowConstraints>
-   	     <RowConstraints maxHeight="108.0" minHeight="-Infinity" prefHeight="85.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="442.0" minHeight="-Infinity" prefHeight="395.0" vgrow="SOMETIMES" />
-   	   </rowConstraints>
-   	    <opaqueInsets>
-   	       <Insets />
-   	    </opaqueInsets>
-   	    <children>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="LAN Address" />
-                  <ComboBox fx:id="lanFilter" prefWidth="150.0" />
-   	          </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="2">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Meter Name" />
-   	             <ComboBox fx:id="meterNameFilter" prefWidth="150.0" />
-   	          </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="3">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Meter Type" />
-   	             <ComboBox fx:id="meterTypeFilter" prefWidth="150.0" />
-   	          </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="4">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Network ID" />
-   	             <ComboBox fx:id="networkIDFilter" prefWidth="150.0" />
-   	          </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="6">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
-   	             <ComboBox fx:id="locationFilter" prefWidth="150.0" />
-   	          </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="8">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Comments" />
-   	             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
-   	          </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-   	       </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="5">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Other CRCs" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
-               </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-            </VBox>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="7">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Socket Form" />
-                  <ComboBox fx:id="socketFilter" prefWidth="150.0" />
-               </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-            </VBox>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-               <children>
-                  <TableView AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <columns>
-                        <TableColumn prefWidth="90.0" text="LAN Address" />
-                        <TableColumn prefWidth="140.0" sortable="false" text="Meter Name" />
-                        <TableColumn prefWidth="100.0" sortable="false" text="MeterType" />
-                        <TableColumn prefWidth="100.0" sortable="false" text="Network ID" />
-                        <TableColumn prefWidth="100.0" sortable="false" text="Other CRCs" />
-                        <TableColumn prefWidth="100.0" sortable="false" text="Location" />
-                        <TableColumn prefWidth="90.0" text="Socket Form" />
-                        <TableColumn prefWidth="500.0" sortable="false" text="Comments" />
-                     </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-   	    </children>
-   	 </GridPane>
+      <BorderPane>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                        <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#add" text="Add New" />
+                        <MenuItem mnemonicParsing="false" onAction="#remove" text="Remove" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <center>
+         	<GridPane fx:id="metersGrid" alignment="TOP_CENTER" stylesheets="@../../application.css" BorderPane.alignment="CENTER">
+         	   <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
+         	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="-Infinity" prefWidth="90.0" />
+         	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
+         	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+         	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+         	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="90.0" />
+         	       <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="500.0" />
+                  <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+         	   </columnConstraints>
+         	   <rowConstraints>
+         	     <RowConstraints maxHeight="108.0" minHeight="-Infinity" prefHeight="80.0" vgrow="NEVER" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="NEVER" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="NEVER" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="600.0" vgrow="ALWAYS" />
+         	   </rowConstraints>
+         	    <opaqueInsets>
+         	       <Insets />
+         	    </opaqueInsets>
+         	    <children>
+         	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
+         	          <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="LAN Address" />
+                        <MenuButton fx:id="lanFilter" prefWidth="150.0" />
+         	          </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+         	       </VBox>
+         	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="2">
+         	          <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Meter Name" />
+         	             <MenuButton fx:id="meterNameFilter" prefWidth="150.0" />
+         	          </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+         	       </VBox>
+         	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="3">
+         	          <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Meter Type" />
+         	             <MenuButton fx:id="meterTypeFilter" prefWidth="150.0" />
+         	          </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+         	       </VBox>
+         	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="4">
+         	          <children>
+         	             <Label alignment="CENTER" contentDisplay="CENTER" text="Network ID" />
+         	             <MenuButton fx:id="networkIDFilter" prefWidth="150.0" />
+         	          </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+         	       </VBox>
+         	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="6">
+         	          <children>
+         	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
+         	             <MenuButton fx:id="locationFilter" prefWidth="150.0" />
+         	          </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+         	       </VBox>
+         	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="8">
+         	          <children>
+         	             <Label alignment="CENTER" contentDisplay="CENTER" text="Comments" />
+         	             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
+         	          </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+         	       </VBox>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="5">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Other CRCs" />
+                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="25.0" stroke="TRANSPARENT" strokeType="INSIDE" width="10.0" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="7">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Socket Form" />
+                        <MenuButton fx:id="socketFilter" prefWidth="150.0" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </VBox>
+                  <AnchorPane GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+                     <children>
+                        <TableView fx:id="metersTable" editable="true" styleClass="noheader" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn fx:id="lanColumn" prefWidth="90.0" text="LAN Address" />
+                              <TableColumn fx:id="meterNameColumn" prefWidth="140.0" sortable="false" text="Meter Name" />
+                              <TableColumn fx:id="meterTypeColumn" prefWidth="100.0" sortable="false" text="MeterType" />
+                              <TableColumn fx:id="netIdColumn" prefWidth="100.0" sortable="false" text="Network ID" />
+                              <TableColumn fx:id="otherCRCsColumn" prefWidth="100.0" sortable="false" text="Other CRCs" />
+                              <TableColumn fx:id="locColumn" prefWidth="100.0" sortable="false" text="Location" />
+                              <TableColumn fx:id="socketColumn" prefWidth="90.0" text="Socket Form" />
+                              <TableColumn fx:id="notesColumn" prefWidth="500.0" sortable="false" text="Comments" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+                     <children>
+                        <TableView fx:id="addMetersTable" editable="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0" styleClass="noheader" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn fx:id="addLanColumn" prefWidth="90.0" resizable="false" text="LAN Address" />
+                              <TableColumn fx:id="addMeterNameColumn" prefWidth="140.0" resizable="false" sortable="false" text="Meter Name" />
+                              <TableColumn fx:id="addMeterTypeColumn" prefWidth="100.0" resizable="false" sortable="false" text="MeterType" />
+                              <TableColumn fx:id="addNetIdColumn" prefWidth="100.0" resizable="false" sortable="false" text="Network ID" />
+                              <TableColumn fx:id="addOtherCRCsColumn" prefWidth="100.0" resizable="false" sortable="false" text="Other CRCs" />
+                              <TableColumn fx:id="addLocColumn" prefWidth="100.0" resizable="false" sortable="false" text="Location" />
+                              <TableColumn fx:id="addSocketColumn" prefWidth="90.0" resizable="false" text="Socket Form" />
+                              <TableColumn fx:id="addNotesColumn" prefWidth="500.0" resizable="false" sortable="false" text="Comments" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                     <GridPane.margin>
+                        <Insets bottom="5.0" />
+                     </GridPane.margin>
+                  </AnchorPane>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                     <children>
+                        <Button fx:id="addMeterButton" mnemonicParsing="false" text="Add" />
+                        <Button fx:id="cancelAddMeterButton" mnemonicParsing="false" text="Cancel" />
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </HBox>
+         	    </children>
+         	 </GridPane>
+         </center>
+      </BorderPane>
    </children>
 </AnchorPane>

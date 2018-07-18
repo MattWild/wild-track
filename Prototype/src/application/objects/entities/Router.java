@@ -1,30 +1,29 @@
-package application.entities;
+package application.objects.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import application.Main;
-import application.entities.Entry.FieldUpdateHandler;
 import application.presentation.logic.TableController.TableType;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.beans.property.SimpleStringProperty;
 
-public class Router extends Entry {
+public class Router implements Entry {
 	
-	public Router(Main app) {
-		super(app);
-		children = new ArrayList<Node>();
-	}
-
-	@Override
-	public List<Object> getUpdateableValues() {
-		List<Object> result = new ArrayList<Object>();
+	private int id;
+	private SimpleStringProperty lan;
+	private SimpleStringProperty type;
+	private SimpleStringProperty netId;
+	private SimpleStringProperty otherCRCs;
+	private SimpleStringProperty loc;
+	private SimpleStringProperty notes;
+	
+	private boolean changed;
+	
+	public Router(int id, String lanString, Integer netIDvalue, String otherCRCsString, String typeString, String locString, String commentString) {
+		this.id = id;
 		
-		result.add(((Label) children.get(0)).getText());
-		result.add(((TextField) children.get(4)).getText());
-		
-		return result;
+		lan = new SimpleStringProperty(lanString);
+		netId = new SimpleStringProperty((netIDvalue == null)? null : netIDvalue.intValue() + "");
+		otherCRCs = new SimpleStringProperty(otherCRCsString);
+		type = new SimpleStringProperty(typeString);
+		loc = new SimpleStringProperty(locString);
+		notes = new SimpleStringProperty(commentString);
 	}
 
 	@Override
@@ -33,22 +32,74 @@ public class Router extends Entry {
 	}
 
 	@Override
-	public int getCRC() {
-		return Integer.parseInt(((Label) children.get(1)).getText());
-	}
-	
-	public void init(int id, String lanString, String netIDString, String otherCRCsString, String typeString, String locString, String commentString) {
-		setId(id);
-		children.add(new Label(lanString));
-		children.add(new Label(netIDString));
-		children.add(new Label(otherCRCsString));
-		children.add(new Label(typeString));
-		
-		TextField locField = new TextField(locString);
-		locField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(locField);
-		
-		children.add(new Label(commentString));
+	public int getId() {
+		return id;
 	}
 
+	@Override
+	public SimpleStringProperty getFieldProperty(int i) {
+		switch (i) {
+		case 0:
+			return lan;		
+		case 1:
+			return netId;		
+		case 2:
+			return otherCRCs;		
+		case 3:
+			return type;		
+		case 4:
+			return loc;
+		case 5:
+			return notes;
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public String getFilterValue(int i) {
+		switch (i) {
+		case 0:
+			return lan.get();		
+		case 1:
+			return netId.get();		
+		case 2:
+			return type.get();			
+		case 3:
+			return loc.get();	
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public void indicateChanged() {
+		changed = true;
+	}
+
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+
+	public String getLocation() {
+		return loc.get();
+	}
+
+	public String getLAN() {
+		return lan.get();
+	}
+
+	public int getCRC() {
+		return (netId.get() == null)? -1 : Integer.parseInt(netId.get());
+	}
+
+	@Override
+	public boolean identifierNotNull() {
+		return lan.get() != null;
+	}
+
+	public String getNote() {
+		return notes.get();
+	}
 }

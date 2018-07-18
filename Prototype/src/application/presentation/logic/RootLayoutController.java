@@ -1,24 +1,20 @@
 package application.presentation.logic;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import application.Main;
-import application.presentation.PresentationLayer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 
 public class RootLayoutController {
 	@FXML
 	TabPane tabPane;
 	
 	private Main main;
-	private AnchorPane metersMenu;
-	private MetersMenuController metersMenuController;
 	
 	public void setMain(Main main) {
 		this.main = main;
@@ -29,19 +25,19 @@ public class RootLayoutController {
 			String fxmlPath = null;
 			switch (type) {
 			case Collectors:
-				fxmlPath = "presentation/view/CollectorsMenu.fxml";
+				fxmlPath = "presentation/view/CollectorsGrid.fxml";
 				break;
 			case HANDevices:
-				fxmlPath = "presentation/view/HANMenu.fxml";
+				fxmlPath = "presentation/view/HANGrid.fxml";
 				break;
 			case Meters:
-				fxmlPath = "presentation/view/MetersMenu.fxml";
+				fxmlPath = "presentation/view/MetersGrid.fxml";
 				break;
 			case Routers:
-				fxmlPath = "presentation/view/RoutersMenu.fxml";
+				fxmlPath = "presentation/view/RoutersGrid.fxml";
 				break;
 			case Sockets:
-				fxmlPath = "presentation/view/SocketsMenu.fxml";
+				fxmlPath = "presentation/view/SocketsGrid.fxml";
 				break;
 			default:
 				break;
@@ -50,13 +46,13 @@ public class RootLayoutController {
 			
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource(fxmlPath));
-			AnchorPane menu = (AnchorPane) loader.load();
+			AnchorPane table = (AnchorPane) loader.load();
 			
-			((AnchorPane) tabPane.getTabs().get(type.ordinal()).getContent()).getChildren().add(menu);
-			MenuController menuController = loader.getController();
-			menuController.setMain(main);
-			menuController.setupGrid();
-		} catch (IOException e) {
+			((ScrollPane)((AnchorPane) tabPane.getTabs().get(type.ordinal() + 1).getContent()).getChildren().get(0)).setContent(table);
+			TableController tableController = loader.getController();
+			tableController.setMain(main);
+			tableController.populateTable();
+		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -64,9 +60,5 @@ public class RootLayoutController {
 	@FXML
 	public void pull() {
 		main.pullData();
-	}
-	
-	@FXML void push() {
-		main.pushData();
 	}
 }

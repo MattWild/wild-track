@@ -1,34 +1,111 @@
 package application.presentation.logic;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import application.entities.Collector;
-import application.entities.Entry;
-import application.entities.Meter;
+import application.objects.entities.Entry;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 
 public class CollectorsGridController extends TableController{
-
-	@FXML
-	private GridPane collectorsGrid;
 	
 	@FXML 
-	private ComboBox<String> ipFilter;
+	private GridPane collectorsGrid;
+
+	@FXML
+	private TableView<Entry> collectorsTable;
 	
 	@FXML
-	private ComboBox<String> networkIDFilter;
+	private TableColumn<Entry,String> ipColumn;
+	
+	@FXML 
+	private MenuButton ipFilter;
 	
 	@FXML
-	private ComboBox<String> collectorAppFilter;
+	private TableColumn<Entry,String> radiosColumn;
 	
 	@FXML
-	private ComboBox<String> collectorTypeFilter;
+	private TableColumn<Entry,String> netIdColumn;
 	
 	@FXML
-	private ComboBox<String> locationFilter;
+	private MenuButton networkIDFilter;
+	
+	@FXML
+	private TableColumn<Entry,String> appColumn;
+	
+	@FXML
+	private MenuButton collectorAppFilter;
+	
+	@FXML
+	private TableColumn<Entry,String> typeColumn;
+	
+	@FXML
+	private MenuButton collectorTypeFilter;
+	
+	@FXML
+	private TableColumn<Entry,String> locColumn;
+	
+	@FXML
+	private MenuButton locationFilter;
+	
+	@FXML
+	private TableColumn<Entry,String> notesColumn;
+	
+	
+	
+	@FXML
+	private TableView<Entry> addCollectorsTable;
+	
+	@FXML
+	private TableColumn<Entry,String> addIpColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addRadiosColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addNetIdColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addAppColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addTypeColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addLocColumn;
+	
+	@FXML
+	private TableColumn<Entry,String> addNotesColumn;
+	
+	
+	@FXML
+	private Button addCollectorsButton;
+	
+	@FXML
+	private Button cancelAddCollectorsButton;
+	
+	
+	@FXML
+	private void save(ActionEvent event) {
+		save();
+	}
+	
+	@FXML
+	private void refresh(ActionEvent event) {
+		refresh();
+	}
+	
+	@FXML
+	private void add(ActionEvent event) {
+		startAdd();
+	}
+	
+	@FXML
+	private void remove(ActionEvent event) {
+		remove();
+	}
 	
 	
 	public CollectorsGridController() {
@@ -38,6 +115,8 @@ public class CollectorsGridController extends TableController{
 
 	@Override
 	protected void initialize() {
+		this.table = collectorsTable;
+		this.addTable = addCollectorsTable;
 		this.grid = collectorsGrid;
 
 		this.filters.add(ipFilter);
@@ -45,23 +124,54 @@ public class CollectorsGridController extends TableController{
 		this.filters.add(collectorAppFilter);
 		this.filters.add(collectorTypeFilter);
 		this.filters.add(locationFilter);
-	}
-
-	protected List<String> getFilters() {
-		List<String> result = new ArrayList<String>();
 		
-		result.add(ipFilter.getSelectionModel().getSelectedItem());
-		result.add(networkIDFilter.getSelectionModel().getSelectedItem());
-		result.add(collectorAppFilter.getSelectionModel().getSelectedItem());
-		result.add(collectorTypeFilter.getSelectionModel().getSelectedItem());
-		result.add(locationFilter.getSelectionModel().getSelectedItem());
+		this.columns.add(ipColumn);
+		this.columns.add(radiosColumn);
+		this.columns.add(netIdColumn);
+		this.columns.add(appColumn);
+		this.columns.add(typeColumn);
+		this.columns.add(locColumn);
+		this.columns.add(notesColumn);
 		
-		return result;
+		this.addColumns.add(addIpColumn);
+		this.addColumns.add(addRadiosColumn);
+		this.addColumns.add(addNetIdColumn);
+		this.addColumns.add(addAppColumn);
+		this.addColumns.add(addTypeColumn);
+		this.addColumns.add(addLocColumn);
+		this.addColumns.add(addNotesColumn);
+		
+		this.addButton = addCollectorsButton;
+		this.cancelAddButton = cancelAddCollectorsButton;
 	}
 
 
 	@Override
-	protected Entry generateEntry(List<String> fields) {
-		return new Collector(main, fields.get(0), fields.get(1), fields.get(2), fields.get(3), fields.get(4), fields.get(5), fields.get(6));
+	protected void optionalColumnSetup(int i) {
+		switch (i) {
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+			setupEditableColumn(i);
+		}
+	}
+
+
+	@Override
+	protected void optionalAddColumnSetup(int i) {
+		switch (i) {
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+			setupEditableAddColumn(i);
+		}
 	}
 }

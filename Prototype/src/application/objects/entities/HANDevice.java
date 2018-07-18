@@ -1,34 +1,29 @@
-package application.entities;
+package application.objects.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import application.Main;
-import application.entities.Entry.FieldUpdateHandler;
 import application.presentation.logic.TableController.TableType;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.beans.property.SimpleStringProperty;
 
-public class HANDevice extends Entry {
+public class HANDevice implements Entry {
+	
+	private int id;
+	private SimpleStringProperty unitId;
+	private SimpleStringProperty name;
+	private SimpleStringProperty install;
+	private SimpleStringProperty mac;
+	private SimpleStringProperty loc;
+	private SimpleStringProperty notes;
+	
+	private boolean changed;
 
-	public HANDevice(Main app) {
-		super(app);
-		children = new ArrayList<Node>();
-	}
-
-	@Override
-	public List<Object> getUpdateableValues() {
-		List<Object> result = new ArrayList<Object>();
+	public HANDevice(int id, String unitIDString, String deviceNameString, String installCodeString, String macAddressString,String locString, String commentString) {
+		this.id = id;
 		
-		result.add(((Label) children.get(0)).getText());
-		result.add(((TextField) children.get(1)).getText());
-		result.add(((TextField) children.get(2)).getText());
-		result.add(((TextField) children.get(3)).getText());
-		result.add(((TextField) children.get(4)).getText());
-		result.add(((TextField) children.get(5)).getText());
-		
-		return result;
+		unitId = new SimpleStringProperty(unitIDString);
+		name = new SimpleStringProperty(deviceNameString);
+		install = new SimpleStringProperty(installCodeString);
+		mac = new SimpleStringProperty(macAddressString);
+		loc = new SimpleStringProperty(locString);
+		notes = new SimpleStringProperty(commentString);
 	}
 
 	@Override
@@ -37,32 +32,82 @@ public class HANDevice extends Entry {
 	}
 
 	@Override
-	public int getCRC() {
-		return -1;
+	public int getId() {
+		return id;
 	}
 
-	public void init(int id, String unitIDString, String deviceNameString, String installCodeString, String macAddressString,String locString, String commentString) {
-		setId(id);
-		
-		children.add(new Label(unitIDString));
-		TextField deviceNameField = new TextField(deviceNameString);
-		deviceNameField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(deviceNameField);
-		
-		TextField installCodeField = new TextField(installCodeString);
-		installCodeField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(installCodeField);
-		
-		TextField macAddressField = new TextField(macAddressString);
-		macAddressField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(macAddressField);
-				
-		TextField locField = new TextField(locString);
-		locField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(locField);
-
-		TextField commentField = new TextField(commentString);
-		commentField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(commentField);
+	@Override
+	public SimpleStringProperty getFieldProperty(int i) {
+		switch (i) {
+		case 0:
+			return unitId;
+		case 1:
+			return name;
+		case 2:
+			return install;
+		case 3:
+			return mac;
+		case 4:
+			return loc;
+		case 5:
+			return notes;
+		default:
+			return null;
+		}
 	}
+
+	@Override
+	public String getFilterValue(int i) {
+		switch(i) {
+		case 0:
+			return unitId.get();
+		case 1:
+			return name.get();
+		case 2:
+			return loc.get();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public void indicateChanged() {
+		changed = true;
+	}
+
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+
+	public String getUnitId() {
+		return unitId.get();
+	}
+
+	public String getDeviceName() {
+		return name.get();
+	}
+
+	public String getInstall() {
+		return install.get();
+	}
+
+	public String getMAC() {
+		return mac.get();
+	}
+
+	public String getLocation() {
+		return loc.get();
+	}
+
+	public String getNote() {
+		return notes.get();
+	}
+
+	@Override
+	public boolean identifierNotNull() {
+		return unitId.get() != null;
+	}
+
+	
 }

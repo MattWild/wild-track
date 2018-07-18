@@ -12,46 +12,123 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.presentation.logic.SocketsGridController">
    <children>
-   	<GridPane fx:id="socketsGrid" alignment="TOP_CENTER" hgap="10.0" stylesheets="@../../application.css" vgap="10.0">
-   	   <columnConstraints>
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
-   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="79.0" />
-   	   </columnConstraints>
-   	   <rowConstraints>
-   	     <RowConstraints minHeight="-Infinity" prefHeight="80.0" vgrow="SOMETIMES" />
-   	   </rowConstraints>
-   	    <opaqueInsets>
-   	       <Insets />
-   	    </opaqueInsets>
-   	    <children>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="ID" />
-                  <ComboBox fx:id="idFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="2">
-   	          <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" text="Socket Form" />
-   	             <ComboBox fx:id="formFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="3">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Load/No Load" />
-                  <ComboBox fx:id="nloadFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" GridPane.columnIndex="4">
-   	          <children>
-   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
-   	             <ComboBox fx:id="locationFilter" prefWidth="150.0" />
-   	          </children>
-   	       </VBox>
-   	    </children>
-   	 </GridPane>
+   	<BorderPane>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+                        <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#add" text="Add New" />
+                        <MenuItem mnemonicParsing="false" onAction="#refresh" text="Remove" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <center>
+		   	<GridPane fx:id="socketsGrid" alignment="TOP_CENTER" stylesheets="@../../application.css">
+		   	   <columnConstraints>
+		            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
+		   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
+		   	     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+		   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+		   	       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+		   	   </columnConstraints>
+		   	   <rowConstraints>
+		   	     <RowConstraints maxHeight="108.0" minHeight="-Infinity" prefHeight="80.0" vgrow="NEVER" />
+		            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="NEVER" />
+		            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="NEVER" />
+		            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="600.0" vgrow="ALWAYS" />
+		   	   </rowConstraints>
+		   	    <opaqueInsets>
+		   	       <Insets />
+		   	    </opaqueInsets>
+		   	    <children>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.halignment="LEFT">
+		   	          <children>
+		                  <Label alignment="CENTER" contentDisplay="CENTER" text="ID" />
+		                  <MenuButton fx:id="idFilter" prefWidth="150.0" />
+		   	          </children>
+		               <padding>
+		                  <Insets left="10.0" right="10.0" />
+		               </padding>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="2">
+		   	          <children>
+		                  <Label alignment="CENTER" contentDisplay="CENTER" text="Socket Form" />
+		   	             <MenuButton fx:id="formFilter" prefWidth="150.0" />
+		   	          </children>
+		               <padding>
+		                  <Insets left="10.0" right="10.0" />
+		               </padding>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="3">
+		   	          <children>
+		   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Load/No Load" />
+		                  <MenuButton fx:id="nloadFilter" prefWidth="150.0" />
+		   	          </children>
+		               <padding>
+		                  <Insets left="10.0" right="10.0" />
+		               </padding>
+		   	       </VBox>
+		   	       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="4">
+		   	          <children>
+		   	             <Label alignment="CENTER" contentDisplay="CENTER" text="Location" />
+		   	             <MenuButton fx:id="locationFilter" prefWidth="150.0" />
+		   	          </children>
+		               <padding>
+		                  <Insets left="10.0" right="10.0" />
+		               </padding>
+		   	       </VBox>
+		   	       <AnchorPane GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+		               <children>
+		                  <TableView fx:id="socketsTable" editable="true"  styleClass="noheader" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		                     <columns>
+		                        <TableColumn fx:id="idColumn" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" text="ID" />
+		                        <TableColumn fx:id="formColumn" prefWidth="100.0" sortable="false" text="Socket Form" />
+		                        <TableColumn fx:id="nloadColumn" prefWidth="100.0" sortable="false" text="Load/No Load" />
+		                        <TableColumn fx:id="locColumn" prefWidth="100.0" text="Location" />
+		                        <!--  <TableColumn fx:id="notesColumn" prefWidth="500.0" sortable="false" text="Comments" />-->
+		                     </columns>
+		                  </TableView>
+		               </children>
+		            </AnchorPane>
+		            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+		               <children>
+		                  <TableView fx:id="addSocketsTable" editable="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0"  styleClass="noheader" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		                     <columns>
+		                        <TableColumn fx:id="addIdColumn" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" resizable="false" text="ID" />
+		                        <TableColumn fx:id="addFormColumn" prefWidth="100.0" resizable="false" sortable="false" text="Socket Form" />
+		                        <TableColumn fx:id="addNloadColumn" prefWidth="100.0" resizable="false" sortable="false" text="Load/No Load" />
+		                        <TableColumn fx:id="addLocColumn" prefWidth="100.0" resizable="false" text="Location" />
+		                        <!--  <TableColumn fx:id="addNotesColumn" prefWidth="500.0" sortable="false" text="Comments" />-->
+		                     </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+		                  </TableView>
+		               </children><GridPane.margin>
+		                  <Insets bottom="5.0" />
+		               </GridPane.margin>
+		            </AnchorPane>
+		            <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+		               <children>
+		                  <Button fx:id="addSocketsButton" mnemonicParsing="false" text="Add" />
+		                  <Button fx:id="cancelAddSocketsButton" mnemonicParsing="false" text="Cancel" />
+		               </children>
+		               <padding>
+		                  <Insets left="20.0" />
+		               </padding>
+		            </HBox>
+		   	    </children>
+		   	 </GridPane>
+	   	 </center>
+   	 </BorderPane>
    </children>
 </AnchorPane>

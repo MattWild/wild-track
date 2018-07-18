@@ -1,43 +1,18 @@
 package application;
-	
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
+
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import application.database.AppDatabase;
 import application.database.CentralServicesDataController;
-import application.database.DataController;
 import application.database.MainDataController;
-import application.database.SQLDB;
-import application.entities.Entry;
 import application.object.ObjectLayer;
 import application.presentation.PresentationLayer;
-import application.presentation.logic.AddMetersDialogueController;
-import application.presentation.logic.AddNoteDialogueController;
-import application.presentation.logic.DeleteMetersDialogueController;
-import application.presentation.logic.RootLayoutController;
-import application.presentation.logic.TableController;
 import application.presentation.logic.TableController.TableType;
 
-import java.sql.*;
-
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 
 
 public class Main extends Application {
@@ -49,6 +24,7 @@ public class Main extends Application {
 	private MainDataController mainController;
 	private Map<Integer, CentralServicesDataController> environmentControllers;
 	private PresentationLayer presentationLayer;
+	private ObjectLayer objectLayer;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -120,9 +96,10 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		objectLayer = new ObjectLayer(this);
 		presentationLayer = new PresentationLayer(this);
-		
 		try {
+			for (TableType type : TableType.values()) objectLayer.loadTable(type);
 			presentationLayer.showMain(stage);
 		} catch (Exception e) {
 			errorHandle(e);
@@ -139,7 +116,7 @@ public class Main extends Application {
 			errorHandle(e);
 		}
 		
-		pushData();
+		//pushData();
 		for (Integer CRC : environmentControllers.keySet()) {
 			System.out.println("Closing connection to environment with CRC=" + CRC);
 			CentralServicesDataController controller = environmentControllers.get(CRC);
@@ -151,7 +128,7 @@ public class Main extends Application {
 		}
 	}
 	
-	public void pushData() {
+	/*public void pushData() {
 		for (Integer CRC : environmentControllers.keySet()) {
 			System.out.println("Pushing data to environment with CRC=" + CRC);
 			CentralServicesDataController controller = environmentControllers.get(CRC);
@@ -161,7 +138,7 @@ public class Main extends Application {
 				errorHandle(e);
 			}
 		}
-	}
+	}*/
 
 	public MainDataController getMainDBController() {
 		return mainController;
@@ -182,7 +159,6 @@ public class Main extends Application {
 	}
 
 	public ObjectLayer getObjectLayer() {
-		// TODO Auto-generated method stub
-		return null;
+		return objectLayer;
 	}
 }

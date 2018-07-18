@@ -1,18 +1,13 @@
 package application.database;
 
-import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import application.entities.Entry;
 import application.presentation.logic.TableController.TableType;
 
 public class CentralServicesDataController extends DataController {
@@ -35,6 +30,14 @@ public class CentralServicesDataController extends DataController {
 		case Routers:
 			stmt = db.generatePreparedSatement(Queries.getRoutersDataQuery(db.isSQL()));
 			break;
+		case Collectors:
+			break;
+		case HANDevices:
+			break;
+		case Sockets:
+			break;
+		default:
+			break;
 		}
 		ResultSet set = stmt.executeQuery();
 		List<List<Object>> newValues = new ArrayList<List<Object>>();
@@ -51,7 +54,7 @@ public class CentralServicesDataController extends DataController {
 		return newValues;
 	}
 	
-	public void updateData(TableType type, List<List<Object>> newValues) throws SQLException {
+	/*public void updateData(TableType type, List<List<Object>> newValues) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
@@ -76,15 +79,15 @@ public class CentralServicesDataController extends DataController {
 		} 
 		
 		stmt.executeBatch();
-	}
+	}*/
 
-	public void stageChange(Entry entry) {
+	/*public void stageChange(Entry entry) {
 		if (!stagedChanges.containsKey(entry.getType())) stagedChanges.put(entry.getType(), new ArrayList<List<Object>>());
 		
 		stagedChanges.get(entry.getType()).add(entry.getUpdateableValues());
-	}
+	}*/
 	
-	public void pushChanges() throws SQLException {
+	/*public void pushChanges() throws SQLException {
 		for (TableType type : stagedChanges.keySet()) {
 			updateData(type, stagedChanges.get(type));
 		}
@@ -115,5 +118,5 @@ public class CentralServicesDataController extends DataController {
 		} 
 		
 		stmt.executeBatch();
-	}
+	}*/
 }

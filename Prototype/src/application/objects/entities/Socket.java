@@ -1,32 +1,25 @@
-package application.entities;
+package application.objects.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import application.Main;
-import application.entities.Entry.FieldUpdateHandler;
 import application.presentation.logic.TableController.TableType;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.beans.property.SimpleStringProperty;
 
-public class Socket extends Entry {
+public class Socket implements Entry {
+	
+	private int id;
+	private SimpleStringProperty idProp;
+	private SimpleStringProperty form;
+	private SimpleStringProperty nload;
+	private SimpleStringProperty loc;
+	
+	private boolean changed;
 
-	public Socket(Main app) {
-		super(app);
-		children = new ArrayList<Node>();
-	}
-
-	@Override
-	public List<Object> getUpdateableValues() {
-		List<Object> result = new ArrayList<Object>();
+	public Socket(int id, Integer idNum, String formString, String nloadString, String locString) {
+		this.id = id;
 		
-		result.add(((Label) children.get(0)).getText());
-		result.add(((TextField) children.get(1)).getText());
-		result.add(((TextField) children.get(2)).getText());
-		result.add(((TextField) children.get(3)).getText());
-		
-		return result;
+		idProp = new SimpleStringProperty(idNum.toString());
+		form = new SimpleStringProperty(formString);
+		nload = new SimpleStringProperty(nloadString);
+		loc = new SimpleStringProperty(locString);
 	}
 
 	@Override
@@ -35,24 +28,70 @@ public class Socket extends Entry {
 	}
 
 	@Override
-	public int getCRC() {
-		return -1;
+	public int getId() {
+		return id;
 	}
 
-	public void init(int id, String idString, String formString, String nloadString, String locString) {
-		setId(id);
-		children.add(new Label(idString));
-		
-		TextField formField = new TextField(formString);
-		formField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(formField);
-		
-		TextField nloadField = new TextField(nloadString);
-		nloadField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(nloadField);
-				
-		TextField locField = new TextField(locString);
-		locField.setOnKeyPressed(new FieldUpdateHandler());
-		children.add(locField);
+	@Override
+	public SimpleStringProperty getFieldProperty(int i) {
+		switch (i) {
+		case 0:
+			return idProp;
+		case 1:
+			return form;
+		case 2:
+			return nload;
+		case 4:
+			return loc;
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public String getFilterValue(int i) {
+		switch (i) {
+		case 0:
+			return idProp.get();
+		case 1:
+			return form.get();
+		case 2:
+			return nload.get();
+		case 3:
+			return loc.get();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public void indicateChanged() {
+		changed = true;
+	}
+
+	@Override
+	public boolean isChanged() {
+		return changed;
+	}
+
+	public String getIdProp() {
+		return idProp.get();
+	}
+
+	public String getForm() {
+		return form.get();
+	}
+
+	public String getNLoad() {
+		return nload.get();
+	}
+
+	public String getLocation() {
+		return loc.get();
+	}
+
+	@Override
+	public boolean identifierNotNull() {
+		return idProp.get() != null;
 	}
 }

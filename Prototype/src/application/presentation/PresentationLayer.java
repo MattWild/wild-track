@@ -2,25 +2,17 @@ package application.presentation;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import application.Main;
-import application.entities.Entry;
-import application.presentation.logic.AddDeviceDialogueController;
-import application.presentation.logic.AddNoteDialogueController;
-import application.presentation.logic.DeleteDeviceDialogueController;
 import application.presentation.logic.RootLayoutController;
 import application.presentation.logic.TableController;
 import application.presentation.logic.TableController.TableType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PresentationLayer {
@@ -51,8 +43,8 @@ public class PresentationLayer {
 			
 			RootLayoutController controller = loader.getController();
 			controller.setMain(main);
-			//for (TableType type : TableType.values())
-				controller.setUpTable(TableType.Meters);
+			for (TableType type : TableType.values())
+				controller.setUpTable(type);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +65,7 @@ public class PresentationLayer {
 	
 
 
-	public void showAddNoteToDevice(Entry entry, TableType type) {
+	/*public void showAddNoteToDevice(Entry entry, TableType type) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			switch(type) {
@@ -200,6 +192,6 @@ public class PresentationLayer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 }
