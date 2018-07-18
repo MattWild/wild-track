@@ -5,13 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public abstract class AppDatabase {
+public abstract class DatabaseServer {
 	
 	protected String user;
 	protected String pass;
 	private Connection conn;
 	
-	public AppDatabase(String user, String pass) {
+	public DatabaseServer(String user, String pass) {
 		this.user = user;
 		this.pass = pass;
 	}

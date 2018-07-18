@@ -2,7 +2,7 @@ package application.database;
 
 import java.sql.SQLException;
 
-public class SQLDB extends AppDatabase {
+public class SQLDB extends DatabaseServer {
 	private static final String DRIVER_PATH = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	
 	private String address;

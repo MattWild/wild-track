@@ -1,9 +1,8 @@
 package application;
 
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import application.database.CentralServicesDataController;
 import application.database.MainDataController;
@@ -22,7 +21,7 @@ public class Main extends Application {
 	private static final String MAIN_PASS = "1Esc2ala!tions";
 	
 	private MainDataController mainController;
-	private Map<Integer, CentralServicesDataController> environmentControllers;
+	private List<CentralServicesDataController> environmentControllers;
 	private PresentationLayer presentationLayer;
 	private ObjectLayer objectLayer;
 	
@@ -45,9 +44,8 @@ public class Main extends Application {
 		} catch (SQLException e) {
 			errorHandle(e);
 		}
-		for (Integer CRC : environmentControllers.keySet()) {
-			System.out.println("Pulling data from environment with CRC=" + CRC);
-			CentralServicesDataController controller = environmentControllers.get(CRC);
+		for (CentralServicesDataController controller : environmentControllers) {
+			System.out.println("Pulling data from environment with CRC=");
 			try {
 				mainController.updateTableFromEnvironment(TableType.Meters, controller.retrieveData(TableType.Meters));
 				mainController.updateTableFromEnvironment(TableType.Routers, controller.retrieveData(TableType.Routers));
@@ -66,30 +64,31 @@ public class Main extends Application {
 			errorHandle(e);
 			System.exit(-1);
 		}
-		environmentControllers = new HashMap<Integer, CentralServicesDataController>();
+		environmentControllers = new ArrayList<CentralServicesDataController>();
 		
 		for (List<Object> params : environmentParams) {
 			try {
 				System.out.println("Setting up connection to environment at " + params.get(2));
 				CentralServicesDataController controller = new CentralServicesDataController();
-				if (((String) params.get(1)).compareTo("1") == 0) {
+				if (((String) params.get(0)).compareTo("1") == 0) {
 					controller.initSQLDB(
+							(String) params.get(1), 
 							(String) params.get(2), 
 							(String) params.get(3), 
-							(String) params.get(4), 
 							"CentralServices");
 				} else {
 					controller.initOracleDB(
+							(String) params.get(1), 
 							(String) params.get(2), 
 							(String) params.get(3), 
 							(String) params.get(4), 
-							(String) params.get(5), 
-							(String) params.get(6),
-							(String) params.get(7));
+							(String) params.get(5),
+							(String) params.get(6));
 				}
-				environmentControllers.put(Integer.parseInt((String) params.get(0)),controller);
+				environmentControllers.add(controller);
 			} catch (Exception e) {
-				System.err.println("Could not connect to Server at ip: " + params.get(2) + "\n Error Message:" + e.getMessage());
+				System.err.println("Could not connect to Server at ip: " + params.get(1) + "\n Error Message:" + e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
@@ -117,9 +116,8 @@ public class Main extends Application {
 		}
 		
 		//pushData();
-		for (Integer CRC : environmentControllers.keySet()) {
-			System.out.println("Closing connection to environment with CRC=" + CRC);
-			CentralServicesDataController controller = environmentControllers.get(CRC);
+		for (CentralServicesDataController controller : environmentControllers) {
+			System.out.println("Closing connection to environment with CRC=");
 			try {
 				controller.close();
 			} catch (SQLException e) {

@@ -259,7 +259,6 @@ public class MainDataController extends DataController {
 			record.add(set.getString(5));
 			record.add(set.getString(6));
 			record.add(set.getString(7));
-			record.add(set.getString(8));
 			results.add(record);
 		}
 		

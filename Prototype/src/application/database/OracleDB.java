@@ -2,7 +2,7 @@ package application.database;
 
 import java.sql.SQLException;
 
-public class OracleDB extends AppDatabase {
+public class OracleDB extends DatabaseServer {
 	private static final String DRIVER_PATH = "oracle.jdbc.driver.OracleDriver";
 	private String address;
 	private String port;

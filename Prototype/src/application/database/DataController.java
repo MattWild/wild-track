@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public abstract class DataController {
 	
-	protected AppDatabase db; 
+	protected DatabaseServer db; 
 	
 	public void initSQLDB(String ipAddress, String user, String pass, String dbName) throws SQLException, ClassNotFoundException {
 		db = new SQLDB(ipAddress, user, pass, dbName);
