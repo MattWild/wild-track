@@ -5,3 +5,70 @@
     -fx-pref-height: 0;
     -fx-min-height: 0;
 }
+
+
+.basic_label_holder {
+	-fx-border-color: black;
+	-fx-background-color: white;
+	-fx-pref-height: 20;
+}
+
+.server_label_holder {
+	-fx-border-color: black;
+	-fx-background-color: bbffbb;
+	-fx-pref-height: 30;
+}
+
+.component_label_holder {
+	-fx-border-color: black;
+	-fx-background-color: yellow;
+	-fx-pref-height: 25;
+}
+
+.environment_label_holder {
+	-fx-border-color: black;
+	-fx-background-color: lightblue;
+	-fx-pref-height: 50;
+}
+
+.basic_label_holder TextField {
+	-fx-min-height: 20;
+	-fx-pref-height: 20;
+	-fx-max-height: 20;
+	-fx-background-insets: 0 0 0 -5;
+	-fx-padding: 0 0 0 -1;	
+}
+
+.basic_label_holder ChoiceBox {
+	-fx-min-height: 20;
+	-fx-pref-height: 20;
+	-fx-max-height: 20;
+	-fx-background-insets: 0 -5 0 0;
+	-fx-padding: 0 -5 0 0;	
+}
+
+.server_label_holder Label {
+	-fx-font-size: 18;
+}
+
+.component_label_holder Label {
+	-fx-font-size: 14;
+}
+
+.environment_label_holder Label {
+	-fx-font-size: 30;
+}
+
+.center_label_holder {
+	-fx-alignment: CENTER;
+}
+
+.right_label_holder {
+	-fx-alignment: CENTER_RIGHT;
+	-fx-padding: 0 5 0 0;
+}
+
+.left_label_holder {
+	-fx-alignment: CENTER_LEFT;
+	-fx-padding: 0 0 0 5;
+}

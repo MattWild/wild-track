@@ -7,25 +7,37 @@ import java.util.List;
 import java.util.Map;
 
 import application.Main;
+import application.database.CentralServicesDataController;
+import application.database.DataController;
 import application.objects.entities.Collector;
+import application.objects.entities.CollectorComponent;
+import application.objects.entities.Component;
+import application.objects.entities.Component.ComponentType;
 import application.objects.entities.Entry;
+import application.objects.entities.Environment;
 import application.objects.entities.HANDevice;
 import application.objects.entities.Meter;
 import application.objects.entities.Router;
+import application.objects.entities.Server;
 import application.objects.entities.Socket;
-import application.presentation.logic.TableController.TableType;
+import application.presentation.logic.DeviceGridController.TableType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 public class ObjectLayer {
 	
 	private Map<TableType, ObservableList<Entry>> entries;
 	private Map<TableType, List<Entry>> deleteList;
+	private ObservableList<Environment> environments;
+	private ObservableMap<Integer, Server> servers;
 	private Main main;
 	
 	public ObjectLayer(Main main) {
 		this.main = main;
 		entries = new HashMap<TableType, ObservableList<Entry>>();
+		environments = FXCollections.observableArrayList();
+		servers = FXCollections.observableHashMap();
 		for (TableType type : TableType.values()) {
 			ObservableList<Entry> list = FXCollections.observableArrayList();
 			entries.put(type, list);
@@ -87,6 +99,131 @@ public class ObjectLayer {
 				break;
 			}
 		}
+	}
+
+	public void loadEnvironments() {
+		environments.clear();
+		
+		try {
+			List<List<Object>> values = main.getMainDBController().getEnvironmentsData();
+			
+			for (List<Object> record : values) {
+				Environment environment = new Environment((Integer) record.get(0), (String) record.get(1));
+				if (record.get(2) != null) environment.setCollectorId((Integer) record.get(2));
+				
+				List<List<Object>> componentDetails = main.getMainDBController().getComponentsByEnvironment(environment.getId());
+				
+				for(List<Object> componentRecord : componentDetails) {
+					ComponentType type = null;
+					switch (((Integer) componentRecord.get(1)).intValue()) {
+					case 1:
+						type = ComponentType.ABNT;
+						break;
+					case 2:
+						type = ComponentType.ANSI;
+						break;
+					case 3:
+						type = ComponentType.CAPABILTYSERVICES;
+						break;
+					case 4:
+						type = ComponentType.CENTRALSERVICES;
+						break;
+					case 5:
+						type = ComponentType.CM;
+						break;
+					case 6:
+						type = ComponentType.COMMANDCENTER;
+						break;
+					case 7:
+						type = ComponentType.GSIS;
+						break;
+					case 8:
+						type = ComponentType.M2M;
+						break;
+					case 9:
+						type = ComponentType.NMS;
+						break;
+					case 10:
+						type = ComponentType.PANA;
+						break;
+					case 11:
+						type = ComponentType.SBS;
+						break;
+					case 12:
+						type = ComponentType.COLLECTOR;
+						break;
+					}
+					
+					Component component = new Component(type, (Integer) componentRecord.get(0));
+					component.setServer(getServer((Integer) componentRecord.get(2)));
+					component.setVersion((String) componentRecord.get(3));
+					component.setUser((String) componentRecord.get(4));
+					component.setPass((String) componentRecord.get(5));
+					
+					environment.addComponent(component);
+				}
+				
+				environments.add(environment);
+			}
+		} catch (SQLException e) {
+			main.errorHandle(e);
+		}
+	}
+		
+	public Server getServer(int serverId) {
+		try {
+			if (servers.get(serverId) == null) {
+				Server server = new Server(serverId);
+				loadServer(server);
+				servers.put(serverId, server);
+			}
+			
+			return servers.get(serverId);
+		} catch (SQLException e) {
+			main.errorHandle(e);
+			return null;
+		}
+	}
+	
+	public void loadCollectorComponent(CollectorComponent collectorComponent) {
+		for (Entry entry : entries.get(TableType.Collectors)) {
+			Collector collector = (Collector) entry;
+			
+			if (collectorComponent.getId() == collector.getId()) collectorComponent.setCollector(collector);
+		}
+	}
+
+	public void loadServer(Server server) throws SQLException {
+		List<Object> values = main.getMainDBController().getServerDetails(server.getId());
+		
+		server.setName((String) values.get(0));
+		server.setIp((String) values.get(1));
+		server.setFqdn((String) values.get(2));
+		server.setType((String) values.get(3));
+		if (values.get(4) != null && (Boolean) values.get(4)) {
+			server.setHasDB(true);
+			server.setDBType((String) values.get(5));
+			if (values.get(6) != null && (Boolean) values.get(6)) {
+				server.setIsSQL(true);
+			} else {
+				server.setIsSQL(false);
+				
+				server.setSysUser((String) values.get(7));
+				server.setSysPass((String) values.get(8));
+				server.setPort((Integer) values.get(9));
+				server.setSID((String) values.get(10));
+				
+				if (values.get(11) != null && (Boolean) values.get(11))
+					server.indicateSID();
+				else
+					server.indicateServiceName();
+			}
+		} else {
+			server.setHasDB(false);
+		}
+		
+
+		servers.put(server.getId(), server);
 	}
 
 	public ObservableList<Entry> getEntries(TableType type) {
@@ -231,5 +368,132 @@ public class ObjectLayer {
 		/*for (int crc : externalMap.keySet()) {
 			main.getEnvironmentController(crc).updateData(type, externalMap.get(crc));
 		}*/
+	}
+
+	public ObservableList<Environment> getEnvironments() {
+		return environments;
+	}
+
+	public void saveEnvironment(Environment environment) throws SQLException {
+		List<Object> record = new ArrayList<Object>();
+		
+		record.add(environment.getId());
+		record.add(environment.getName());
+		record.add(environment.getCollectorId());
+		
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		records.add(record);
+		main.getMainDBController().updateEnvironmentFromApp(records);
+		
+		saveServers(environment);
+		saveComponents(environment);
+	}
+	
+	public void saveEnvironments() throws SQLException {
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		
+		for(Environment environment : environments) {
+			List<Object> record = new ArrayList<Object>();
+			
+			record.add(environment.getId());
+			record.add(environment.getName());
+			record.add(environment.getCollectorId());
+			
+			records.add(record);
+		}
+		main.getMainDBController().updateEnvironmentFromApp(records);
+	}
+	
+	public void saveServer(Server server) throws SQLException {
+		List<Object> record = new ArrayList<Object>();
+		
+		record.add(server.getId());
+		record.add(server.getIp());
+		record.add(server.getFqdn());
+		record.add(server.getType());
+		record.add(server.getHasDB());
+		record.add(server.getDBType());
+		record.add(server.getIsSQL());
+		record.add(server.getSysUser());
+		record.add(server.getSysPass());
+		record.add(server.getPort());
+		record.add(server.getSID());
+		record.add(server.usesSID());
+		
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		records.add(record);
+		main.getMainDBController().updateServerFromApp(records);
+	}
+	
+	public void saveServers(Environment environment) throws SQLException {
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		
+		for(int serverId : environment.getServerIds()) {
+			Server server = servers.get(serverId);
+			List<Object> record = new ArrayList<Object>();
+			
+			record.add(server.getId());
+			record.add(server.getIp());
+			record.add(server.getFqdn());
+			record.add(server.getType());
+			record.add(server.getHasDB());
+			record.add(server.getDBType());
+			record.add(server.getIsSQL());
+			record.add(server.getSysUser());
+			record.add(server.getSysPass());
+			record.add(server.getPort());
+			record.add(server.getSID());
+			record.add(server.usesSID());
+			
+			records.add(record);
+		}
+		main.getMainDBController().updateServerFromApp(records);
+	}
+	
+	public void saveComponent(Component component) throws SQLException {
+		List<Object> record = new ArrayList<Object>();
+		
+		record.add(component.getId());
+		if (component.getType() == ComponentType.CENTRALSERVICES)
+			record.add(null);
+		else
+			record.add(component.getVersion());
+		
+		if (component.getType() == ComponentType.GSIS || component.getType() == ComponentType.PANA || component.getType() == ComponentType.M2M) {
+			record.add(null);
+			record.add(null);
+		} else {
+			record.add(component.getUser());
+			record.add(component.getPass());
+		}
+		
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		records.add(record);
+		main.getMainDBController().updateComponentFromApp(records);
+	}
+	
+	public void saveComponents(Environment environment) throws SQLException {
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		
+		for(Component component : environment.getAllComponents()) {
+			List<Object> record = new ArrayList<Object>();
+			
+			record.add(component.getId());
+			if (component.getType() == ComponentType.CENTRALSERVICES)
+				record.add(null);
+			else
+				record.add(component.getVersion());
+			
+			if (component.getType() == ComponentType.GSIS || component.getType() == ComponentType.PANA || component.getType() == ComponentType.M2M) {
+				record.add(null);
+				record.add(null);
+			} else {
+				record.add(component.getUser());
+				record.add(component.getPass());
+			}
+			
+			records.add(record);
+		}
+		main.getMainDBController().updateComponentFromApp(records);
 	}
 }

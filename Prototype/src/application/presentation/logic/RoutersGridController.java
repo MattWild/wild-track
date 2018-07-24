@@ -9,7 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 
-public class RoutersGridController extends TableController {
+public class RoutersGridController extends DeviceGridController {
 	
 	
 	@FXML
@@ -102,7 +102,7 @@ public class RoutersGridController extends TableController {
 	}
 	
 	public RoutersGridController() {
-		super(TableController.TableType.Routers);
+		super(DeviceGridController.TableType.Routers);
 	}
 	
 

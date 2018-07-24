@@ -8,7 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 
-public class MetersGridController extends TableController{
+public class MetersGridController extends DeviceGridController{
 
 	@FXML
 	private GridPane metersGrid;
@@ -115,7 +115,7 @@ public class MetersGridController extends TableController{
 	
 	
 	public MetersGridController() {
-		super(TableController.TableType.Meters);
+		super(DeviceGridController.TableType.Meters);
 	}
 	
 

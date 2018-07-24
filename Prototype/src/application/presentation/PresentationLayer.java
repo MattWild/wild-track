@@ -6,8 +6,8 @@ import java.util.Map;
 
 import application.Main;
 import application.presentation.logic.RootLayoutController;
-import application.presentation.logic.TableController;
-import application.presentation.logic.TableController.TableType;
+import application.presentation.logic.DeviceGridController;
+import application.presentation.logic.DeviceGridController.TableType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -19,12 +19,12 @@ public class PresentationLayer {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private Map<TableType,TableController> grids;
+	private Map<TableType,DeviceGridController> grids;
 	private Main main;
 
 	public PresentationLayer(Main main) {
 		this.main = main;
-		grids = new HashMap<TableType, TableController>();
+		grids = new HashMap<TableType, DeviceGridController>();
 	}
 
 	public void showMain(Stage stage) {
@@ -43,6 +43,7 @@ public class PresentationLayer {
 			
 			RootLayoutController controller = loader.getController();
 			controller.setMain(main);
+			controller.setUpEnvironmentTable();
 			for (TableType type : TableType.values())
 				controller.setUpTable(type);
 		} catch (IOException e) {
@@ -50,7 +51,7 @@ public class PresentationLayer {
 		}
 	}
 	
-	public void setGrid(TableType type, TableController controller) {
+	public void setGrid(TableType type, DeviceGridController controller) {
 		grids.put(type, controller);
 	}
 	

@@ -9,7 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 
-public class HANGridController extends TableController {
+public class HANGridController extends DeviceGridController {
 	
 	@FXML
 	private GridPane hanGrid;
@@ -94,7 +94,7 @@ public class HANGridController extends TableController {
 	}
 	
 	public HANGridController() {
-		super(TableController.TableType.HANDevices);
+		super(DeviceGridController.TableType.HANDevices);
 	}
 	
 

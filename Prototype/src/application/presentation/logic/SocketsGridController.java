@@ -9,7 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 
-public class SocketsGridController extends TableController {
+public class SocketsGridController extends DeviceGridController {
 	
 	@FXML
 	private GridPane socketsGrid;
@@ -84,7 +84,7 @@ public class SocketsGridController extends TableController {
 	}
 	
 	public SocketsGridController() {
-		super(TableController.TableType.Sockets);
+		super(DeviceGridController.TableType.Sockets);
 	}
 	
 

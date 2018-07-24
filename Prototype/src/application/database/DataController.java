@@ -10,7 +10,7 @@ public abstract class DataController {
 		db = new SQLDB(ipAddress, user, pass, dbName);
 	}
 	
-	public void initOracleDB(String ipAddress, String user, String pass, String port, String sid, String useSID) throws SQLException, ClassNotFoundException {
+	public void initOracleDB(String ipAddress, String user, String pass, Integer port, String sid, Boolean useSID) throws SQLException, ClassNotFoundException {
 		db = new OracleDB(ipAddress, user, pass, port, sid, useSID);
 	}
 	

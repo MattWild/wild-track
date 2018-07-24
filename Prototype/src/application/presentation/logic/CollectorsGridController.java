@@ -9,7 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 
-public class CollectorsGridController extends TableController{
+public class CollectorsGridController extends DeviceGridController{
 	
 	@FXML 
 	private GridPane collectorsGrid;
@@ -109,7 +109,7 @@ public class CollectorsGridController extends TableController{
 	
 	
 	public CollectorsGridController() {
-		super(TableController.TableType.Collectors);
+		super(DeviceGridController.TableType.Collectors);
 	}
 	
 

@@ -5,17 +5,17 @@ import java.sql.SQLException;
 public class OracleDB extends DatabaseServer {
 	private static final String DRIVER_PATH = "oracle.jdbc.driver.OracleDriver";
 	private String address;
-	private String port;
+	private Integer port;
 	private String sid;
 	private boolean useSID;
 	
-	public OracleDB(String address, String user, String pass, String port, String sid, String useSID) throws SQLException, ClassNotFoundException {
+	public OracleDB(String address, String user, String pass, Integer port, String sid, Boolean useSID) throws SQLException, ClassNotFoundException {
 		super(user, pass);
 		this.address = address;
 		this.pass = pass;
 		this.port = port;
 		this.sid = sid;
-		this.useSID = (useSID.compareTo("1")==0)? true : false;
+		this.useSID = useSID;
 		
 		
 		this.connect();

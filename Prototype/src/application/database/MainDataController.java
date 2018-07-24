@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import application.presentation.logic.TableController.TableType;
+import application.objects.entities.Component.ComponentType;
+import application.objects.entities.Server;
+import application.presentation.logic.DeviceGridController.TableType;
+import javafx.scene.layout.Region;
 
 public class MainDataController extends DataController {
 	
@@ -250,20 +253,36 @@ public class MainDataController extends DataController {
 		
 		ArrayList<List<Object>> results = new ArrayList<List<Object>>();
 		
+		int columnNum = set.getMetaData().getColumnCount();
 		while (set.next()) {
-			List<Object> record = new ArrayList<Object>();
-			record.add(set.getString(1));
-			record.add(set.getString(2));
-			record.add(set.getString(3));
-			record.add(set.getString(4));
-			record.add(set.getString(5));
-			record.add(set.getString(6));
-			record.add(set.getString(7));
-			results.add(record);
+			List<Object> fields = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				fields.add(set.getObject(j + 1));
+			}
+			results.add(fields);
 		}
 		
 		return results;
 	}
+	
+	public List<List<Object>> getEnvironmentsData() throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC EnvironmentDetails");
+		ResultSet set = stmt.executeQuery();
+		
+		ArrayList<List<Object>> results = new ArrayList<List<Object>>();
+		
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> fields = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				fields.add(set.getObject(j + 1));
+			}
+			results.add(fields);
+		}
+		
+		return results;
+	}
+
 	
 	public int getEnvironmentID(int crc) throws SQLException {
 		PreparedStatement stmt = db.generatePreparedSatement(Queries.environmentIDfromCRC(true));
@@ -280,12 +299,12 @@ public class MainDataController extends DataController {
 			
 		stmt.executeUpdate();
 	}
-	
+	Region regio;
 	public void add(TableType type, List<List<Object>> values) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
-			stmt = db.generatePreparedSatement("EXEC AddMeter ?,?,?");
+			stmt = db.generatePreparedSatement("EXEC AddMeter ?,?,?,?");
 			break;
 			
 		case Collectors:
@@ -293,7 +312,7 @@ public class MainDataController extends DataController {
 			break;
 			
 		case Routers:
-			stmt = db.generatePreparedSatement("EXEC AddRouter ?,?");
+			stmt = db.generatePreparedSatement("EXEC AddRouter ?,?,?");
 			break;
 			
 		case HANDevices:
@@ -350,23 +369,125 @@ public class MainDataController extends DataController {
 		stmt.executeBatch();
 	}
 	
-	public void addNoteTo(TableType type, int id, String note) throws SQLException {
+	public List<List<Object>> getComponentsByEnvironment(int environmentId) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetComponentsByEnvironment ?");
+		stmt.setInt(1, environmentId);
+		
+		ResultSet set = stmt.executeQuery();
+
+		List<List<Object>> results = new ArrayList<List<Object>>();
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> record = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				record.add(set.getObject(j + 1));
+			}
+			results.add(record);
+		}
+		
+		return results;
+	}
+	
+	public void saveComponent(ComponentType type, List<Object> values) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
-		case Meters:
-			stmt = db.generatePreparedSatement("EXEC AddNoteMeter ?,?");
+		case ABNT:
+			stmt = db.generatePreparedSatement("EXEC UpdateABNTFromEnvironment ?,?,?,?");
 			break;
-			
-		case Routers:
-			stmt = db.generatePreparedSatement("EXEC AddNoteRouter ?,?");
+		case ANSI:
+			stmt = db.generatePreparedSatement("EXEC UpdateANSIFromEnvironment ?,?,?,?");
 			break;
-			
+		case CM:
+			stmt = db.generatePreparedSatement("EXEC UpdateCMFromEnvironment ?,?,?,?");
+			break;
+		case CAPABILTYSERVICES:
+			stmt = db.generatePreparedSatement("EXEC UpdateCapabilityServicesFromEnvironment ?,?,?,?");
+			break;
+		case CENTRALSERVICES:
+			stmt = db.generatePreparedSatement("EXEC UpdateCentralServicesFromEnvironment ?,?,?,?");
+			break;
+		case COLLECTOR:
+			break;
+		case COMMANDCENTER:
+			stmt = db.generatePreparedSatement("EXEC UpdateCommandCenterFromEnvironment ?,?,?,?");
+			break;
+		case GSIS:
+			break;
+		case M2M:
+			break;
+		case NMS:
+			break;
+		case PANA:
+			break;
+		case SBS:
+			break;
 		default:
 			break;
+		
 		}
-		stmt.setInt(1, id);
-		stmt.setString(2, note);
-		stmt.executeUpdate();
+		
 	}
+
+	public List<Object> getServerDetails(int serverId) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC ServerDetails ?");
+		
+		stmt.setInt(1, serverId);
+		
+		ResultSet set = stmt.executeQuery();
+
+		List<Object> details = new ArrayList<Object>();
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			for (int j = 0; j < columnNum; j++) {
+				details.add(set.getObject(j + 1));
+			}
+		}
+		
+		return details;
+	}
+
+	public void updateEnvironmentFromApp(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateEnvironmentFromApp ?,?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+	
+	public void updateComponentFromApp(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateComponentFromApp ?,?,?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+	
+	public void updateServerFromApp(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateServerFromApp ?,?,?,?,?,?,?,?,?,?,?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				System.out.println(record.get(i));
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+
 
 }

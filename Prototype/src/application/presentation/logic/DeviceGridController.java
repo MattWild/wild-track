@@ -27,7 +27,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-public abstract class TableController {
+public abstract class DeviceGridController {
 	
 	public enum TableType {
 		Meters,
@@ -51,7 +51,7 @@ public abstract class TableController {
 	private FilteredList<Entry> entries;
 	private List<Set<String>> filterSettings;
 	
-	public TableController(TableType type) {
+	public DeviceGridController(TableType type) {
 		this.type = type;
 		filters = new ArrayList<MenuButton>();
 		columns = new ArrayList<TableColumn<Entry, String>>();
@@ -377,6 +377,7 @@ public abstract class TableController {
                 setText(null);
                 setGraphic(textField);
                 textField.selectAll();
+                textField.requestFocus();
             }
         }
 

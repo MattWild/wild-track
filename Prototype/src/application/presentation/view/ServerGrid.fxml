@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<GridPane fx:id="grid" stylesheets="@../../application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.presentation.logic.ServerGridController">
+   <children>
+      <HBox GridPane.rowIndex="1">
+         <children>
+            <Label text="IP Address" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </HBox>
+      <HBox GridPane.rowIndex="2">
+         <children>
+            <Label text="FQDN" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </HBox>
+      <HBox GridPane.rowIndex="5">
+         <children>
+            <Label text="DB Type" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </HBox>
+      <StackPane onMouseClicked="#ipLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <Label fx:id="ipLabel" />
+            <TextField fx:id="ipField" onKeyPressed="#fieldEnterPressed" visible="false">
+            </TextField>
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <StackPane onMouseClicked="#dbTypeLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+         <children>
+            <Label fx:id="dbTypeLabel" />
+            <TextField fx:id="dbTypeField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <StackPane onMouseClicked="#fqdnLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <Label fx:id="fqdnLabel" />
+            <TextField fx:id="fqdnField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <VBox style="-fx-border-color: black; -fx-border-insets: -5 0 -5 0;" styleClass="left_label_holder" GridPane.columnSpan="2" GridPane.rowIndex="4">
+         <children>
+            <RadioButton fx:id="hasDBButton" mnemonicParsing="false" text="Has database?" />
+         </children>
+         <GridPane.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </GridPane.margin>
+      </VBox>
+      <HBox GridPane.rowIndex="3">
+         <children>
+            <Label text="Type" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </HBox>
+      <StackPane onMouseClicked="#typeLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <children>
+            <Label fx:id="typeLabel" />
+            <TextField fx:id="typeField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <HBox GridPane.rowIndex="6">
+         <children>
+            <Label text="Sys USER" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </HBox>
+      <HBox GridPane.rowIndex="7">
+         <children>
+            <Label text="Sys PASS" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </HBox>
+      <HBox GridPane.rowIndex="8">
+         <children>
+            <Label text="Port" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </HBox>
+      <StackPane onMouseClicked="#sysUserLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <children>
+            <Label fx:id="sysUserLabel" />
+            <TextField fx:id="sysUserField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <StackPane onMouseClicked="#sysPassLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+         <children>
+            <Label fx:id="sysPassLabel" />
+            <TextField fx:id="sysPassField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <StackPane onMouseClicked="#portLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+         <children>
+            <Label fx:id="portLabel" />
+            <TextField fx:id="portField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <StackPane onMouseClicked="#sidLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+         <children>
+            <Label fx:id="sidLabel" />
+            <TextField fx:id="sidField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="left_label_holder" />
+         </styleClass>
+      </StackPane>
+      <StackPane onMouseClicked="#sidCatPassLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="9">
+         <children>
+            <Label fx:id="sidCatLabel" text="SID" />
+            <ChoiceBox fx:id="sidCatChoiceBox" prefWidth="150.0" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="basic_label_holder" />
+            <String fx:value="right_label_holder" />
+         </styleClass>
+      </StackPane>
+      <StackPane onMouseClicked="#nameLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2">
+         <children>
+            <Label fx:id="nameLabel" />
+            <TextField fx:id="nameField" onKeyPressed="#fieldEnterPressed" visible="false" />
+         </children>
+         <styleClass>
+            <String fx:value="server_label_holder" />
+            <String fx:value="center_label_holder" />
+         </styleClass>
+      </StackPane>
+      <VBox fx:id="componentsBox" maxHeight="1.7976931348623157E308" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+   </children>
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="80.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="175.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints vgrow="SOMETIMES" />
+   </rowConstraints>
+</GridPane>

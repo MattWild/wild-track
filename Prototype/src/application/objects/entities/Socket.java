@@ -1,6 +1,6 @@
 package application.objects.entities;
 
-import application.presentation.logic.TableController.TableType;
+import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Socket implements Entry {

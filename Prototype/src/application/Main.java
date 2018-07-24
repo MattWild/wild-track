@@ -8,7 +8,7 @@ import application.database.CentralServicesDataController;
 import application.database.MainDataController;
 import application.object.ObjectLayer;
 import application.presentation.PresentationLayer;
-import application.presentation.logic.TableController.TableType;
+import application.presentation.logic.DeviceGridController.TableType;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -33,7 +33,8 @@ public class Main extends Application {
 	public void init() throws Exception {
 		System.out.println("Setting up connection to main database.");
 		mainController = new MainDataController(MAIN_ADDRESS, MAIN_USER, MAIN_PASS, MAIN_DBNAME);
-		environmentsInit();
+		environmentControllers = new ArrayList<CentralServicesDataController>();
+		//environmentsInit();
 	}
 	
 	public void pullData() {
@@ -64,13 +65,12 @@ public class Main extends Application {
 			errorHandle(e);
 			System.exit(-1);
 		}
-		environmentControllers = new ArrayList<CentralServicesDataController>();
 		
 		for (List<Object> params : environmentParams) {
 			try {
-				System.out.println("Setting up connection to environment at " + params.get(2));
+				System.out.println("Setting up connection to environment at " + params.get(1));
 				CentralServicesDataController controller = new CentralServicesDataController();
-				if (((String) params.get(0)).compareTo("1") == 0) {
+				if (((Boolean) params.get(0))) {
 					controller.initSQLDB(
 							(String) params.get(1), 
 							(String) params.get(2), 
@@ -81,9 +81,9 @@ public class Main extends Application {
 							(String) params.get(1), 
 							(String) params.get(2), 
 							(String) params.get(3), 
-							(String) params.get(4), 
+							(Integer) params.get(4), 
 							(String) params.get(5),
-							(String) params.get(6));
+							(Boolean) params.get(6));
 				}
 				environmentControllers.add(controller);
 			} catch (Exception e) {
@@ -98,6 +98,7 @@ public class Main extends Application {
 		objectLayer = new ObjectLayer(this);
 		presentationLayer = new PresentationLayer(this);
 		try {
+			objectLayer.loadEnvironments();
 			for (TableType type : TableType.values()) objectLayer.loadTable(type);
 			presentationLayer.showMain(stage);
 		} catch (Exception e) {

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import application.presentation.logic.TableController.TableType;
+import application.presentation.logic.DeviceGridController.TableType;
 
 public class CentralServicesDataController extends DataController {
 	
