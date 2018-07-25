@@ -1,14 +1,20 @@
 package application.presentation.logic;
 
+import java.io.IOException;
 import java.util.List;
 
+import application.Main;
+import application.objects.entities.Component;
+import application.objects.entities.Server;
 import javafx.beans.property.BooleanPropertyBase;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringPropertyBase;
+import javafx.collections.ListChangeListener.Change;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Control;
@@ -55,6 +61,9 @@ public class ServerGridController {
 	
 	@FXML
 	private RadioButton hasDBButton;
+	
+	@FXML
+	private RadioButton isSQLButton;
 	
 	@FXML
 	private Label dbTypeLabel;
@@ -115,18 +124,12 @@ public class ServerGridController {
 		
 		hasDBButton.setSelected(true);
 		hasDBButton.selectedProperty().addListener((arg, oldValue, newValue) -> {
-			for (Node child : grid.getChildren()) {
-				if (GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) >= 5 && GridPane.getRowIndex(child) <= 9)
-					child.setVisible((newValue)? true : false);
-			}
-			
-			for(int i = 5; i <= 9; i++) {
-				if (newValue) {
-					grid.getRowConstraints().get(i).setMaxHeight(Control.USE_COMPUTED_SIZE);
-				} else {
-					grid.getRowConstraints().get(i).setMaxHeight(0);
-				}
-			}
+			processShowAdd(newValue, isSQLButton.isSelected());
+		});
+		
+		isSQLButton.setSelected(false);
+		isSQLButton.selectedProperty().addListener((arg, oldValue, newValue) -> {
+			processShowAdd(hasDBButton.isSelected(), newValue);
 		});
 		
 		dbTypeField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
@@ -156,54 +159,89 @@ public class ServerGridController {
 		});
 	}
 	
-	public void initBindings(SimpleStringProperty nameProp, 
-			SimpleStringProperty ipProp,
-			SimpleStringProperty fqdnProp, 
-			SimpleStringProperty typeProp, 
-			SimpleBooleanProperty hasDBProp, 
-			SimpleStringProperty dbTypeProp, 
-			SimpleStringProperty sysUserProp, 
-			SimpleStringProperty sysPassProp, 
-			SimpleIntegerProperty portProp, 
-			SimpleBooleanProperty useSidProp,
-			SimpleStringProperty sidProp) {
+	private Server server;
+
+	private Main main;
+	
+	private void processShowAdd(boolean hasDbValue, boolean isSQLValue) {
+		isSQLButton.setVisible(hasDbValue);
 		
-		nameField.setText(nameProp.get());
-		ipField.setText(ipProp.get());
-		fqdnField.setText(fqdnProp.get());
-		typeField.setText(typeProp.get());
-		hasDBButton.setSelected(hasDBProp.get());
-		dbTypeField.setText(dbTypeProp.get());
-		sysUserField.setText(sysUserProp.get());
-		sysPassField.setText(sysPassProp.get());
-		portField.setText(Integer.toString(portProp.get()));
-		sidCatChoiceBox.getSelectionModel().select((useSidProp.get())? 1 : 0);
-		sidField.setText(sidProp.get());
+		for (Node child : grid.getChildren()) {
+			if (GridPane.getRowIndex(child) != null) {
+				if (GridPane.getRowIndex(child) == 5) {
+					child.setVisible(hasDbValue);
+				} else if (GridPane.getRowIndex(child) >= 6 && GridPane.getRowIndex(child) <= 9) {
+					child.setVisible(hasDbValue && !isSQLValue);
+				}
+			}
+		}
 		
-		nameProp.bindBidirectional(nameField.textProperty());
-		ipProp.bindBidirectional(ipField.textProperty());
-		fqdnProp.bindBidirectional(fqdnField.textProperty());
-		typeProp.bindBidirectional(typeField.textProperty());
-		hasDBProp.bindBidirectional(hasDBButton.selectedProperty());
-		dbTypeProp.bindBidirectional(dbTypeField.textProperty());
-		sysUserProp.bindBidirectional(sysUserField.textProperty());
-		sysPassProp.bindBidirectional(sysPassField.textProperty());
-		portField.textProperty().bindBidirectional(portProp, new NumberStringConverter());
+		if (hasDbValue) {
+			grid.getRowConstraints().get(5).setMaxHeight(Control.USE_COMPUTED_SIZE);
+		} else {
+			grid.getRowConstraints().get(5).setMaxHeight(0);
+		}
+		
+		for(int i = 6; i <= 9; i++) {
+			if (hasDbValue && !isSQLValue) {
+				grid.getRowConstraints().get(i).setMaxHeight(Control.USE_COMPUTED_SIZE);
+			} else {
+				grid.getRowConstraints().get(i).setMaxHeight(0);
+			}
+		}
+	}
+	
+	public void setMain(Main main) {
+		this.main = main;
+	}
+	
+	public void setServer(Server server) {
+		this.server = server;
+	}
+	
+	public Server getServer() {
+		return server;
+	}
+	
+	public void initBindings() {
+		nameField.setText(server.name().get());
+		ipField.setText(server.ip().get());
+		fqdnField.setText(server.fqdn().get());
+		typeField.setText(server.type().get());
+		hasDBButton.setSelected(server.hasDB().get());
+		dbTypeField.setText(server.dbType().get());
+		isSQLButton.setSelected(server.isSQL().get());
+		sysUserField.setText(server.sysUser().get());
+		sysPassField.setText(server.sysPass().get());
+		portField.setText(Integer.toString(server.port().get()));
+		sidCatChoiceBox.getSelectionModel().select((server.usesSid().get())? 1 : 0);
+		sidField.setText(server.sid().get());
+		
+		server.name().bindBidirectional(nameField.textProperty());
+		server.ip().bindBidirectional(ipField.textProperty());
+		server.fqdn().bindBidirectional(fqdnField.textProperty());
+		server.type().bindBidirectional(typeField.textProperty());
+		server.hasDB().bindBidirectional(hasDBButton.selectedProperty());
+		server.dbType().bindBidirectional(dbTypeField.textProperty());
+		server.isSQL().bindBidirectional(isSQLButton.selectedProperty());
+		server.sysUser().bindBidirectional(sysUserField.textProperty());
+		server.sysPass().bindBidirectional(sysPassField.textProperty());
+		portField.textProperty().bindBidirectional(server.port(), new NumberStringConverter());
 		sidCatChoiceBox.getSelectionModel().selectedIndexProperty().addListener((arg, oldValue, newValue) -> {
 			if (newValue.intValue() == 1) 
-				useSidProp.set(true);
+				server.indicateServiceName();
 			else 
-				useSidProp.set(false);
+				server.indicateSID();
 		});
 		
-		useSidProp.addListener((arg, oldValue, newValue) -> {
-			if (newValue) {
+		server.usesSid().addListener((arg, oldValue, newValue) -> {
+			if (newValue && sidCatChoiceBox.getSelectionModel().getSelectedIndex() != 1) {
 				sidCatChoiceBox.getSelectionModel().select(1);
-			} else {
+			} else if (sidCatChoiceBox.getSelectionModel().getSelectedIndex() != 0) {
 				sidCatChoiceBox.getSelectionModel().select(0);
 			}
 		});
-		sidProp.bindBidirectional(sidField.textProperty());
+		server.sid().bindBidirectional(sidField.textProperty());
 		
 		
 		nameLabel.textProperty().bind(nameField.textProperty());
@@ -218,14 +256,57 @@ public class ServerGridController {
 		sidLabel.textProperty().bind(sidField.textProperty());
 	}
 	
-	public void addComponentGrid(GridPane componentGrid) {
-		componentsBox.getChildren().add(componentGrid);
+	private void buildComponentGrid(Component component) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("presentation/view/ComponentGrid.fxml"));
+			GridPane componentGrid = (GridPane) loader.load();
+			ComponentGridController controller = loader.getController();
+			
+			controller.setComponent(component);
+			controller.initBindings();
+			componentGrid.setUserData(component);
+			componentsBox.getChildren().add(componentGrid);
+		} catch (IOException e) {
+			main.errorHandle(e);
+		}
+	}
+	
+	public void setUpGrid() {
+		for (Component component : server.getComponents()) {
+			buildComponentGrid(component);
+		}
+		
+		server.getComponents().addListener((Change<? extends Component> change) -> {
+			while (change.next()) {
+				if (change.wasAdded()) {
+					for (Component component : change.getAddedSubList()) {
+						buildComponentGrid(component);
+					}
+				} else if (change.wasRemoved()) {
+					for (Component component : change.getRemoved()) {
+						for (Node node : componentsBox.getChildren()) {
+							if (node.getUserData() == component) {
+								componentsBox.getChildren().remove(node);
+								break;
+							}
+						}
+					}
+				}
+			}
+		});
 	}
 
 	@FXML
 	public void nameLabelClick(MouseEvent event) {
-		nameField.setVisible(true);
-		nameField.requestFocus();
+		if (event.getClickCount() == 1) {
+			Node node = ((Node) event.getSource());
+			if (node.getUserData() == null) node.setUserData(server);
+			node.requestFocus();
+		} else {
+			nameField.setVisible(true);
+			nameField.requestFocus();
+		}
 	}
 	
 	@FXML

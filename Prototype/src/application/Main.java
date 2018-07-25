@@ -95,6 +95,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		setUserAgentStylesheet(STYLESHEET_MODENA);
+		
 		objectLayer = new ObjectLayer(this);
 		presentationLayer = new PresentationLayer(this);
 		try {

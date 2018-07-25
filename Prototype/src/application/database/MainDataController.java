@@ -369,9 +369,9 @@ public class MainDataController extends DataController {
 		stmt.executeBatch();
 	}
 	
-	public List<List<Object>> getComponentsByEnvironment(int environmentId) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetComponentsByEnvironment ?");
-		stmt.setInt(1, environmentId);
+	public List<List<Object>> getComponentsByServer(int serverId) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetComponentsByServer ?");
+		stmt.setInt(1, serverId);
 		
 		ResultSet set = stmt.executeQuery();
 
@@ -387,63 +387,25 @@ public class MainDataController extends DataController {
 		
 		return results;
 	}
-	
-	public void saveComponent(ComponentType type, List<Object> values) throws SQLException {
-		PreparedStatement stmt = null;
-		switch (type) {
-		case ABNT:
-			stmt = db.generatePreparedSatement("EXEC UpdateABNTFromEnvironment ?,?,?,?");
-			break;
-		case ANSI:
-			stmt = db.generatePreparedSatement("EXEC UpdateANSIFromEnvironment ?,?,?,?");
-			break;
-		case CM:
-			stmt = db.generatePreparedSatement("EXEC UpdateCMFromEnvironment ?,?,?,?");
-			break;
-		case CAPABILTYSERVICES:
-			stmt = db.generatePreparedSatement("EXEC UpdateCapabilityServicesFromEnvironment ?,?,?,?");
-			break;
-		case CENTRALSERVICES:
-			stmt = db.generatePreparedSatement("EXEC UpdateCentralServicesFromEnvironment ?,?,?,?");
-			break;
-		case COLLECTOR:
-			break;
-		case COMMANDCENTER:
-			stmt = db.generatePreparedSatement("EXEC UpdateCommandCenterFromEnvironment ?,?,?,?");
-			break;
-		case GSIS:
-			break;
-		case M2M:
-			break;
-		case NMS:
-			break;
-		case PANA:
-			break;
-		case SBS:
-			break;
-		default:
-			break;
-		
-		}
-		
-	}
 
-	public List<Object> getServerDetails(int serverId) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC ServerDetails ?");
+	public List<List<Object>> getServersByEnvironment(int environmentId) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetServersByEnvironment ?");
 		
-		stmt.setInt(1, serverId);
+		stmt.setInt(1, environmentId);
 		
 		ResultSet set = stmt.executeQuery();
 
-		List<Object> details = new ArrayList<Object>();
+		List<List<Object>> results = new ArrayList<List<Object>>();
 		int columnNum = set.getMetaData().getColumnCount();
 		while (set.next()) {
+			List<Object> details = new ArrayList<Object>();
 			for (int j = 0; j < columnNum; j++) {
 				details.add(set.getObject(j + 1));
 			}
+			results.add(details);
 		}
 		
-		return details;
+		return results;
 	}
 
 	public void updateEnvironmentFromApp(List<List<Object>> records) throws SQLException {
@@ -460,8 +422,23 @@ public class MainDataController extends DataController {
 		stmt.executeBatch();
 	}
 	
+	public int addEnvironment(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddEnvironment ?");
+
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(0));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+	
 	public void updateComponentFromApp(List<List<Object>> records) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateComponentFromApp ?,?,?,?");
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateComponentFromApp ?,?,?");
 		
 		for(List<Object> record : records) {
 			for(int i = 0; i < record.size(); i++) {
@@ -474,8 +451,23 @@ public class MainDataController extends DataController {
 		stmt.executeBatch();
 	}
 	
+	public int addComponent(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddComponent ?,?");
+
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(0));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+	
 	public void updateServerFromApp(List<List<Object>> records) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateServerFromApp ?,?,?,?,?,?,?,?,?,?,?,?");
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateServerFromApp ?,?,?,?,?,?,?,?,?,?,?,?,?");
 		
 		for(List<Object> record : records) {
 			for(int i = 0; i < record.size(); i++) {
@@ -487,6 +479,21 @@ public class MainDataController extends DataController {
 		}
 		
 		stmt.executeBatch();
+	}
+	
+	public int addServer(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddServer ?");
+
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(0));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
 	}
 
 

@@ -27,7 +27,8 @@
 
 .environment_label_holder {
 	-fx-border-color: black;
-	-fx-background-color: lightblue;
+	-fx-body-color: lightblue;
+	-fx-background-color: -fx-body-color;
 	-fx-pref-height: 50;
 }
 
@@ -66,6 +67,24 @@
 .right_label_holder {
 	-fx-alignment: CENTER_RIGHT;
 	-fx-padding: 0 5 0 0;
+}
+
+.server_label_holder:focused { 
+	-fx-background-color: lightgreen, lightgreen, green; 
+  	-fx-background-insets: -2, -0.3, 2;
+  	-fx-background-radius: 7, 6, 3;
+}
+
+.environment_label_holder:focused {
+  	-fx-background-color: lightblue, lightblue, blue; 
+  	-fx-background-insets: -2, -0.3, 2;
+  	-fx-background-radius: 7, 6, 3;
+}
+
+.component_label_holder:focused {
+  	-fx-background-color: yellow, yellow, orange; 
+  	-fx-background-insets: -2, -0.3, 2;
+  	-fx-background-radius: 7, 6, 3;
 }
 
 .left_label_holder {

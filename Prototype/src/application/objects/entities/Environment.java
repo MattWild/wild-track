@@ -9,10 +9,12 @@ import java.util.Set;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Environment {
 	
-	private Map<Integer, List<Component>> components;
+	private ObservableList<Server> servers;
 	private int id;
 	private SimpleStringProperty name;
 	private SimpleIntegerProperty collectorId;
@@ -20,8 +22,13 @@ public class Environment {
 	public Environment(int id, String name) {
 		this.id = id;
 		this.name = new SimpleStringProperty(name);
+		
 		this.collectorId = new SimpleIntegerProperty(-1);
-		components = new HashMap<Integer, List<Component>>();
+		this.servers = FXCollections.observableArrayList();
+	}
+
+	public Environment() {
+		this(-1, null);
 	}
 
 	public int getId() {
@@ -40,29 +47,29 @@ public class Environment {
 		this.name.set(name);
 	}
 	
-	public Set<Integer> getServerIds() {
-		return components.keySet();
+	public ObservableList<Server> getServers() {
+		return servers;
 	}
 	
-	public List<Component> getComponents(int serverId) {
+	/*public List<Component> getComponents(int serverId) {
 		return components.get(serverId);
-	}
+	}*/
 	
-	public List<Component> getAllComponents() {
+	/*public List<Component> getAllComponents() {
 		List<Component> list = new ArrayList<Component>();
 		
 		for(List<Component> sublist : components.values()) 
 			list.addAll(sublist);
 		
 		return list;
-	}
+	}*/
 	
-	public void addComponent(Component component) {
+	/*public void addComponent(Component component) {
 		if (components.get(component.getServer().getId()) == null) 
 			components.put(component.getServer().getId(), new ArrayList<Component>());
 		
 		components.get(component.getServer().getId()).add(component);
-	}
+	}*/
 
 	public SimpleStringProperty name() {
 		return name;
@@ -78,6 +85,10 @@ public class Environment {
 	
 	public SimpleIntegerProperty collectorId() {
 		return collectorId;
+	}
+
+	public void addServer(Server server) {
+		servers.add(server);
 	}
 
 }

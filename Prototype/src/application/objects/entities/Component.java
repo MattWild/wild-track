@@ -30,19 +30,24 @@ public class Component {
 	}
 	
 	private int id;
-	private Server server;
+	private Server parentServer;
 	private SimpleStringProperty version;	
 	private SimpleStringProperty user;
 	private SimpleStringProperty pass;
 	private final ComponentType type;
 	
-	public Component(ComponentType type, int id) {
+	public Component(ComponentType type, Server server) {
+		this(type, -1, server);
+	}
+	
+	public Component(ComponentType type, int id, Server server) {
 		this.type = type;
-		this.id= id;
+		this.parentServer = server;
+		this.id = id;
 	
 		version = new SimpleStringProperty();
 		user = new SimpleStringProperty();
-		pass = new SimpleStringProperty();	
+		pass = new SimpleStringProperty();
 	}
 
 	public int getId() {
@@ -53,16 +58,16 @@ public class Component {
 		this.id = id;
 	}
 	
-	public ComponentType getType() {
-		return type;
+	public Server getParent() {
+		return parentServer;
 	}
 	
-	public Server getServer() {
-		return server;
+	public void setParent(Server server) {
+		this.parentServer = server;
 	}
-
-	public void setServer(Server server) {
-		this.server = server;
+	
+	public ComponentType getType() {
+		return type;
 	}
 
 	public String getVersion() {

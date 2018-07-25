@@ -9,7 +9,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.presentation.logic.EnvironmentTableController">
    <children>
-      <GridPane fx:id="grid" stylesheets="@../../application.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="grid" stylesheets="@../../application.css" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" />
          </columnConstraints>
@@ -17,14 +17,15 @@
             <RowConstraints vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <StackPane prefHeight="150.0" GridPane.columnSpan="2147483647">
+            <StackPane onMouseClicked="#setFocus" prefHeight="150.0" GridPane.columnSpan="2147483647">
                <children>
-                  <Label fx:id="nameLabel" onMouseClicked="#nameLabelClick"/>
+                  <Label fx:id="nameLabel"/>
                   <TextField fx:id="nameField" onKeyPressed="#fieldEnterPressed" visible="false" />
                </children>
                <styleClass>
                   <String fx:value="environment_label_holder" />
                   <String fx:value="center_label_holder" />
+                  <String fx:value="focusable" />
                </styleClass>
             </StackPane>
          </children>

@@ -1,11 +1,21 @@
 package application.objects.entities;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import application.database.DataController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Server {
 	private int id;
+	private Environment parentEnvironment;
+	private ObservableList<Component> components;
 	
 	private SimpleStringProperty name;
 	private SimpleStringProperty ip;
@@ -22,8 +32,14 @@ public class Server {
 	private DataController dbController;
 	
 	
-	public Server() {
-		this.id = -1;
+	public Server(Environment environment) {
+		this(-1, environment);
+	}
+	
+	public Server(int id, Environment environment) {
+		this.id = id;
+		this.parentEnvironment = environment;
+		this.components = FXCollections.observableArrayList();
 		
 		name = new SimpleStringProperty();
 		ip = new SimpleStringProperty();
@@ -38,11 +54,6 @@ public class Server {
 		usesSID = new SimpleBooleanProperty();
 		port = new SimpleIntegerProperty();
 	}
-	
-	public Server(int id) {
-		this();
-		this.id = id;
-	}
 
 	public int getId() {
 		return id;
@@ -50,6 +61,14 @@ public class Server {
 	
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public Environment getParent() {
+		return parentEnvironment;
+	}
+	
+	public void setParent(Environment environment) {
+		this.parentEnvironment = environment;
 	}
 	
 	public SimpleStringProperty ip() {
@@ -206,6 +225,14 @@ public class Server {
 	
 	public void setDbController(DataController dbController) {
 		this.dbController = dbController;
+	}
+
+	public ObservableList<Component> getComponents() {
+		return components;
+	}
+
+	public void addComponent(Component component) {
+		components.add(component);
 	}
 	
 }

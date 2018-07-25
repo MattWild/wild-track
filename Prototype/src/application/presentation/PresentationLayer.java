@@ -8,7 +8,9 @@ import application.Main;
 import application.presentation.logic.RootLayoutController;
 import application.presentation.logic.DeviceGridController;
 import application.presentation.logic.DeviceGridController.TableType;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -62,6 +64,10 @@ public class PresentationLayer {
 		alert.setContentText(errorMsg);
 		
 		alert.showAndWait();
+	}
+	
+	public ReadOnlyObjectProperty<Node> focusedProperty() {
+		return primaryStage.getScene().focusOwnerProperty();
 	}
 	
 
