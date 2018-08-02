@@ -31,6 +31,11 @@ public class Socket implements Entry {
 	public int getId() {
 		return id;
 	}
+	
+	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	@Override
 	public SimpleStringProperty getFieldProperty(int i) {
@@ -41,7 +46,7 @@ public class Socket implements Entry {
 			return form;
 		case 2:
 			return nload;
-		case 4:
+		case 3:
 			return loc;
 		default:
 			return null;

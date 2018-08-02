@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 public class CollectorsGridController extends DeviceGridController{
@@ -86,26 +87,8 @@ public class CollectorsGridController extends DeviceGridController{
 	@FXML
 	private Button cancelAddCollectorsButton;
 	
-	
 	@FXML
-	private void save(ActionEvent event) {
-		save();
-	}
-	
-	@FXML
-	private void refresh(ActionEvent event) {
-		refresh();
-	}
-	
-	@FXML
-	private void add(ActionEvent event) {
-		startAdd();
-	}
-	
-	@FXML
-	private void remove(ActionEvent event) {
-		remove();
-	}
+	private TextField searchCollectorsField;
 	
 	
 	public CollectorsGridController() {
@@ -143,6 +126,8 @@ public class CollectorsGridController extends DeviceGridController{
 		
 		this.addButton = addCollectorsButton;
 		this.cancelAddButton = cancelAddCollectorsButton;
+		
+		this.searchField = searchCollectorsField;
 	}
 
 

@@ -2,11 +2,11 @@ package application.objects.entities;
 
 public class CollectorComponent extends Component {
 	public CollectorComponent(int id, Server server) {
-		super(ComponentType.COLLECTOR, id, server);
+		super(ComponentType.AMS, id, server);
 	}
 	
 	public CollectorComponent(Server server) {
-		super(ComponentType.COLLECTOR, server);
+		super(ComponentType.AMS, server);
 	}
 
 	private Collector collector;

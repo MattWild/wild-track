@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -15,16 +16,22 @@ import javafx.collections.ObservableList;
 public class Environment {
 	
 	private ObservableList<Server> servers;
+	private ObservableList<Checkpoint> checkpoints;
 	private int id;
 	private SimpleStringProperty name;
-	private SimpleIntegerProperty collectorId;
+	private SimpleObjectProperty<Collector> collector;
+	private SimpleObjectProperty<Component> centralServices;
+	private SimpleObjectProperty<Component> commandCenter;
 	
 	public Environment(int id, String name) {
 		this.id = id;
 		this.name = new SimpleStringProperty(name);
 		
-		this.collectorId = new SimpleIntegerProperty(-1);
+		this.collector = new SimpleObjectProperty<Collector>();
+		this.centralServices = new SimpleObjectProperty<Component>();
+		this.commandCenter = new SimpleObjectProperty<Component>();
 		this.servers = FXCollections.observableArrayList();
+		this.checkpoints = FXCollections.observableArrayList();
 	}
 
 	public Environment() {
@@ -51,44 +58,60 @@ public class Environment {
 		return servers;
 	}
 	
-	/*public List<Component> getComponents(int serverId) {
-		return components.get(serverId);
-	}*/
-	
-	/*public List<Component> getAllComponents() {
-		List<Component> list = new ArrayList<Component>();
-		
-		for(List<Component> sublist : components.values()) 
-			list.addAll(sublist);
-		
-		return list;
-	}*/
-	
-	/*public void addComponent(Component component) {
-		if (components.get(component.getServer().getId()) == null) 
-			components.put(component.getServer().getId(), new ArrayList<Component>());
-		
-		components.get(component.getServer().getId()).add(component);
-	}*/
+	public ObservableList<Checkpoint> getCheckpoints() {
+		return checkpoints;
+	}
 
 	public SimpleStringProperty name() {
 		return name;
 	}
 
-	public void setCollectorId(int collectorId) {
-		this.collectorId.set(collectorId);
+	public void setCollector(Collector collector) {
+		this.collector.set(collector);
 	}
 	
-	public int getCollectorId() {
-		return collectorId.get();
+	public Collector getCollector() {
+		return collector.get();
 	}
 	
-	public SimpleIntegerProperty collectorId() {
-		return collectorId;
+	public SimpleObjectProperty<Collector> collector() {
+		return collector;
+	}
+	
+	public void setCentralServices(Component centralServices) {
+		this.centralServices.set(centralServices);
+	}
+	
+	public Component getCentralServices() {
+		return centralServices.get();
+	}
+	
+	public SimpleObjectProperty<Component> centralServices() {
+		return centralServices;
+	}
+	
+	public void setCommandCenter(Component commandCenter) {
+		this.commandCenter.set(commandCenter);
+	}
+	
+	public Component getCommandCenter() {
+		return commandCenter.get();
+	}
+	
+	public SimpleObjectProperty<Component> commandCenter() {
+		return commandCenter;
 	}
 
 	public void addServer(Server server) {
 		servers.add(server);
+	}
+	
+	public void addCheckpoint(Checkpoint checkpoint) {
+		checkpoints.add(checkpoint);
+	}
+
+	public void removeServer(Server server) {
+		servers.remove(server);
 	}
 
 }

@@ -3,12 +3,13 @@ package application.object;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import application.Main;
-import application.database.CentralServicesDataController;
 import application.database.DataController;
+import application.objects.entities.Checkpoint;
 import application.objects.entities.Collector;
 import application.objects.entities.CollectorComponent;
 import application.objects.entities.Component;
@@ -20,8 +21,13 @@ import application.objects.entities.Meter;
 import application.objects.entities.Router;
 import application.objects.entities.Server;
 import application.objects.entities.Socket;
+import application.objects.entities.VersionAlias;
 import application.presentation.logic.DeviceGridController.TableType;
+import application.services.EnvironmentDatabaseService;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
@@ -36,6 +42,11 @@ public class ObjectLayer {
 	private	Map<Environment, List<Server>> addServerLists;
 	private Map<Server, List<Component>> deleteComponentLists;
 	private Map<Server, List<Component>> addComponentLists;
+	private ObservableMap<String, VersionAlias> versionAliases;
+	private List<VersionAlias> addVersionAliases;
+	private List<VersionAlias> deleteVersionAliases;
+	private Map<Environment, List<Checkpoint>> deleteCheckpointLists;
+	private Map<Environment, List<Checkpoint>> addCheckpointLists;
 	private Main main;
 	
 	public ObjectLayer(Main main) {
@@ -47,7 +58,12 @@ public class ObjectLayer {
 		deleteServerLists =  new HashMap<Environment, List<Server>>();
 		addServerLists =  new HashMap<Environment, List<Server>>();
 		deleteComponentLists = new HashMap<Server, List<Component>>();
+		versionAliases = FXCollections.observableHashMap();
+		addVersionAliases = new ArrayList<VersionAlias>();
+		deleteVersionAliases = new ArrayList<VersionAlias>();
 		addComponentLists = new HashMap<Server, List<Component>>();
+		deleteCheckpointLists = new HashMap<Environment, List<Checkpoint>>();
+		addCheckpointLists = new HashMap<Environment, List<Checkpoint>>();
 		
 		for (TableType type : TableType.values()) {
 			ObservableList<Entry> list = FXCollections.observableArrayList();
@@ -56,59 +72,57 @@ public class ObjectLayer {
 		deleteDeviceList = new HashMap<TableType, List<Entry>>();
 	}
 	
-	public void loadTable(TableType type) throws SQLException {
-		entries.get(type).clear();
-		for (List<Object> values : main.getMainDBController().getTableData(type)) {
-			switch (type) {
-			case Meters:
-				entries.get(type).add(new Meter(((Integer) values.get(0)).intValue(), 
-						(String) values.get(1), 
-						(String) values.get(2), 
-						(String) values.get(3), 
-						(Integer) values.get(4), 
-						(String) values.get(5), 
-						(String) values.get(6), 
-						(String) values.get(7), 
-						(String) values.get(8)));
-				break;
-			case Collectors:
-				entries.get(type).add(new Collector(((Integer) values.get(0)).intValue(), 
-						(String) values.get(1), 
-						(String) values.get(2), 
-						(String) values.get(3), 
-						(String) values.get(4), 
-						(String) values.get(5), 
-						(String) values.get(6), 
-						(String) values.get(7)));
-				break;
-			case HANDevices:
-				entries.get(type).add(new HANDevice(((Integer) values.get(0)).intValue(), 
-						(String) values.get(1), 
-						(String) values.get(2), 
-						(String) values.get(3), 
-						(String) values.get(4), 
-						(String) values.get(5), 
-						(String) values.get(6)));
-				break;
-			case Routers:
-				entries.get(type).add(new Router(((Integer) values.get(0)).intValue(), 
-						(String) values.get(1), 
-						(Integer) values.get(2), 
-						(String) values.get(3),
-						(String) values.get(4), 
-						(String) values.get(5), 
-						(String) values.get(6)));
-				break;
-			case Sockets:
-				entries.get(type).add(new Socket(((Integer) values.get(0)).intValue(), 
-						(Integer) values.get(1), 
-						(String) values.get(2), 
-						(String) values.get(3), 
-						(String) values.get(4)));
-				break;
-			default:
-				break;
+	public ObservableList<Environment> getEnvironments() {
+		return environments;
+	}
+
+	public ObservableList<Entry> getDevices(TableType type) {
+		return entries.get(type);
+	}
+	
+	public ObservableList<VersionAlias> getVersionAliases() {
+		ObservableList<VersionAlias> list = FXCollections.observableArrayList();
+		
+		list.addAll(versionAliases.values());
+		
+		versionAliases.addListener((MapChangeListener.Change<? extends String, ? extends VersionAlias> change) -> {
+			System.out.println(list);
+			if (change.wasAdded()) {
+				list.addAll(change.getValueAdded());
+			} else if (change.wasRemoved()) {
+				list.remove(change.getValueRemoved());
 			}
+			
+			System.out.println(list);
+		});
+		
+		return list;
+	}
+	
+	public ObservableMap<String, VersionAlias> getAliasMapping() {
+		return versionAliases;
+	}
+	
+	public void loadVersionAliases() {
+		versionAliases.clear();
+		
+		try {
+			List<List<Object>> values = main.getMainDBController().getVersionAliases();
+			
+			for (List<Object> record : values) {
+				VersionAlias versionAlias = new VersionAlias((Integer) record.get(0), (String) record.get(1), (String) record.get(2));
+				
+				versionAlias.raw().addListener((arg, oldValue, newValue) -> {
+					versionAliases.remove(oldValue, versionAlias);
+					versionAliases.put(newValue, versionAlias);
+				});
+				
+				versionAliases.put(versionAlias.getRaw(), versionAlias);
+			}
+			
+			System.out.println(versionAliases);
+		} catch (Exception e) {
+			main.errorHandle(e);
 		}
 	}
 
@@ -120,26 +134,40 @@ public class ObjectLayer {
 			
 			for (List<Object> record : values) {
 				Environment environment = new Environment((Integer) record.get(0), (String) record.get(1));
-				if (record.get(2) != null) environment.setCollectorId((Integer) record.get(2));
+				if (record.get(2) != null) {
+					environment.setCollector(new Collector((Integer) record.get(2), null, null, null, null, null, null, null, null, null));
+				}
 				
+				entries.get(TableType.Collectors).addListener(collectorListener(environment));
 				loadServersFromEnvironment(environment);
+				loadCheckpointsFromEnvironments(environment);
 				
 				environments.add(environment);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			main.errorHandle(e);
 		}
 	}
-	
-	public void loadCollectorComponent(CollectorComponent collectorComponent) {
-		for (Entry entry : entries.get(TableType.Collectors)) {
-			Collector collector = (Collector) entry;
-			
-			if (collectorComponent.getId() == collector.getId()) collectorComponent.setCollector(collector);
-		}
+
+	private ListChangeListener<Entry> collectorListener(Environment environment) {
+		return (ListChangeListener.Change<? extends Entry> change) -> {
+			if (environment.getCollector() != null && environment.getCollector().getId() != -1) 
+				while (change.next())
+					if (change.wasAdded()) {
+						for (Entry entry : change.getAddedSubList()) {
+							if (entry.getId() == environment.getCollector().getId()) {
+								environment.setCollector((Collector) entry);
+							}
+						}
+					} else if (change.wasRemoved()) {
+						for (Entry entry : change.getRemoved())
+							if (environment.getCollector() != null && entry.getId() == environment.getCollector().getId())
+								environment.setCollector(new Collector(environment.getCollector().getId(), null, null, null, null, null, null, null, null, null));
+					}
+		};
 	}
 
-	public void loadServersFromEnvironment(Environment environment) throws SQLException {
+	private void loadServersFromEnvironment(Environment environment) throws SQLException, Exception {
 		List<List<Object>> values = main.getMainDBController().getServersByEnvironment(environment.getId());
 		
 		for (List<Object> record : values) {
@@ -176,8 +204,19 @@ public class ObjectLayer {
 			environment.addServer(server);
 		}
 	}
-	
-	public void loadComponentsFromServer(Server server) throws SQLException {
+
+	private void loadCheckpointsFromEnvironments(Environment environment) throws SQLException {
+		List<List<Object>> values = main.getMainDBController().getCheckpointsByEnvironment(environment.getId());
+		
+		for (List<Object> record : values) {
+			Checkpoint checkpoint = new Checkpoint((Integer) record.get(0), environment);
+			
+			checkpoint.setVersion((String) record.get(1));
+			environment.addCheckpoint(checkpoint);
+		}
+	}
+
+	public void loadComponentsFromServer(Server server) throws SQLException, Exception {
 		List<List<Object>> componentDetails = main.getMainDBController().getComponentsByServer(server.getId());
 		
 		for(List<Object> componentRecord : componentDetails) {
@@ -217,7 +256,7 @@ public class ObjectLayer {
 				type = ComponentType.SBS;
 				break;
 			case 12:
-				type = ComponentType.COLLECTOR;
+				type = ComponentType.AMS;
 				break;
 			}
 			
@@ -230,48 +269,257 @@ public class ObjectLayer {
 		}
 	}
 
-	public ObservableList<Entry> getEntries(TableType type) {
-		return entries.get(type);
+	public void loadCollectorComponent(CollectorComponent collectorComponent) {
+		for (Entry entry : entries.get(TableType.Collectors)) {
+			Collector collector = (Collector) entry;
+			
+			if (collectorComponent.getId() == collector.getId()) collectorComponent.setCollector(collector);
+		}
 	}
-	
-	public Entry createDevice(TableType type) {
-		switch (type) {
-		case Meters:
-			return new Meter(-1, null, null, null, null, null, null, null, null);
-		case Collectors:
-			return new Collector(-1, null, null, null, null, null, null, null);
-		case HANDevices:
-			return new HANDevice(-1, null, null, null, null, null, null);
-		case Routers:
-			return new Router(-1, null, null, null, null, null, null);
-		case Sockets:
-			return new Socket(-1, null, null, null, null);
-		default:
-			return null;
+
+	public void loadDevices(TableType type) throws SQLException {
+		entries.get(type).clear();
+		for (List<Object> values : main.getMainDBController().getTableData(type)) {
+			switch (type) {
+			case Meters:
+				entries.get(type).add(new Meter(((Integer) values.get(0)).intValue(), 
+						(String) values.get(1), 
+						(String) values.get(2), 
+						(String) values.get(3), 
+						(Integer) values.get(4), 
+						(String) values.get(5), 
+						(String) values.get(6), 
+						(String) values.get(7), 
+						(String) values.get(8)));
+				break;
+			case Collectors:
+				entries.get(type).add(new Collector(((Integer) values.get(0)).intValue(), 
+						(String) values.get(1), 
+						(String) values.get(2), 
+						(String) ((values.get(3) == null)? values.get(3) : values.get(3).toString()), 
+						(String) values.get(4), 
+						(String) values.get(5), 
+						(String) values.get(6), 
+						(String) values.get(7),
+						(String) values.get(8),
+						(String) values.get(9)));
+				break;
+			case HANDevices:
+				entries.get(type).add(new HANDevice(((Integer) values.get(0)).intValue(), 
+						(String) values.get(1), 
+						(String) values.get(2), 
+						(String) values.get(3), 
+						(String) values.get(4), 
+						(String) values.get(5), 
+						(String) values.get(6)));
+				break;
+			case Routers:
+				entries.get(type).add(new Router(((Integer) values.get(0)).intValue(), 
+						(String) values.get(1), 
+						(Integer) values.get(2), 
+						(String) values.get(3),
+						(String) values.get(4), 
+						(String) values.get(5), 
+						(String) values.get(6)));
+				break;
+			case Sockets:
+				entries.get(type).add(new Socket(((Integer) values.get(0)).intValue(), 
+						(Integer) values.get(1), 
+						(String) values.get(2), 
+						(String) values.get(3), 
+						(String) values.get(4)));
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	
-	public void commitDevice(TableType type, Entry entry) {
-		entries.get(type).addAll(entry);
-	}
-	
-	public void deleteDevice(TableType type, Entry entry) {
-		entries.get(type).remove(entry);
+	public void saveVersionAliases() throws SQLException {
+		List<List<Object>> values = new ArrayList<List<Object>>();
 		
-		if (deleteDeviceList.get(type) == null) deleteDeviceList.put(type, new ArrayList<Entry>());
-		deleteDeviceList.get(type).add(entry);
+		for (VersionAlias versionAlias : versionAliases.values()) {
+			List<Object> record = new ArrayList<Object>();
+			
+			record.add(versionAlias.getId());
+			record.add(versionAlias.getRaw());
+			record.add(versionAlias.getAlias());
+			
+			if (versionAlias.getId() != -1) {
+				values.add(record);
+			} else {
+				record.remove(0);
+				
+				versionAlias.setId(main.getMainDBController().addVersionAlias(record));
+			}
+		}
+		
+		List<Integer> deleteIds = new ArrayList<Integer>();
+		if (deleteVersionAliases != null) {
+			for (VersionAlias versionAlias : deleteVersionAliases) {
+				deleteIds.add(versionAlias.getId());
+			}
+			
+			main.getMainDBController().deleteVersionAliases(deleteIds);
+		}
+		deleteVersionAliases.clear();
+		
+		main.getMainDBController().updateVersionAliases(values);
 	}
+
+	public void saveAllEnvironments() throws SQLException {
+		Iterator<Environment> iter = addEnvironmentList.iterator();
+		while (iter.hasNext()) {
+			Environment addEnvironment = iter.next();
+			List<Object> addRecord = new ArrayList<Object>();
+			addRecord.add(addEnvironment.getName());
 	
-	public void saveTable(TableType type) throws SQLException {
+			addEnvironment.setId(main.getMainDBController().addEnvironment(addRecord));
+			iter.remove();
+		}
+		
+		iter = deleteEnvironmentList.iterator();
+		List<Integer> deleteIds = new ArrayList<Integer>();
+		while (iter.hasNext()) {
+			deleteIds.add(iter.next().getId());
+			iter.remove();
+		}
+		main.getMainDBController().deleteEnvironments(deleteIds);
+		
+		for (Environment environment : environments)
+			processSaveEnvironment(environment);
+	}
+
+	public void saveEnvironment(Environment environment) throws SQLException {
+		if (addEnvironmentList.contains(environment)) {
+			List<Object> addRecord = new ArrayList<Object>();
+			addRecord.add(environment.getName());
+	
+			System.out.println(addRecord);
+			environment.setId(main.getMainDBController().addEnvironment(addRecord));
+		}
+		
+		processSaveEnvironment(environment);
+	}
+
+	private void processSaveEnvironment(Environment environment) throws SQLException {
+		List<Object> record = new ArrayList<Object>();
+		
+		record.add(environment.getId());
+		record.add(environment.getName());
+		record.add((environment.getCollector() == null)? null : environment.getCollector().getId());
+		
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		records.add(record);
+		main.getMainDBController().updateEnvironments(records);
+		
+		if (environment.getCollector() != null) {
+			List<Object> collectorRecord = new ArrayList<Object>();
+			Collector collector = environment.getCollector();
+			
+			collectorRecord.add(collector.getId());
+			collectorRecord.add(collector.getIp());
+			collectorRecord.add(collector.getRadios());
+			collectorRecord.add(collector.getNetId());
+			collectorRecord.add(collector.getApp());
+			collectorRecord.add(collector.getCollectorType());
+			collectorRecord.add(collector.getLocation());
+			collectorRecord.add(collector.getNote());
+			collectorRecord.add(collector.getUsername());
+			collectorRecord.add(collector.getPassword());
+			
+			List<List<Object>> colList = new ArrayList<List<Object>>();
+			colList.add(collectorRecord);
+			main.getMainDBController().updateTableFromTable(TableType.Collectors, colList);
+		}
+		
+		processAddServers(environment);
+		processSaveServers(environment);
+		
+		processAddComponent(environment);
+		processSaveComponents(environment);
+		
+		processAddCheckpoints(environment);
+		processSaveCheckpoints(environment);
+		
+		processDeleteComponents(environment);
+		processDeleteServers(environment);
+		processDeleteCheckpoints(environment);
+	}
+
+	private void processSaveServers(Environment environment) throws SQLException {
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		for(Server server : environment.getServers()) {
+			List<Object> record = new ArrayList<Object>();
+			
+			record.add(server.getId());
+			record.add(server.getName());
+			record.add(server.getIp());
+			record.add(server.getFqdn());
+			record.add(server.getType());
+			record.add(server.getHasDB());
+			record.add(server.getDBType());
+			record.add(server.getIsSQL());
+			record.add(server.getSysUser());
+			record.add(server.getSysPass());
+			record.add(server.getPort());
+			record.add(server.getSID());
+			record.add(server.usesSID());
+			
+			records.add(record);
+		}
+		main.getMainDBController().updateServers(records);
+	}
+
+	private void processSaveComponents(Environment environment) throws SQLException {
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		for (Server server : environment.getServers()) {
+			for (Component component : server.getComponents()) {
+				if (addComponentLists.get(server) != null && addComponentLists.get(server).contains(component)) {
+					
+				}
+				
+				List<Object> record = new ArrayList<Object>();
+				
+				record.add(component.getId());
+				if (component.getType() == ComponentType.CENTRALSERVICES)
+					record.add(null);
+				else
+					record.add(component.getVersion());
+				
+				if (component.getType() == ComponentType.GSIS || component.getType() == ComponentType.PANA || component.getType() == ComponentType.M2M) {
+					record.add(null);
+					record.add(null);
+				} else {
+					record.add(component.getUser());
+					record.add(component.getPass());
+				}
+				
+				records.add(record);
+			}
+		}
+		main.getMainDBController().updateComponents(records);
+	}
+
+	private void processSaveCheckpoints(Environment environment) throws SQLException {
+		List<List<Object>> records = new ArrayList<List<Object>>();
+		for(Checkpoint checkpoint : environment.getCheckpoints()) {
+			List<Object> record = new ArrayList<Object>();
+			
+			record.add(checkpoint.getId());
+			record.add(checkpoint.getVersion());
+			
+			records.add(record);
+		}
+		main.getMainDBController().updateCheckpoints(records);
+	}
+
+	public void saveDevices(TableType type) throws SQLException {
 		List<List<Object>> internalNewValues = new ArrayList<List<Object>>();
-		List<List<Object>> internalNewAdds = new ArrayList<List<Object>>();
-		//Map<Integer, List<List<Object>>> externalMap = new HashMap<Integer, List<List<Object>>>();
 		
 		for (Entry entry : entries.get(type)) {
 			if (entry.isChanged()) {
 				List<Object> internalRecord = new ArrayList<Object>();
-				//List<Object> externalRecord = new ArrayList<Object>();
-				//int crc = -1;
 				
 				switch (type) {
 				case Collectors:
@@ -285,11 +533,13 @@ public class ObjectLayer {
 					internalRecord.add(collector.getCollectorType());
 					internalRecord.add(collector.getLocation());
 					internalRecord.add(collector.getNote());
+					internalRecord.add(collector.getUsername());
+					internalRecord.add(collector.getPassword());
 					
 					break;
 				case HANDevices:
 					HANDevice han = (HANDevice) entry;
-
+	
 					internalRecord.add(han.getId());
 					internalRecord.add(han.getUnitId());
 					internalRecord.add(han.getDeviceName());
@@ -300,31 +550,20 @@ public class ObjectLayer {
 					break;
 				case Meters:
 					Meter meter = (Meter) entry;
-
+	
 					internalRecord.add(meter.getId());
 					internalRecord.add(meter.getLAN());
 					internalRecord.add(meter.getLocation());
 					internalRecord.add(meter.getSocket());
 					internalRecord.add(meter.getNote());
-					
-					/*System.out.println(internalRecord);
-					
-					crc = meter.getCRC();
-					externalRecord.add(meter.getLAN());
-					externalRecord.add(meter.getLocation());
-					externalRecord.add(meter.getSocket());*/
 					break;
 				case Routers:
 					Router router = (Router) entry;
-
+	
 					internalRecord.add(router.getId());
 					internalRecord.add(router.getLAN());
 					internalRecord.add(router.getLocation());
 					internalRecord.add(router.getNote());
-					
-					/*crc = router.getCRC();
-					externalRecord.add(router.getLAN());
-					externalRecord.add(router.getLocation());*/
 					break;
 				case Sockets:
 					Socket socket = (Socket) entry;
@@ -342,22 +581,13 @@ public class ObjectLayer {
 				if ((Integer) internalRecord.get(0) == -1) {
 					internalRecord.remove(0);
 					
-					internalNewAdds.add(internalRecord);
+					entry.setId(main.getMainDBController().addDevices(type, internalRecord));
 				} else {
 					if (type == TableType.Meters || type == TableType.Routers) internalRecord.remove(1);
 					internalNewValues.add(internalRecord);
-					
-					/*if(!externalRecord.isEmpty()) {
-						if (!externalMap.containsKey(crc))
-							externalMap.put(crc, new ArrayList<List<Object>>());
-							
-						if (crc != -1) externalMap.get(crc).add(externalRecord);
-					}*/
 				}
 			}
 		}
-		
-
 		
 		List<Integer> deleteIds = new ArrayList<Integer>();
 		if (deleteDeviceList.get(type) != null) {
@@ -366,182 +596,31 @@ public class ObjectLayer {
 			}
 			
 			main.getMainDBController().delete(type, deleteIds);
+			deleteDeviceList.get(type).clear();
 		}
-		main.getMainDBController().add(type, internalNewAdds);
 		main.getMainDBController().updateTableFromTable(type, internalNewValues);
-		/*for (int crc : externalMap.keySet()) {
-			main.getEnvironmentController(crc).updateData(type, externalMap.get(crc));
-		}*/
+	}
+	
+	public void addVersionAlias() {
+		VersionAlias versionAlias = new VersionAlias();
+		versionAlias.raw().addListener((arg, oldValue, newValue) -> {
+			versionAliases.remove(oldValue, versionAlias);
+			versionAliases.put(newValue, versionAlias);
+		});
+		
+		addVersionAliases.add(versionAlias);
+		
+		versionAliases.put(versionAlias.getRaw(), versionAlias);
 	}
 
-	public ObservableList<Environment> getEnvironments() {
-		return environments;
+	public void addEnvironment() {
+		Environment environment = new Environment();
+		environments.add(environment);
+		
+		entries.get(TableType.Collectors).addListener(collectorListener(environment));
+		addEnvironmentList.add(environment);
 	}
 
-	public void saveEnvironment(Environment environment) throws SQLException {
-		List<Object> record = new ArrayList<Object>();
-		
-		record.add(environment.getId());
-		record.add(environment.getName());
-		record.add(environment.getCollectorId());
-		
-		List<List<Object>> records = new ArrayList<List<Object>>();
-		records.add(record);
-		main.getMainDBController().updateEnvironmentFromApp(records);
-		
-		saveServers(environment);
-	}
-	
-	public void saveEnvironments() throws SQLException {
-		List<List<Object>> records = new ArrayList<List<Object>>();
-		
-		for(Environment environment : environments) {
-			List<Object> record = new ArrayList<Object>();
-			
-			record.add(environment.getId());
-			record.add(environment.getName());
-			record.add(environment.getCollectorId());
-			
-			records.add(record);
-		}
-		main.getMainDBController().updateEnvironmentFromApp(records);
-	}
-	
-	public void saveServer(Server server) throws SQLException {
-		List<Object> record = new ArrayList<Object>();
-		
-		record.add(server.getId());
-		record.add(server.getName());
-		record.add(server.getIp());
-		record.add(server.getFqdn());
-		record.add(server.getType());
-		record.add(server.getHasDB());
-		record.add(server.getDBType());
-		record.add(server.getIsSQL());
-		record.add(server.getSysUser());
-		record.add(server.getSysPass());
-		record.add(server.getPort());
-		record.add(server.getSID());
-		record.add(server.usesSID());
-		
-		List<List<Object>> records = new ArrayList<List<Object>>();
-		records.add(record);
-		main.getMainDBController().updateServerFromApp(records);
-	}
-	
-	public void saveServers(Environment environment) throws SQLException {
-		List<List<Object>> records = new ArrayList<List<Object>>();
-		
-		for(Server server : environment.getServers()) {
-			saveServer(server);
-			
-			List<Object> record = new ArrayList<Object>();
-			
-			record.add(server.getName());
-			record.add(server.getIp());
-			record.add(server.getFqdn());
-			record.add(server.getType());
-			record.add(server.getHasDB());
-			record.add(server.getDBType());
-			record.add(server.getIsSQL());
-			record.add(server.getSysUser());
-			record.add(server.getSysPass());
-			record.add(server.getPort());
-			record.add(server.getSID());
-			record.add(server.usesSID());
-			
-			records.add(record);
-		}
-		main.getMainDBController().updateServerFromApp(records);
-	}
-	
-	public void saveComponent(Component component) throws SQLException {
-		List<Object> record = new ArrayList<Object>();
-		
-		record.add(component.getId());
-		if (component.getType() == ComponentType.CENTRALSERVICES)
-			record.add(null);
-		else
-			record.add(component.getVersion());
-		
-		if (component.getType() == ComponentType.GSIS || component.getType() == ComponentType.PANA || component.getType() == ComponentType.M2M) {
-			record.add(null);
-			record.add(null);
-		} else {
-			record.add(component.getUser());
-			record.add(component.getPass());
-		}
-		
-		List<List<Object>> records = new ArrayList<List<Object>>();
-		records.add(record);
-		main.getMainDBController().updateComponentFromApp(records);
-	}
-	
-	public void saveComponents(Server server) throws SQLException {
-		List<List<Object>> records = new ArrayList<List<Object>>();
-		
-		for(Component component : server.getComponents()) {
-			List<Object> record = new ArrayList<Object>();
-			
-			record.add(component.getId());
-			if (component.getType() == ComponentType.CENTRALSERVICES)
-				record.add(null);
-			else
-				record.add(component.getVersion());
-			
-			if (component.getType() == ComponentType.GSIS || component.getType() == ComponentType.PANA || component.getType() == ComponentType.M2M) {
-				record.add(null);
-				record.add(null);
-			} else {
-				record.add(component.getUser());
-				record.add(component.getPass());
-			}
-			
-			records.add(record);
-		}
-		main.getMainDBController().updateComponentFromApp(records);
-	}
-
-	public void deleteComponent(Component component) {
-		Server parent = component.getParent();
-		parent.getComponents().remove(component);
-		
-		if (addComponentLists.get(parent) != null && addComponentLists.get(parent).contains(component)) {
-			addComponentLists.get(parent).remove(component);
-		} else {
-			if (deleteComponentLists.get(parent) == null)
-				deleteComponentLists.put(parent, new ArrayList<Component>());
-			deleteComponentLists.get(parent).add(component);
-		}
-	}
-	
-	public void addComponent(Server server, ComponentType type) {
-		Component component = new Component(type, server);
-		server.getComponents().add(component);
-		
-		if (addComponentLists.get(server) == null)
-			addComponentLists.put(server, new ArrayList<Component>());
-		addComponentLists.get(server).add(component);
-	}
-	
-	public void deleteServer(Server server) {
-		Environment parent = server.getParent();
-		parent.getServers().remove(server);
-		
-		for (Component component : server.getComponents())
-			deleteComponent(component);
-		if (addServerLists.get(parent) != null && addServerLists.get(parent).contains(server)) {
-			addServerLists.get(parent).remove(server);
-		} else {
-			if (deleteServerLists.get(parent) == null)
-				deleteServerLists.put(parent, new ArrayList<Server>());
-			deleteServerLists.get(parent).add(server);
-		}
-		
-		deleteComponentLists.remove(server);
-		addComponentLists.remove(server);
-	}
-	
 	public void addServer(Environment environment) {
 		Server server = new Server(environment);
 		environment.addServer(server);
@@ -550,7 +629,140 @@ public class ObjectLayer {
 			addServerLists.put(environment, new ArrayList<Server>());
 		addServerLists.get(environment).add(server);
 	}
+
+	private void processAddServers(Environment environment) throws SQLException {
+		if (addServerLists.get(environment) != null) {
+			Iterator<Server> iter = addServerLists.get(environment).iterator();
+			while (iter.hasNext()) {
+				Server addServer = iter.next();
+				List<Object> addRecord = new ArrayList<Object>();
+				addRecord.add(addServer.getName());
+				addRecord.add(environment.getId());
 	
+				System.out.println(addRecord);
+				addServer.setId(main.getMainDBController().addServer(addRecord));
+				iter.remove();
+			} 
+		}
+	}
+
+	public void addComponent(Server server, ComponentType type) {
+		Component component = new Component(type, server);
+		server.getComponents().add(component);
+		
+		if (addComponentLists.get(server) == null)
+			addComponentLists.put(server, new ArrayList<Component>());
+		addComponentLists.get(server).add(component);
+	}
+
+	private void processAddComponent(Environment environment) throws SQLException {
+		for (Server server : environment.getServers()) {
+			if (addComponentLists.get(server) != null) {
+				Iterator<Component> iter = addComponentLists.get(server).iterator();
+				while (iter.hasNext()) {
+					Component addComponent = iter.next();
+					List<Object> addRecord = new ArrayList<Object>();
+					addRecord.add(server.getId());
+	
+					switch (addComponent.getType()) {
+					case ABNT:
+						addRecord.add(1);
+						break;
+					case ANSI:
+						addRecord.add(2);
+						break;
+					case CAPABILTYSERVICES:
+						addRecord.add(3);
+						break;
+					case CENTRALSERVICES:
+						addRecord.add(4);
+						break;
+					case CM:
+						addRecord.add(5);
+						break;
+					case AMS:
+						addRecord.add(12);
+						break;
+					case COMMANDCENTER:
+						addRecord.add(6);
+						break;
+					case GSIS:
+						addRecord.add(7);
+						break;
+					case M2M:
+						addRecord.add(8);
+						break;
+					case NMS:
+						addRecord.add(9);
+						break;
+					case PANA:
+						addRecord.add(10);
+						break;
+					case SBS:
+						addRecord.add(11);
+						break;
+					default:
+						break;
+					}
+	
+					addComponent.setId(main.getMainDBController().addComponent(addRecord));
+					iter.remove();
+				} 
+			}
+		}
+	}
+	
+	public void addCheckpoint(Environment environment) {
+		Checkpoint checkpoint = new Checkpoint(environment);
+		environment.addCheckpoint(checkpoint);
+		
+		if (addCheckpointLists.get(environment) == null)
+			addCheckpointLists.put(environment, new ArrayList<Checkpoint>());
+		addCheckpointLists.get(environment).add(checkpoint);
+	}
+
+	private void processAddCheckpoints(Environment environment) throws SQLException {
+		if (addCheckpointLists.get(environment) != null) {
+			Iterator<Checkpoint> iter = addCheckpointLists.get(environment).iterator();
+			while (iter.hasNext()) {
+				Checkpoint addCheckpoint = iter.next();
+				List<Object> addRecord = new ArrayList<Object>();
+				addRecord.add(addCheckpoint.getVersion());
+				addRecord.add(environment.getId());
+	
+				System.out.println(addRecord);
+				addCheckpoint.setId(main.getMainDBController().addCheckpoint(addRecord));
+				iter.remove();
+			} 
+		}
+	}
+
+	public Entry createDevice(TableType type) {
+		switch (type) {
+		case Meters:
+			return new Meter(-1, null, null, null, null, null, null, null, null);
+		case Collectors:
+			return new Collector(-1, null, null, null, null, null, null, null, null, null);
+		case HANDevices:
+			return new HANDevice(-1, null, null, null, null, null, null);
+		case Routers:
+			return new Router(-1, null, null, null, null, null, null);
+		case Sockets:
+			return new Socket(-1, null, null, null, null);
+		default:
+			return null;
+		}
+	}
+
+	public void addDevice(TableType type, Entry entry) {
+		entries.get(type).addAll(entry);
+	}
+	
+	public void deleteVersionAlias(VersionAlias versionAlias) {
+		versionAliases.remove(versionAlias.getRaw(), versionAlias);
+		if (versionAlias.getId() != -1) deleteVersionAliases.add(versionAlias);
+	}
+
 	public void deleteEnvironment(Environment environment) {
 		environments.remove(environment);
 		
@@ -560,17 +772,119 @@ public class ObjectLayer {
 			deleteEnvironmentList.add(environment);
 		}
 		
-		for (Server server : environment.getServers()) 
+		List<Server> serversCopy = new ArrayList<Server>(environment.getServers());
+		for (Server server : serversCopy) 
 			deleteServer(server);
 		
-		deleteServerLists.remove(environment);
+		for (Server server : environment.getServers()) {
+			addComponentLists.remove(server);
+			deleteComponentLists.remove(server);
+		}
+		
 		addServerLists.remove(environment);
+		deleteServerLists.remove(environment);
+		
+		addCheckpointLists.remove(environment);
+		deleteCheckpointLists.remove(environment);
 	}
 
-	public void addEnvironment() {
-		Environment environment = new Environment();
-		environments.add(environment);
+	public void deleteServer(Server server) {
+		Environment parent = server.getParent();
+		parent.removeServer(server);
 		
-		addEnvironmentList.add(environment);
+		List<Component> componentsCopy = new ArrayList<Component>(server.getComponents());
+		for (Component component : componentsCopy)
+			deleteComponent(component);
+		if (addServerLists.get(parent) != null && addServerLists.get(parent).contains(server)) {
+			addServerLists.get(parent).remove(server);
+		} else {
+			if (deleteServerLists.get(parent) == null)
+				deleteServerLists.put(parent, new ArrayList<Server>());
+			deleteServerLists.get(parent).add(server);
+		}
+		
+		addComponentLists.remove(server);
+		deleteComponentLists.remove(server);
+	}
+
+	private void processDeleteServers(Environment environment) throws SQLException {
+		if (deleteServerLists.get(environment) != null) {
+			Iterator<Server> iter = deleteServerLists.get(environment).iterator();
+			List<Integer> deleteIds = new ArrayList<Integer>();
+			while (iter.hasNext()) {
+				deleteIds.add(iter.next().getId());
+				iter.remove();
+			}
+			main.getMainDBController().deleteServers(deleteIds);
+		}
+	}
+
+	public void deleteComponent(Component component) {
+		Server parent = component.getParent();
+		parent.removeComponent(component);
+		
+		if (addComponentLists.get(parent) != null && addComponentLists.get(parent).contains(component)) {
+			addComponentLists.get(parent).remove(component);
+		} else {
+			if (deleteComponentLists.get(parent) == null)
+				deleteComponentLists.put(parent, new ArrayList<Component>());
+			deleteComponentLists.get(parent).add(component);
+		}
+	}
+
+	private void processDeleteComponents(Environment environment) throws SQLException {
+		for (Server server : environment.getServers()) {
+			if (deleteComponentLists.get(server) != null) {
+				Iterator<Component> iter = deleteComponentLists.get(server).iterator();
+				List<Integer> deleteIds = new ArrayList<Integer>();
+				while (iter.hasNext()) {
+					deleteIds.add(iter.next().getId());
+					iter.remove();
+				}
+				main.getMainDBController().deleteComponents(deleteIds);
+			}
+		}
+	}
+	
+	public void deleteCheckpoint(Checkpoint checkpoint) {
+		Environment parent = checkpoint.getParent();
+		parent.getCheckpoints().remove(checkpoint);
+		
+		if (addCheckpointLists.get(parent) != null && addCheckpointLists.get(parent).contains(checkpoint)) {
+			addCheckpointLists.get(parent).remove(checkpoint);
+		} else {
+			if (deleteCheckpointLists.get(parent) == null)
+				deleteCheckpointLists.put(parent, new ArrayList<Checkpoint>());
+			deleteCheckpointLists.get(parent).add(checkpoint);
+		}
+	}
+
+	private void processDeleteCheckpoints(Environment environment) throws SQLException {
+		if (deleteCheckpointLists.get(environment) != null) {
+			Iterator<Checkpoint> iter = deleteCheckpointLists.get(environment).iterator();
+			List<Integer> deleteIds = new ArrayList<Integer>();
+			while (iter.hasNext()) {
+				deleteIds.add(iter.next().getId());
+				iter.remove();
+			}
+			main.getMainDBController().deleteCheckpoints(deleteIds);
+		}
+	}
+
+	public void deleteDevice(TableType type, Entry entry) {
+		entries.get(type).remove(entry);
+		
+		if (entry.getId() != -1) {
+			if (deleteDeviceList.get(type) == null) deleteDeviceList.put(type, new ArrayList<Entry>());
+			deleteDeviceList.get(type).add(entry);
+		}
+	}
+
+	public void saveCheckpoints() throws SQLException {
+		for (Environment environment : environments) {
+			processAddCheckpoints(environment);
+			processSaveCheckpoints(environment);
+			processDeleteCheckpoints(environment);
+		}
 	}
 }

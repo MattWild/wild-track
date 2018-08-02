@@ -18,5 +18,7 @@ public interface Entry {
 	public boolean isChanged();
 
 	public boolean identifierNotNull();
+
+	public void setId(int addDevices);
 	
 }

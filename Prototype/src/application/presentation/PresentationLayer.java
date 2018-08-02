@@ -5,15 +5,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 import application.Main;
+import application.objects.entities.Entry;
 import application.presentation.logic.RootLayoutController;
+import application.presentation.logic.SettingsLayoutController;
 import application.presentation.logic.DeviceGridController;
 import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -46,8 +57,33 @@ public class PresentationLayer {
 			RootLayoutController controller = loader.getController();
 			controller.setMain(main);
 			controller.setUpEnvironmentTable();
+			controller.setUpCheckpointsTable();
 			for (TableType type : TableType.values())
 				controller.setUpTable(type);
+			
+			controller.initMenuBindings();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void showSettings() {
+		try {
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Preferences");
+			
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("presentation/view/SettingsLayout.fxml"));
+			AnchorPane settingsLayout = (AnchorPane) loader.load();
+			
+			Scene scene = new Scene(settingsLayout);
+			
+			dialogStage.setScene(scene);
+			dialogStage.show();
+			
+			SettingsLayoutController controller = loader.getController();
+			controller.setMain(main);
+			controller.setupTabs();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -70,135 +106,98 @@ public class PresentationLayer {
 		return primaryStage.getScene().focusOwnerProperty();
 	}
 	
+	public static class NonEditingCell<T> extends TableCell<T, String> {
+		 @Override
+        public void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            if (!isEmpty()) {
+           	 this.setStyle("-fx-background-color: gray ;");
+                setText(item);
+            }
+        }
 
-
-	/*public void showAddNoteToDevice(Entry entry, TableType type) {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			switch(type) {
-			case Meters:
-				loader.setLocation(Main.class.getResource("presentation/view/AddNoteToMeterDialogue.fxml"));
-				break;
-			case Routers:
-				loader.setLocation(Main.class.getResource("presentation/view/AddNoteToRouterDialogue.fxml"));
-				break;
-			default:
-				break;
-			}
-			AnchorPane addNoteDialog = (AnchorPane) loader.load();
-			
-			Stage dialogStage= new Stage();
-			dialogStage.setTitle("Add Note");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(addNoteDialog);
-			dialogStage.setScene(scene);
-			
-			AddNoteDialogueController controller = loader.getController();
-			controller.setMain(main);
-			controller.setStage(dialogStage);
-			controller.setIdentifier(((Label) entry.getChildren().get(0)).getText());
-			switch(type) {
-			case Meters:
-				controller.setCRC(Integer.parseInt(((Label) entry.getChildren().get(3)).getText()));
-				break;
-			case Routers:
-				controller.setCRC(Integer.parseInt(((Label) entry.getChildren().get(1)).getText()));
-				break;
-			default:
-				break;
-			}
-			dialogStage.showAndWait();
-			
-			grids.get(type).refresh();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
+	
+	public static class EditingCell<T> extends TableCell<T, String> {
 
-	public void showDeleteDevice(List<Entry> entries, TableType type) {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			switch(type) {
-			case Meters:
-				loader.setLocation(Main.class.getResource("presentation/view/DeleteMetersDialogue.fxml"));
-				break;
-			case Collectors:
-				loader.setLocation(Main.class.getResource("presentation/view/DeleteCollectorsDialogue.fxml"));
-				break;
-			case HANDevices:
-				loader.setLocation(Main.class.getResource("presentation/view/DeleteHANDialogue.fxml"));
-				break;
-			case Routers:
-				loader.setLocation(Main.class.getResource("presentation/view/DeleteRoutersDialogue.fxml"));
-				break;
-			case Sockets:
-				loader.setLocation(Main.class.getResource("presentation/view/DeleteSocketsDialogue.fxml"));
-				break;
-			default:
-				break;
-			}
-			AnchorPane deleteMetersDialog = (AnchorPane) loader.load();
-			
-			Stage dialogStage= new Stage();
-			dialogStage.setTitle("Delete Device");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(deleteMetersDialog);
-			dialogStage.setScene(scene);
-			
-			DeleteDeviceDialogueController controller = loader.getController();
-			controller.setMain(main);
-			controller.setStage(dialogStage);
-			controller.setEntries(entries);
-			dialogStage.showAndWait();
-			
-			grids.get(type).refresh();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+       private TextField textField;
 
-	public void showAddDevice(TableType type) {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			switch(type) {
-			case Meters:
-				loader.setLocation(Main.class.getResource("presentation/view/AddMetersDialogue.fxml"));
-				break;
-			case Collectors:
-				loader.setLocation(Main.class.getResource("presentation/view/AddCollectorsDialogue.fxml"));
-				break;
-			case HANDevices:
-				loader.setLocation(Main.class.getResource("presentation/view/AddHANDialogue.fxml"));
-				break;
-			case Routers:
-				loader.setLocation(Main.class.getResource("presentation/view/AddRoutersDialogue.fxml"));
-				break;
-			case Sockets:
-				loader.setLocation(Main.class.getResource("presentation/view/AddSocketsDialogue.fxml"));
-				break;
-			default:
-				break;
-			}
-			AnchorPane dialog = (AnchorPane) loader.load();
-			
-			Stage dialogStage= new Stage();
-			dialogStage.setTitle("Add Device");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(dialog);
-			dialogStage.setScene(scene);
-			
-			AddDeviceDialogueController controller = loader.getController();
-			controller.setMain(main);
-			controller.setStage(dialogStage);
-			dialogStage.showAndWait();
-			
-			grids.get(type).refresh();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
+       public EditingCell() {
+       }
 
+       @Override
+       public void startEdit() {
+           if (!isEmpty()) {
+               super.startEdit();
+               createTextField();
+               setText(null);
+               setGraphic(textField);
+               textField.selectAll();
+               textField.requestFocus();
+           }
+       }
+
+       @Override
+       public void cancelEdit() {
+           super.cancelEdit();
+
+           setText(getItem());
+           setGraphic(null);
+       }
+
+       @Override
+       public void updateItem(String item, boolean empty) {
+           super.updateItem(item, empty);
+
+           if (empty) {
+               setText(item);
+               setGraphic(null);
+           } else {
+               if (isEditing()) {
+                   if (textField != null) {
+                       textField.setText(getString());
+//                       setGraphic(null);
+                   }
+                   setText(null);
+                   setGraphic(textField);
+               } else {
+                   setText(getString());
+                   setGraphic(null);
+               }
+           }
+       }
+       
+       @Override
+       public void commitEdit(String item) {
+           // This block is necessary to support commit on losing focus
+           if (!isEditing() && !item.equals(getItem())) {
+               TableView<T> table = getTableView();
+               if (table != null) {
+                   TableColumn<T, String> column = getTableColumn();
+                   CellEditEvent<T, String> event = new CellEditEvent<T, String>(
+                       table, new TablePosition<T,String>(table, getIndex(), column), 
+                       TableColumn.editCommitEvent(), item
+                   );
+                   Event.fireEvent(column, event);
+               }
+           }
+
+           super.commitEdit(item);
+       }
+
+       private void createTextField() {
+           textField = new TextField(getString());
+           textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+           textField.setOnAction((e) -> commitEdit(textField.getText()));
+           textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+               if (!newValue) {
+                   commitEdit(textField.getText());
+               }
+           });
+       }
+
+       private String getString() {
+           return getItem() == null ? "" : getItem();
+       }
+   }
 }

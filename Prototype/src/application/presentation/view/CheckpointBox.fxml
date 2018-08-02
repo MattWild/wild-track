@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<StackPane stylesheets="@../../application.css" onMouseClicked="#versionLabelClicked" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.presentation.logic.CheckpointBoxController" fx:id="versionLabelHolder">
+   <children>
+      <Label fx:id="versionLabel" text="Label" />
+      <TextField fx:id="versionField" onKeyPressed="#enterPressed" visible="false"/>
+   </children>
+   <styleClass>
+      <String fx:value="basic_label_holder" />
+      <String fx:value="center_label_holder" />
+   </styleClass>
+</StackPane>

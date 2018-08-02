@@ -35,7 +35,7 @@
             <String fx:value="right_label_holder" />
          </styleClass>
       </HBox>
-      <StackPane onMouseClicked="#ipLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+      <StackPane onMouseClicked="#ipLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
             <Label fx:id="ipLabel" />
             <TextField fx:id="ipField" onKeyPressed="#fieldEnterPressed" visible="false">
@@ -46,7 +46,7 @@
             <String fx:value="left_label_holder" />
          </styleClass>
       </StackPane>
-      <StackPane onMouseClicked="#dbTypeLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+      <StackPane onMouseClicked="#dbTypeLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
          <children>
             <Label fx:id="dbTypeLabel" />
             <TextField fx:id="dbTypeField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -56,7 +56,7 @@
             <String fx:value="left_label_holder" />
          </styleClass>
       </StackPane>
-      <StackPane onMouseClicked="#fqdnLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <StackPane onMouseClicked="#fqdnLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
             <Label fx:id="fqdnLabel" />
             <TextField fx:id="fqdnField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -75,7 +75,7 @@
             <String fx:value="right_label_holder" />
          </styleClass>
       </HBox>
-      <StackPane onMouseClicked="#typeLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+      <StackPane onMouseClicked="#typeLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
             <Label fx:id="typeLabel" />
             <TextField fx:id="typeField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -112,7 +112,7 @@
             <String fx:value="right_label_holder" />
          </styleClass>
       </HBox>
-      <StackPane onMouseClicked="#sysUserLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+      <StackPane onMouseClicked="#sysUserLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
          <children>
             <Label fx:id="sysUserLabel" />
             <TextField fx:id="sysUserField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -122,7 +122,7 @@
             <String fx:value="left_label_holder" />
          </styleClass>
       </StackPane>
-      <StackPane onMouseClicked="#sysPassLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+      <StackPane onMouseClicked="#sysPassLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
          <children>
             <Label fx:id="sysPassLabel" />
             <TextField fx:id="sysPassField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -132,7 +132,7 @@
             <String fx:value="left_label_holder" />
          </styleClass>
       </StackPane>
-      <StackPane onMouseClicked="#portLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+      <StackPane onMouseClicked="#portLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
          <children>
             <Label fx:id="portLabel" />
             <TextField fx:id="portField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -142,7 +142,7 @@
             <String fx:value="left_label_holder" />
          </styleClass>
       </StackPane>
-      <StackPane onMouseClicked="#sidLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+      <StackPane onMouseClicked="#sidLabelClick" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
          <children>
             <Label fx:id="sidLabel" />
             <TextField fx:id="sidField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -152,7 +152,7 @@
             <String fx:value="left_label_holder" />
          </styleClass>
       </StackPane>
-      <StackPane onMouseClicked="#sidCatPassLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="9">
+      <StackPane onMouseClicked="#sidCatPassLabelClick" prefHeight="150.0" GridPane.rowIndex="9">
          <children>
             <Label fx:id="sidCatLabel" text="SID" />
             <ChoiceBox fx:id="sidCatChoiceBox" prefWidth="150.0" visible="false" />
@@ -162,7 +162,7 @@
             <String fx:value="right_label_holder" />
          </styleClass>
       </StackPane>
-      <StackPane onMouseClicked="#nameLabelClick" prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2">
+      <StackPane onMouseClicked="#nameLabelClick" prefHeight="150.0" GridPane.columnSpan="2">
          <children>
             <Label fx:id="nameLabel" />
             <TextField fx:id="nameField" onKeyPressed="#fieldEnterPressed" visible="false" />
@@ -172,8 +172,8 @@
             <String fx:value="center_label_holder" />
          </styleClass>
       </StackPane>
-      <VBox fx:id="componentsBox" maxHeight="1.7976931348623157E308" GridPane.columnSpan="2" GridPane.rowIndex="10" />
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+      <VBox fx:id="componentsBox" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+      <HBox prefHeight="100.0" spacing="10.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
          <children>
             <RadioButton fx:id="hasDBButton" mnemonicParsing="false" text="Has database?" />
             <RadioButton fx:id="isSQLButton" mnemonicParsing="false" text="Is SQL?" />
@@ -185,8 +185,8 @@
       </HBox>
    </children>
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="80.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="175.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0" prefWidth="80.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="175.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints vgrow="NEVER" />

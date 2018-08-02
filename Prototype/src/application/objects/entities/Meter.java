@@ -37,6 +37,11 @@ public class Meter implements Entry {
 	}
 	
 	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	@Override
 	public TableType getType() {
 		return TableType.Meters;
 	}

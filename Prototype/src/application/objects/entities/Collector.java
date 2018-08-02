@@ -2,6 +2,7 @@ package application.objects.entities;
 
 import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 
 public class Collector implements Entry {
 	
@@ -13,10 +14,12 @@ public class Collector implements Entry {
 	private SimpleStringProperty type;
 	private SimpleStringProperty loc;
 	private SimpleStringProperty notes;
+	private SimpleStringProperty username;
+	private SimpleStringProperty password;
 	
 	private boolean changed;
 
-	public Collector(int id, String ipString, String radiosString, String netIDString, String appString, String typeString, String locString, String commentString) {
+	public Collector(int id, String ipString, String radiosString, String netIDString, String appString, String typeString, String locString, String commentString, String userString, String passString) {
 		this.id = id;
 		
 		ip = new SimpleStringProperty(ipString);
@@ -26,8 +29,34 @@ public class Collector implements Entry {
 		type = new SimpleStringProperty(typeString);
 		loc = new SimpleStringProperty(locString);
 		notes = new SimpleStringProperty(commentString);
-		
+		username = new SimpleStringProperty(userString);
+		password = new SimpleStringProperty(passString);
 	}
+	
+	public SimpleStringProperty username() {
+		return username;
+	}
+	
+	public String getUsername() {
+		return username.get();
+	}
+	
+	public void setUsername(String username) {
+		this.username.set(username);
+	}
+	
+	public SimpleStringProperty password() {
+		return password;
+	}
+	
+	public String getPassword() {
+		return password.get();
+	}
+	
+	public void setPassword(String password) {
+		this.password.set(password);
+	}
+	
 	@Override
 	public TableType getType() {
 		return TableType.Collectors;
@@ -36,6 +65,11 @@ public class Collector implements Entry {
 	@Override
 	public int getId() {
 		return id;
+	}
+	
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	@Override
@@ -116,5 +150,17 @@ public class Collector implements Entry {
 	@Override
 	public boolean identifierNotNull() {
 		return ip.get() != null;
+	}
+
+	public SimpleStringProperty netId() {
+		return netId;
+	}
+
+	public SimpleStringProperty type() {
+		return type;
+	}
+
+	public SimpleStringProperty radios() {
+		return radios;
 	}
 }

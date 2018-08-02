@@ -10,7 +10,7 @@ public class Component {
 		CAPABILTYSERVICES,
 		CENTRALSERVICES,
 		CM,
-		COLLECTOR,
+		AMS,
 		COMMANDCENTER,
 		GSIS,
 		M2M,

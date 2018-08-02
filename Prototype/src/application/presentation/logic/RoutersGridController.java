@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 public class RoutersGridController extends DeviceGridController {
@@ -82,24 +83,7 @@ public class RoutersGridController extends DeviceGridController {
 	
 	
 	@FXML
-	private void save(ActionEvent event) {
-		save();
-	}
-	
-	@FXML
-	private void refresh(ActionEvent event) {
-		refresh();
-	}
-	
-	@FXML
-	private void add(ActionEvent event) {
-		startAdd();
-	}
-	
-	@FXML
-	private void remove(ActionEvent event) {
-		remove();
-	}
+	private TextField searchRoutersField;
 	
 	public RoutersGridController() {
 		super(DeviceGridController.TableType.Routers);
@@ -133,6 +117,8 @@ public class RoutersGridController extends DeviceGridController {
 		
 		this.addButton = addRoutersButton;
 		this.cancelAddButton = cancelAddRoutersButton;
+		
+		this.searchField = searchRoutersField;
 	}
 
 	@Override

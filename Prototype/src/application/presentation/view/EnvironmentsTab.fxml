@@ -16,42 +16,16 @@
         	<content>
           		<AnchorPane minHeight="0.0" minWidth="0.0">
               		<children>
-		      			<Accordion fx:id="environmentsAccordion" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="30.0" />
+		      			<Accordion fx:id="environmentsAccordion" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="70.0" />
+                  <HBox spacing="5.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="25.0">
+                     <children>
+                        <Label text="Search CC Version :   " />
+                        <TextField fx:id="ccVersionSearchField" />
+                     </children>
+                  </HBox>
               		</children>
            		</AnchorPane>
        		</content>
      	</ScrollPane>
    </center>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#saveEnvironment" text="Save Environment" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" fx:id="addControl" text="Add" />
-                  <Menu mnemonicParsing="false" fx:id="addComponentMenu" text="Add Component" visible="false">
-                    <items>
-                      <MenuItem mnemonicParsing="false" onAction="#addCommandCenter" text="Command Center" />
-                      <MenuItem mnemonicParsing="false" onAction="#addCentralServices" text="Central Services" />
-                      <MenuItem mnemonicParsing="false" onAction="#addSBS" text="SBS" />
-                      <MenuItem mnemonicParsing="false" onAction="#addNMS" text="NMS" />
-                      <MenuItem mnemonicParsing="false" onAction="#addPANA" text="PANA" />
-                      <MenuItem mnemonicParsing="false" onAction="#addGSIS" text="GSIS" />
-                      <MenuItem mnemonicParsing="false" onAction="#addABNT" text="ABNT" />
-                      <MenuItem mnemonicParsing="false" onAction="#addCM" text="CM" />
-                      <MenuItem mnemonicParsing="false" onAction="#addCapabilityServices" text="Capability Services" />
-                      <MenuItem mnemonicParsing="false" onAction="#addANSI" text="ANSI" />
-                      <MenuItem mnemonicParsing="false" onAction="#addM2M" text="M2M" />
-                    </items>
-                  </Menu>
-                  <MenuItem mnemonicParsing="false" fx:id="deleteControl" text="Delete" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
 </BorderPane>

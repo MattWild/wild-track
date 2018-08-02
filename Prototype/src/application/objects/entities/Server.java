@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import application.database.DataController;
+import application.objects.entities.Component.ComponentType;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -51,7 +52,7 @@ public class Server {
 		sysUser = new SimpleStringProperty();
 		sysPass = new SimpleStringProperty();
 		sid = new SimpleStringProperty();
-		usesSID = new SimpleBooleanProperty();
+		usesSID = new SimpleBooleanProperty(true);
 		port = new SimpleIntegerProperty();
 	}
 
@@ -231,8 +232,30 @@ public class Server {
 		return components;
 	}
 
-	public void addComponent(Component component) {
+	public void addComponent(Component component) throws Exception {
+		if (component.getType() == ComponentType.CENTRALSERVICES) {
+			if (parentEnvironment.getCentralServices() == null)
+				parentEnvironment.setCentralServices(component);
+			else
+				throw new Exception("Cannot add more than one central service to environment.");
+		} else if (component.getType() == ComponentType.COMMANDCENTER) {
+			if (parentEnvironment.getCommandCenter() == null)
+				parentEnvironment.setCommandCenter(component);
+			else
+				throw new Exception("Cannot add more than one command center to environment.");
+		}
+		
 		components.add(component);
+	}
+
+	public void removeComponent(Component component) {
+		if (component.getType() == ComponentType.CENTRALSERVICES) {
+			parentEnvironment.setCentralServices(null);
+		} else if (component.getType() == ComponentType.COMMANDCENTER) {
+			parentEnvironment.setCommandCenter(null);
+		}
+		
+		components.remove(component);
 	}
 	
 }

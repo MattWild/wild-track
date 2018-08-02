@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 public class SocketsGridController extends DeviceGridController {
@@ -64,24 +65,7 @@ public class SocketsGridController extends DeviceGridController {
 	private Button cancelAddSocketsButton;
 	
 	@FXML
-	private void save(ActionEvent event) {
-		save();
-	}
-	
-	@FXML
-	private void refresh(ActionEvent event) {
-		refresh();
-	}
-	
-	@FXML
-	private void add(ActionEvent event) {
-		startAdd();
-	}
-	
-	@FXML
-	private void remove(ActionEvent event) {
-		remove();
-	}
+	private TextField searchSocketsField;
 	
 	public SocketsGridController() {
 		super(DeviceGridController.TableType.Sockets);
@@ -111,6 +95,8 @@ public class SocketsGridController extends DeviceGridController {
 		
 		this.addButton = addSocketsButton;
 		this.cancelAddButton = cancelAddSocketsButton;
+		
+		this.searchField = searchSocketsField;
 	}
 
 

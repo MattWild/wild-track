@@ -14,24 +14,6 @@
    <children>
       <BorderPane>
          <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
-                        <MenuItem mnemonicParsing="false" onAction="#refresh" text="Refresh" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#add" text="Add New" />
-                        <MenuItem mnemonicParsing="false" onAction="#remove" text="Remove" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </top>
-         <center>
          	<GridPane fx:id="metersGrid" alignment="TOP_CENTER" stylesheets="@../../application.css" BorderPane.alignment="CENTER">
          	   <columnConstraints>
                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
@@ -49,6 +31,8 @@
          	     <RowConstraints maxHeight="108.0" minHeight="-Infinity" prefHeight="80.0" vgrow="NEVER" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="NEVER" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="NEVER" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" vgrow="NEVER" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="600.0" vgrow="ALWAYS" />
          	   </rowConstraints>
          	    <opaqueInsets>
@@ -127,7 +111,7 @@
                         <Insets left="10.0" right="10.0" />
                      </padding>
                   </VBox>
-                  <AnchorPane GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+                  <AnchorPane GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
                      <children>
                         <TableView fx:id="metersTable" editable="true" styleClass="noheader" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
@@ -174,9 +158,18 @@
                         <Insets left="20.0" />
                      </padding>
                   </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                     <children>
+                        <Label text="Search :   " />
+                        <TextField fx:id="searchMetersField"/>
+                     </children>
+                  </HBox>
          	    </children>
          	 </GridPane>
-         </center>
+         </top>
       </BorderPane>
    </children>
 </AnchorPane>

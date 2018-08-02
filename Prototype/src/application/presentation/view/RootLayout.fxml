@@ -13,12 +13,17 @@
    <center>
       <TabPane fx:id="tabPane" prefHeight="800.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Environments">
+          <Tab fx:id="environmentsTab" text="Environments">
           	<content>       	
 				<AnchorPane />
           	</content>
           </Tab>
-          <Tab text="Meters">
+            <Tab fx:id="checkpointsTab" text="Checkpoints">
+               <content>
+                  <AnchorPane />
+               </content>
+            </Tab>
+          <Tab fx:id="metersTab" text="Meters">
           	<content>
               <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
@@ -26,7 +31,7 @@
                      </children></AnchorPane>
             </content>
            </Tab>
-          <Tab text="Collectors">
+          <Tab fx:id="collectorsTab" text="Collectors">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -34,7 +39,7 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab text="Routers">
+            <Tab fx:id="routersTab" text="Routers">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -42,7 +47,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab text="HAN Devices">
+            <Tab fx:id="hanTab" text="HAN Devices">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -50,7 +55,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab text="Sockets">
+            <Tab fx:id="socketsTab" text="Sockets">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -62,10 +67,42 @@
       </TabPane>
    </center>
    <top>
-      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <items>
-          <Button mnemonicParsing="false" onMouseClicked="#pull" text="Pull Data From Environments" />
-        </items>
-      </ToolBar>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="saveAllControl" mnemonicParsing="false" text="Save All" />
+                  <MenuItem fx:id="saveControl" mnemonicParsing="false" text="Save" />
+                  <MenuItem fx:id="pullAllDeviceDataControl" mnemonicParsing="false" text="Pull All Device Data" />
+                  <MenuItem fx:id="pullDeviceDataControl" mnemonicParsing="false" text="Pull Device Data" />
+                  <MenuItem fx:id="pullAllComponentDataControl" mnemonicParsing="false" text="Pull All Component Data" />
+                  <MenuItem fx:id="pullComponentDataControl" mnemonicParsing="false" text="Pull Component Data" />
+                  <MenuItem onAction="#showSettings" mnemonicParsing="false" text="Preferences" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem fx:id="addControl" mnemonicParsing="false" text="Add" />
+                  <Menu fx:id="addComponentMenu" mnemonicParsing="false" text="Add Component">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#addCommandCenter" text="Command Center" />
+                      <MenuItem mnemonicParsing="false" onAction="#addCentralServices" text="Central Services" />
+                      <MenuItem mnemonicParsing="false" onAction="#addSBS" text="SBS" />
+                      <MenuItem mnemonicParsing="false" onAction="#addNMS" text="NMS" />
+                      <MenuItem mnemonicParsing="false" onAction="#addPANA" text="PANA" />
+                      <MenuItem mnemonicParsing="false" onAction="#addGSIS" text="GSIS" />
+                      <MenuItem mnemonicParsing="false" onAction="#addABNT" text="ABNT" />
+                      <MenuItem mnemonicParsing="false" onAction="#addCM" text="CM" />
+                      <MenuItem mnemonicParsing="false" onAction="#addCapabilityServices" text="Capability Services" />
+                      <MenuItem mnemonicParsing="false" onAction="#addANSI" text="ANSI" />
+                      <MenuItem mnemonicParsing="false" onAction="#addAMS" text="AMS" />
+                      <MenuItem mnemonicParsing="false" onAction="#addM2M" text="M2M" />
+                    </items>
+                  </Menu>
+                  <MenuItem fx:id="deleteControl" mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
    </top>
 </BorderPane>

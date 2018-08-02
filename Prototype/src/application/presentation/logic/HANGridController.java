@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 public class HANGridController extends DeviceGridController {
@@ -74,24 +75,7 @@ public class HANGridController extends DeviceGridController {
 	private Button cancelAddHANButton;
 	
 	@FXML
-	private void save(ActionEvent event) {
-		save();
-	}
-	
-	@FXML
-	private void refresh(ActionEvent event) {
-		refresh();
-	}
-	
-	@FXML
-	private void add(ActionEvent event) {
-		startAdd();
-	}
-	
-	@FXML
-	private void remove(ActionEvent event) {
-		remove();
-	}
+	private TextField searchHANField;
 	
 	public HANGridController() {
 		super(DeviceGridController.TableType.HANDevices);
@@ -124,6 +108,8 @@ public class HANGridController extends DeviceGridController {
 		
 		this.addButton = addHANButton;
 		this.cancelAddButton = cancelAddHANButton;
+		
+		this.searchField = searchHANField;
 	}
 
 

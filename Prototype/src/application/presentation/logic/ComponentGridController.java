@@ -1,7 +1,14 @@
 package application.presentation.logic;
 
+import application.Main;
 import application.objects.entities.Component;
+import application.objects.entities.Component.ComponentType;
+import application.objects.entities.VersionAlias;
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -13,6 +20,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 
 public class ComponentGridController {
 	
@@ -59,10 +67,16 @@ public class ComponentGridController {
 	}
 	
 	private Component component;
+	private Main main;
+	
+	public void setMain(Main main) {
+		this.main = main;
+	}
 	
 	public void setComponent(Component component) {
 		this.component = component;
 		
+		grid.setMaxHeight(55);
 		switch (component.getType()) {
 		case ABNT:
 			componentLabel.setText("ABNT");
@@ -80,8 +94,8 @@ public class ComponentGridController {
 		case CM:
 			componentLabel.setText("CM");
 			break;
-		case COLLECTOR:
-			componentLabel.setText("Collector");
+		case AMS:
+			componentLabel.setText("AMS");
 			break;
 		case COMMANDCENTER:
 			componentLabel.setText("Command Center");
@@ -115,36 +129,15 @@ public class ComponentGridController {
 	}
 	
 	private void hideVersion() {
-		for (Node child : grid.getChildren()) {
-			if (GridPane.getRowIndex(child) != null) {
-				if (GridPane.getRowIndex(child) == 1) {
-					child.setVisible(false);
-				}
-			}
-		}
-		grid.getRowConstraints().get(1).setMaxHeight(0);
+		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 1);
 	}
 	
 	private void hideUsername() {
-		for (Node child : grid.getChildren()) {
-			if (GridPane.getRowIndex(child) != null) {
-				if (GridPane.getRowIndex(child) == 2) {
-					child.setVisible(false);
-				}
-			}
-		}
-		grid.getRowConstraints().get(2).setMaxHeight(0);
+		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 2);
 	}
 	
 	private void hidePassword() {
-		for (Node child : grid.getChildren()) {
-			if (GridPane.getRowIndex(child) != null) {
-				if (GridPane.getRowIndex(child) == 2) {
-					child.setVisible(false);
-				}
-			}
-		}
-		grid.getRowConstraints().get(2).setMaxHeight(0);
+		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 3);
 	}
 	
 	public Component getComponent() {
@@ -154,6 +147,7 @@ public class ComponentGridController {
 	@FXML
 	private void componentBoxClicked(MouseEvent event) {
 		componentLabelBox.requestFocus();
+		System.out.println(grid.getHeight() + " " + grid.getMaxHeight() + grid.getPrefHeight());
 	}
 	
 	
@@ -166,15 +160,38 @@ public class ComponentGridController {
 		component.user().bindBidirectional(userField.textProperty());
 		component.pass().bindBidirectional(passField.textProperty());
 		
-		versionLabel.textProperty().bind(versionField.textProperty());
+		if (component.getType() == ComponentType.COMMANDCENTER) {
+			ObservableMap<String, VersionAlias> mapping = main.getObjectLayer().getAliasMapping();
+			
+			if (mapping.containsKey(component.getVersion()))
+				versionLabel.setText(mapping.get(component.getVersion()).getAlias());
+			else 
+				versionLabel.setText(component.getVersion());
+			
+			mapping.addListener((MapChangeListener.Change<? extends String, ? extends VersionAlias> change) -> {
+				if (mapping.containsKey(component.getVersion()))
+					versionLabel.setText(mapping.get(component.getVersion()).getAlias());
+				else 
+					versionLabel.setText(component.getVersion());
+			});
+		} else 
+			versionLabel.textProperty().bind(versionField.textProperty());
 		userLabel.textProperty().bind(userField.textProperty());
 		passLabel.textProperty().bind(passField.textProperty());
 	}
 
 	@FXML
 	public void versionLabelClick(MouseEvent event) {
-		versionField.setVisible(true);
-		versionField.requestFocus();
+		if (!(component.getType() == ComponentType.COMMANDCENTER ||
+				component.getType() == ComponentType.SBS ||
+				component.getType() == ComponentType.ANSI ||
+				component.getType() == ComponentType.ABNT ||
+				component.getType() == ComponentType.CM || 
+				component.getType() == ComponentType.CAPABILTYSERVICES ||
+				component.getType() == ComponentType.M2M)) {
+			versionField.setVisible(true);
+			versionField.requestFocus();
+		}
 	}
 	
 	@FXML

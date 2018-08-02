@@ -14,76 +14,125 @@ import javafx.scene.layout.Region;
 
 public class MainDataController extends DataController {
 	
-	public MainDataController(String ipAddress, String user, String pass, String dbName) throws SQLException, ClassNotFoundException {
-		initSQLDB(ipAddress, user, pass, dbName);
+	private static final String IP_ADDRESS = "10.1.220.223";
+	private static final String USERNAME = "EscalationsTeam";
+	private static final String PASSWORD = "1Esc2ala!tions";
+	private static final String DATABASE_NAME  = "EnvironmentManagement";
+	
+	public MainDataController() throws SQLException, ClassNotFoundException {
+		initSQLDB(IP_ADDRESS, USERNAME, PASSWORD, DATABASE_NAME);
 	}
 
-	public void updateTableFromEnvironment(TableType type, List<List<Object>> values) throws SQLException {
-		PreparedStatement stmt = null;
-		switch (type) {
-		case Meters:
-			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromEnvironment ?,?,?,?,?");
-			break;
-			
-		case Routers:
-			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromEnvironment ?,?,?,?");
-			break;
-			
-		default:
-			break;
-		}
-		Iterator<List<Object>> iter = values.iterator();
+	public List<List<Object>> getEnvironmentConnectionParameters() throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC EnvironmentConnectionParameters");
+		ResultSet set = stmt.executeQuery();
 		
-		while (iter.hasNext()) {
-			List<Object> record = iter.next();
-			
-			for (int i = 0 ; i < record.size(); i++) {
-				stmt.setObject(i+1, record.get(i));
+		ArrayList<List<Object>> results = new ArrayList<List<Object>>();
+		
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> fields = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				fields.add(set.getObject(j + 1));
 			}
-			stmt.addBatch();
-		} 
+			results.add(fields);
+		}
 		
-		stmt.executeBatch();
+		return results;
+	}
+
+	public List<List<Object>> getEnvironmentsData() throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC EnvironmentDetails");
+		ResultSet set = stmt.executeQuery();
+		
+		ArrayList<List<Object>> results = new ArrayList<List<Object>>();
+		
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> fields = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				fields.add(set.getObject(j + 1));
+			}
+			results.add(fields);
+		}
+		
+		return results;
+	}
+
+	public List<List<Object>> getServersByEnvironment(int environmentId) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetServersByEnvironment ?");
+		
+		stmt.setInt(1, environmentId);
+		
+		ResultSet set = stmt.executeQuery();
+	
+		List<List<Object>> results = new ArrayList<List<Object>>();
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> details = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				details.add(set.getObject(j + 1));
+			}
+			results.add(details);
+		}
+		
+		return results;
+	}
+
+	public List<List<Object>> getComponentsByServer(int serverId) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetComponentsByServer ?");
+		stmt.setInt(1, serverId);
+		
+		ResultSet set = stmt.executeQuery();
+	
+		List<List<Object>> results = new ArrayList<List<Object>>();
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> record = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				record.add(set.getObject(j + 1));
+			}
+			results.add(record);
+		}
+		
+		return results;
 	}
 	
-	public void updateTableFromTable(TableType type, List<List<Object>> values) throws SQLException {
-		System.out.println(values);
+	public List<List<Object>> getVersionAliases() throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetVersionAliases");
 		
-		PreparedStatement stmt = null;
-		switch (type) {
-		case Meters:
-			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromApp ?,?,?,?");
-			break;
-			
-		case Collectors:
-			stmt = db.generatePreparedSatement("EXEC UpdateCollectorsFromApp ?,?,?,?,?,?,?,?");
-			break;
-			
-		case Routers:
-			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromApp ?,?,?");
-			break;
-			
-		case HANDevices:
-			stmt = db.generatePreparedSatement("EXEC UpdateHanDevicesFromApp ?,?,?,?,?,?,?");
-			break;
-			
-		case Sockets:
-			stmt = db.generatePreparedSatement("EXEC UpdateSocketsFromApp ?,?,?,?,?");
-			break;
+		ResultSet set = stmt.executeQuery();
+	
+		List<List<Object>> results = new ArrayList<List<Object>>();
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> record = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				record.add(set.getObject(j + 1));
+			}
+			results.add(record);
 		}
 		
-		Iterator<List<Object>> iter = values.iterator();
+		return results;
+	}
+	
+	public List<List<Object>> getCheckpointsByEnvironment(int environmentId) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetCheckpointsByEnvironment ?");
+		stmt.setInt(1, environmentId);
 		
-		while (iter.hasNext()) {
-			List<Object> record = iter.next();
-			
-			for (int i = 0 ; i < record.size(); i++) {
-				stmt.setObject(i + 1, record.get(i));
+		ResultSet set = stmt.executeQuery();
+	
+		List<List<Object>> results = new ArrayList<List<Object>>();
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> record = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				record.add(set.getObject(j + 1));
 			}
-			stmt.addBatch();
-		} 
+			results.add(record);
+		}
 		
-		stmt.executeBatch();
+		return results;
 	}
 
 	public List<List<Object>> getTableData(TableType type) throws SQLException {
@@ -125,182 +174,227 @@ public class MainDataController extends DataController {
 		return values;
 	}
 
-	public List<Object> getDistinctColumn(TableType type, int indexOf) throws SQLException {
+	public void updateEnvironments(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateEnvironmentFromApp ?,?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+
+	public void updateServers(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateServerFromApp ?,?,?,?,?,?,?,?,?,?,?,?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				System.out.println(record.get(i));
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+
+	public void updateComponents(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateComponentFromApp ?,?,?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+	
+	public void updateVersionAliases(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateVersionAlias ?,?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+	
+	public void updateCheckpoints(List<List<Object>> records) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateCheckpointFromApp ?,?");
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+
+	public void updateTableFromTable(TableType type, List<List<Object>> values) throws SQLException {
+		System.out.println(values);
+		
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
-			switch (indexOf) {
-			case 0:
-				stmt = db.generatePreparedSatement("EXEC DistinctMeterLAN");
-				break;
-			
-			case 1:
-				stmt = db.generatePreparedSatement("EXEC DistinctMeterName");
-				break;
-				
-			case 2:
-				stmt = db.generatePreparedSatement("EXEC DistinctMeterType");
-				break;
-				
-			case 3:
-				stmt = db.generatePreparedSatement("EXEC DistinctMeterNetworkID");
-				break;
-				
-			case 4:
-				stmt = db.generatePreparedSatement("EXEC DistinctMeterLocation");
-				break;
-				
-			case 5:
-				stmt = db.generatePreparedSatement("EXEC DistinctMeterSocket");
-				break;
-			}
+			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromApp ?,?,?,?");
 			break;
 			
 		case Collectors:
-			switch (indexOf) {
-			case 0:
-				stmt = db.generatePreparedSatement("EXEC DistinctCollectorIP");
-				break;
-			
-			case 1:
-				stmt = db.generatePreparedSatement("EXEC DistinctCollectorRadios");
-				break;
-				
-			case 2:
-				stmt = db.generatePreparedSatement("EXEC DistinctCollectorApp");
-				break;
-				
-			case 3:
-				stmt = db.generatePreparedSatement("EXEC DistinctCollectorType");
-				break;
-				
-			case 4:
-				stmt = db.generatePreparedSatement("EXEC DistinctCollectorLocation");
-				break;
-			}
+			stmt = db.generatePreparedSatement("EXEC UpdateCollectorsFromApp ?,?,?,?,?,?,?,?,?,?");
 			break;
 			
 		case Routers:
-			switch (indexOf) {
-			case 0:
-				stmt = db.generatePreparedSatement("EXEC DistinctRouterLAN");
-				break;
-			
-			case 1:
-				stmt = db.generatePreparedSatement("EXEC DistinctRouterNetworkID");
-				break;
-				
-			case 2:
-				stmt = db.generatePreparedSatement("EXEC DistinctRouterRadioType");
-				break;
-				
-			case 3:
-				stmt = db.generatePreparedSatement("EXEC DistinctRouterLocation");
-				break;
-			}
+			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromApp ?,?,?");
 			break;
 			
 		case HANDevices:
-			switch (indexOf) {
-			case 0:
-				stmt = db.generatePreparedSatement("EXEC DistinctHANDeviceUnitID");
-				break;
-			
-			case 1:
-				stmt = db.generatePreparedSatement("EXEC DistinctHANDeviceName");
-				break;
-				
-			case 2:
-				stmt = db.generatePreparedSatement("EXEC DistinctHANDeviceLocation");
-				break;
-			}
+			stmt = db.generatePreparedSatement("EXEC UpdateHanDevicesFromApp ?,?,?,?,?,?,?");
 			break;
 			
 		case Sockets:
-			switch (indexOf) {
-			case 0:
-				stmt = db.generatePreparedSatement("EXEC DistinctSocketID");
-				break;
-			
-			case 1:
-				stmt = db.generatePreparedSatement("EXEC DistinctSocketForm");
-				break;
-				
-			case 2:
-				stmt = db.generatePreparedSatement("EXEC DistinctSocketLoadNoLoad");
-				break;
-				
-			case 3:
-				stmt = db.generatePreparedSatement("EXEC DistinctSocketLocation");
-				break;
-			}
+			stmt = db.generatePreparedSatement("EXEC UpdateSocketsFromApp ?,?,?,?,?");
 			break;
 		}
 		
-		ResultSet set = stmt.executeQuery();
-		List<Object> results = new ArrayList<Object>();
+		Iterator<List<Object>> iter = values.iterator();
 		
-		while (set.next()) {
-			results.add(set.getString(1));
-		}
-		
-		return results;
-	}
-	
-	public List<List<Object>> getEnvironmentConnectionParameters() throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC EnvironmentConnectionParameters");
-		ResultSet set = stmt.executeQuery();
-		
-		ArrayList<List<Object>> results = new ArrayList<List<Object>>();
-		
-		int columnNum = set.getMetaData().getColumnCount();
-		while (set.next()) {
-			List<Object> fields = new ArrayList<Object>();
-			for (int j = 0; j < columnNum; j++) {
-				fields.add(set.getObject(j + 1));
+		while (iter.hasNext()) {
+			List<Object> record = iter.next();
+			
+			for (int i = 0 ; i < record.size(); i++) {
+				stmt.setObject(i + 1, record.get(i));
 			}
-			results.add(fields);
-		}
+			stmt.addBatch();
+		} 
 		
-		return results;
-	}
-	
-	public List<List<Object>> getEnvironmentsData() throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC EnvironmentDetails");
-		ResultSet set = stmt.executeQuery();
-		
-		ArrayList<List<Object>> results = new ArrayList<List<Object>>();
-		
-		int columnNum = set.getMetaData().getColumnCount();
-		while (set.next()) {
-			List<Object> fields = new ArrayList<Object>();
-			for (int j = 0; j < columnNum; j++) {
-				fields.add(set.getObject(j + 1));
-			}
-			results.add(fields);
-		}
-		
-		return results;
+		stmt.executeBatch();
 	}
 
-	
-	public int getEnvironmentID(int crc) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement(Queries.environmentIDfromCRC(true));
-		stmt.setInt(1, crc);
+	public void updateTableFromEnvironment(TableType type, List<List<Object>> values) throws SQLException {
+		PreparedStatement stmt = null;
+		switch (type) {
+		case Meters:
+			stmt = db.generatePreparedSatement("EXEC UpdateMetersFromEnvironment ?,?,?,?,?");
+			break;
+			
+		case Routers:
+			stmt = db.generatePreparedSatement("EXEC UpdateRoutersFromEnvironment ?,?,?,?");
+			break;
+			
+		default:
+			break;
+		}
+		Iterator<List<Object>> iter = values.iterator();
 		
-		ResultSet set = stmt.executeQuery();
-		set.next();
+		while (iter.hasNext()) {
+			List<Object> record = iter.next();
+			
+			for (int i = 0 ; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			stmt.addBatch();
+		} 
 		
-		return set.getInt(1);
+		stmt.executeBatch();
 	}
-
+	
 	public void clearEnvironRelationships() throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement(Queries.clearEnvironmentRelations(true));
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC ClearEnvironmentRelations");
 			
 		stmt.executeUpdate();
 	}
-	Region regio;
-	public void add(TableType type, List<List<Object>> values) throws SQLException {
+	
+	public int addEnvironment(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddEnvironment ?");
+	
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(0));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+
+	public int addServer(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddServer ?,?");
+	
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(i));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+
+	public int addComponent(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddComponent ?,?");
+	
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(i));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+	
+	public int addVersionAlias(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddVersionAlias ?,?");
+	
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(i));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+	
+	public int addCheckpoint(List<Object> values) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddCheckpoint ?,?");
+	
+		for(int i = 0; i < values.size(); i++) {
+			stmt.setObject(i+1, values.get(i));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+
+	public int addDevices(TableType type, List<Object> values) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
 		case Meters:
@@ -324,21 +418,78 @@ public class MainDataController extends DataController {
 			break;
 		}
 		
-		System.out.println(values);
-		Iterator<List<Object>> iter = values.iterator();
+		for (int i = 0 ; i < values.size(); i++) {
+			stmt.setObject(i + 1, values.get(i));
+		}
+		ResultSet set = stmt.executeQuery();
 		
-		while (iter.hasNext()) {
-			List<Object> record = iter.next();
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		return id;
+	}
+
+	public void deleteEnvironments(List<Integer> ids) throws SQLException{	
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC DeleteEnvironment ?");
+		
+		for(Integer id : ids) {
+			stmt.setInt(1, id);
 			
-			for (int i = 0 ; i < record.size(); i++) {
-				stmt.setObject(i + 1, record.get(i));
-			}
 			stmt.addBatch();
-		} 
+		}
+		
+		stmt.executeBatch();
+	}
+
+	public void deleteServers(List<Integer> ids) throws SQLException{	
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC DeleteServer ?");
+		
+		for(Integer id : ids) {
+			stmt.setInt(1, id);
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+
+	public void deleteComponents(List<Integer> ids) throws SQLException{	
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC DeleteComponent ?");
+		
+		for(Integer id : ids) {
+			stmt.setInt(1, id);
+			
+			stmt.addBatch();
+		}
 		
 		stmt.executeBatch();
 	}
 	
+	public void deleteVersionAliases(List<Integer> ids) throws SQLException{	
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC DeleteVersionAlias ?");
+		
+		for(Integer id : ids) {
+			stmt.setInt(1, id);
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+	
+	public void deleteCheckpoints(List<Integer> ids) throws SQLException{	
+		PreparedStatement stmt = db.generatePreparedSatement("EXEC DeleteCheckpoint ?");
+		
+		for(Integer id : ids) {
+			stmt.setInt(1, id);
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+	}
+
 	public void delete(TableType type, List<Integer> ids) throws SQLException {
 		PreparedStatement stmt = null;
 		switch (type) {
@@ -368,133 +519,5 @@ public class MainDataController extends DataController {
 		}
 		stmt.executeBatch();
 	}
-	
-	public List<List<Object>> getComponentsByServer(int serverId) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetComponentsByServer ?");
-		stmt.setInt(1, serverId);
-		
-		ResultSet set = stmt.executeQuery();
-
-		List<List<Object>> results = new ArrayList<List<Object>>();
-		int columnNum = set.getMetaData().getColumnCount();
-		while (set.next()) {
-			List<Object> record = new ArrayList<Object>();
-			for (int j = 0; j < columnNum; j++) {
-				record.add(set.getObject(j + 1));
-			}
-			results.add(record);
-		}
-		
-		return results;
-	}
-
-	public List<List<Object>> getServersByEnvironment(int environmentId) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC GetServersByEnvironment ?");
-		
-		stmt.setInt(1, environmentId);
-		
-		ResultSet set = stmt.executeQuery();
-
-		List<List<Object>> results = new ArrayList<List<Object>>();
-		int columnNum = set.getMetaData().getColumnCount();
-		while (set.next()) {
-			List<Object> details = new ArrayList<Object>();
-			for (int j = 0; j < columnNum; j++) {
-				details.add(set.getObject(j + 1));
-			}
-			results.add(details);
-		}
-		
-		return results;
-	}
-
-	public void updateEnvironmentFromApp(List<List<Object>> records) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateEnvironmentFromApp ?,?,?");
-		
-		for(List<Object> record : records) {
-			for(int i = 0; i < record.size(); i++) {
-				stmt.setObject(i+1, record.get(i));
-			}
-			
-			stmt.addBatch();
-		}
-		
-		stmt.executeBatch();
-	}
-	
-	public int addEnvironment(List<Object> values) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddEnvironment ?");
-
-		for(int i = 0; i < values.size(); i++) {
-			stmt.setObject(i+1, values.get(0));
-		}
-		ResultSet set = stmt.executeQuery();
-		
-		int id = -1;
-		while (set.next())
-			id = set.getInt(1);
-		
-		return id;
-	}
-	
-	public void updateComponentFromApp(List<List<Object>> records) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateComponentFromApp ?,?,?");
-		
-		for(List<Object> record : records) {
-			for(int i = 0; i < record.size(); i++) {
-				stmt.setObject(i+1, record.get(i));
-			}
-			
-			stmt.addBatch();
-		}
-		
-		stmt.executeBatch();
-	}
-	
-	public int addComponent(List<Object> values) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddComponent ?,?");
-
-		for(int i = 0; i < values.size(); i++) {
-			stmt.setObject(i+1, values.get(0));
-		}
-		ResultSet set = stmt.executeQuery();
-		
-		int id = -1;
-		while (set.next())
-			id = set.getInt(1);
-		
-		return id;
-	}
-	
-	public void updateServerFromApp(List<List<Object>> records) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC UpdateServerFromApp ?,?,?,?,?,?,?,?,?,?,?,?,?");
-		
-		for(List<Object> record : records) {
-			for(int i = 0; i < record.size(); i++) {
-				System.out.println(record.get(i));
-				stmt.setObject(i+1, record.get(i));
-			}
-			
-			stmt.addBatch();
-		}
-		
-		stmt.executeBatch();
-	}
-	
-	public int addServer(List<Object> values) throws SQLException {
-		PreparedStatement stmt = db.generatePreparedSatement("EXEC AddServer ?");
-
-		for(int i = 0; i < values.size(); i++) {
-			stmt.setObject(i+1, values.get(0));
-		}
-		ResultSet set = stmt.executeQuery();
-		
-		int id = -1;
-		while (set.next())
-			id = set.getInt(1);
-		
-		return id;
-	}
-
 
 }

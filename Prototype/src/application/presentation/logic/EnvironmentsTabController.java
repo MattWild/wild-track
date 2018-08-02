@@ -11,15 +11,19 @@ import application.objects.entities.Component.ComponentType;
 import application.objects.entities.Entry;
 import application.objects.entities.Environment;
 import application.objects.entities.Server;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener.Change;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Control;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 
 public class EnvironmentsTabController {
@@ -28,100 +32,20 @@ public class EnvironmentsTabController {
 	private Accordion environmentsAccordion;
 	
 	@FXML
-	private MenuItem addControl;
-	
-	@FXML
-	private Menu addComponentMenu;
-	
-	@FXML
-	private MenuItem deleteControl;
+	private TextField ccVersionSearchField;
 	
 	private Main main;
 
 	public void setMain(Main main) {
 		this.main = main;
-		
-
-		main.getPresentationLayer().focusedProperty().addListener((ObservableValue<? extends Node> change, Node oldNode, Node newNode)-> {
-			if (newNode != null) {
-				Object focused = newNode.getUserData();
-				
-				
-				System.out.println(newNode + " " + focused);
-				if (focused == null) {
-					addControl.setVisible(true);
-					addControl.setDisable(false);
-					addControl.setText("Add Environment");
-					addControl.setOnAction(action -> {
-						main.getObjectLayer().addEnvironment();
-					});
-					
-					addComponentMenu.setVisible(false);
-					addComponentMenu.setDisable(true);
-					
-					deleteControl.setDisable(true);
-				} else if (focused instanceof Environment) {
-					addControl.setVisible(true);
-					addControl.setDisable(false);
-					addControl.setText("Add Server");
-					addControl.setOnAction(action -> {
-						main.getObjectLayer().addServer((Environment) focused);
-					});
-	
-					addComponentMenu.setVisible(false);
-					addComponentMenu.setDisable(true);
-					
-					deleteControl.setDisable(false);
-					deleteControl.setOnAction(action -> {
-						main.getObjectLayer().deleteEnvironment((Environment) focused);
-					});
-				} else if (focused instanceof Server) {
-					addControl.setVisible(false);
-					addControl.setDisable(true);
-					
-					addComponentMenu.setVisible(true);
-					addComponentMenu.setDisable(false);
-					
-					deleteControl.setDisable(false);
-					deleteControl.setOnAction(action -> {
-						main.getObjectLayer().deleteServer((Server) focused);
-					});
-				} else if (focused instanceof Component) {
-					addControl.setVisible(true);
-					addControl.setDisable(true);
-					addControl.setText("Add");
-					
-					addComponentMenu.setVisible(false);
-					addComponentMenu.setDisable(true);
-					
-					deleteControl.setDisable(false);
-					deleteControl.setOnAction(action -> {
-						main.getObjectLayer().deleteComponent((Component) focused);
-					});
-				} else {
-					addControl.setVisible(true);
-					addControl.setDisable(false);
-					addControl.setText("Add Environment");
-					addControl.setOnAction(action -> {
-						main.getObjectLayer().addEnvironment();
-					});
-					
-					addComponentMenu.setVisible(false);
-					addComponentMenu.setDisable(true);
-					
-					deleteControl.setDisable(true);
-				}
-			}
-		});
-	}
-	
-	@FXML
-	public void initialize() {
-		addControl.setDisable(true);
-		deleteControl.setDisable(true);
 	}
 
 	public void populateTable() {
+		ccVersionSearchField.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER)
+				search();
+		});
+		
 		for (Environment environment : main.getObjectLayer().getEnvironments()) {
 			buildEnvironmentPane(environment);
 		}
@@ -146,6 +70,19 @@ public class EnvironmentsTabController {
 		});
 	}
 	
+	private void search() {
+		for (TitledPane envPane : environmentsAccordion.getPanes()) {
+			if (ccVersionSearchField.getText() == null || ccVersionSearchField.getText().length() == 0 || (
+					((Environment) envPane.getUserData()).getCommandCenter() != null && 
+					((Environment) envPane.getUserData()).getCommandCenter().getVersion() != null &&
+					((Environment) envPane.getUserData()).getCommandCenter().getVersion().contains(ccVersionSearchField.getText()))) {
+				envPane.setVisible(true);
+			} else {
+				envPane.setVisible(false);
+			}
+		}
+	}
+
 	private void buildEnvironmentPane(Environment environment) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -166,67 +103,15 @@ public class EnvironmentsTabController {
 		}
 	}
 	
-	@FXML
-	public void saveEnvironment() {
-		try {
-			main.getObjectLayer().saveEnvironment((Environment) environmentsAccordion.getExpandedPane().getUserData());
-		} catch (SQLException e) {
-			main.errorHandle(e);
+	public Environment getSelectedEnvironment() {
+		if (environmentsAccordion.getExpandedPane() != null) {
+			return (Environment) environmentsAccordion.getExpandedPane().getUserData();
+		} else {
+			return null;
 		}
 	}
-	
-	@FXML 
-	private void addCommandCenter() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.COMMANDCENTER);
-	}
-	
-	@FXML 
-	private void addCentralServices() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.CENTRALSERVICES);
-	}
-	
-	@FXML 
-	private void addSBS() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.SBS);
-	}
-	
-	@FXML 
-	private void addNMS() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.NMS);
-	}
-	
-	@FXML 
-	private void addPANA() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.PANA);
-	}
-	
-	@FXML 
-	private void addGSIS() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.GSIS);
-	}
-	
-	@FXML 
-	private void addABNT() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.ABNT);
-	}
-	
-	@FXML
-	private void addCM() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.CM);
-	}
-	
-	@FXML 
-	private void addANSI() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.ANSI);
-	}
-	
-	@FXML 
-	private void addCapabilityServices() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.CAPABILTYSERVICES);
-	}
-	
-	@FXML 
-	private void addM2M() {
-		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.M2M);
+
+	public ObjectProperty<TitledPane> selectedEnvironmentProperty() {
+		return environmentsAccordion.expandedPaneProperty();
 	}
 }

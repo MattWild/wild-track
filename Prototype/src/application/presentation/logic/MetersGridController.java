@@ -6,6 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
 public class MetersGridController extends DeviceGridController{
@@ -93,26 +96,9 @@ public class MetersGridController extends DeviceGridController{
 	@FXML
 	private Button cancelAddMeterButton;
 	
-	@FXML
-	private void save(ActionEvent event) {
-		save();
-	}
 	
 	@FXML
-	private void refresh(ActionEvent event) {
-		refresh();
-	}
-	
-	@FXML
-	private void add(ActionEvent event) {
-		startAdd();
-	}
-	
-	@FXML
-	private void remove(ActionEvent event) {
-		remove();
-	}
-	
+	private TextField searchMetersField;
 	
 	public MetersGridController() {
 		super(DeviceGridController.TableType.Meters);
@@ -152,6 +138,8 @@ public class MetersGridController extends DeviceGridController{
 		
 		this.addButton = addMeterButton;
 		this.cancelAddButton = cancelAddMeterButton;
+		
+		this.searchField = searchMetersField;
 	}
 
 

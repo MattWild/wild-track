@@ -32,6 +32,13 @@
 	-fx-pref-height: 50;
 }
 
+.checkpoint_environment_label_holder {
+	-fx-border-color: black;
+	-fx-body-color: lightblue;
+	-fx-background-color: -fx-body-color;
+	-fx-pref-height: 30;
+}
+
 .basic_label_holder TextField {
 	-fx-min-height: 20;
 	-fx-pref-height: 20;
@@ -60,8 +67,13 @@
 	-fx-font-size: 30;
 }
 
+.checkpoint_environment_label_holder Label {
+	-fx-font-size: 14;
+}
+
 .center_label_holder {
 	-fx-alignment: CENTER;
+	-fx-padding: 0 5 0 5;
 }
 
 .right_label_holder {
@@ -81,10 +93,21 @@
   	-fx-background-radius: 7, 6, 3;
 }
 
+.checkpoint_environment_label_holder:focused {
+  	-fx-background-color: lightblue, lightblue, blue; 
+  	-fx-background-insets: -2, -0.3, 2;
+  	-fx-background-radius: 7, 6, 3;
+}
+
+
 .component_label_holder:focused {
   	-fx-background-color: yellow, yellow, orange; 
   	-fx-background-insets: -2, -0.3, 2;
   	-fx-background-radius: 7, 6, 3;
+}
+
+.basic_label_holder:focused {
+	-fx-background-color: gray;
 }
 
 .left_label_holder {

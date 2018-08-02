@@ -179,7 +179,14 @@ public class Queries {
 	private static final String SQL_CLEARMETERENVIRONRELATIONS = "DELETE FROM AltEnvironmentRelations";
 	
 	private static final String ORACLE_CLEARMETERENVIRONRELATIONS = null;
-
+	
+	private static final String SQL_CCVERSIONINFO = "SELECT TOP 1 version FROM VersionHistory\r\n" + 
+			"ORDER BY versionId DESC";
+	
+	private static final String ORACLE_CCVERSIONINFO = "SELECT version FROM (\r\n" + 
+			"    SELECT * FROM VERSIONHISTORY ORDER BY versionId DESC)\r\n" + 
+			"WHERE rownum = 1";
+	
 	/*private static final String SQL_ADDNOTEENVIRONMENT = "DECLARE @endpointID int;\r\n" + 
 			"\r\n" + 
 			"BEGIN\r\n" + 
@@ -286,4 +293,12 @@ public class Queries {
 			return ORACLE_UPDATEENVIRONMENTROUTERS;
 		}
 	}*/
+	
+	public static String ccVersionInfoQuery(boolean sql) {
+		if (sql) {
+			return SQL_CCVERSIONINFO;
+		} else {
+			return ORACLE_CCVERSIONINFO;
+		}
+	}
 }

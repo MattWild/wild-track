@@ -35,6 +35,11 @@ public class HANDevice implements Entry {
 	public int getId() {
 		return id;
 	}
+	
+	@Override
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	@Override
 	public SimpleStringProperty getFieldProperty(int i) {

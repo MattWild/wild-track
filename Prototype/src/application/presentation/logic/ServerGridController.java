@@ -149,7 +149,7 @@ public class ServerGridController {
 		});
 		
 		
-		sidCatChoiceBox.getItems().addAll("Service Name", "SID");
+		sidCatChoiceBox.getItems().addAll("SID", "Service Name");
 		sidCatChoiceBox.focusedProperty().addListener((arg0, oldValue, newValue) -> {
 			if (newValue == false) sidCatChoiceBox.setVisible(false);
 		});
@@ -214,7 +214,7 @@ public class ServerGridController {
 		sysUserField.setText(server.sysUser().get());
 		sysPassField.setText(server.sysPass().get());
 		portField.setText(Integer.toString(server.port().get()));
-		sidCatChoiceBox.getSelectionModel().select((server.usesSid().get())? 1 : 0);
+		sidCatChoiceBox.getSelectionModel().select((server.usesSid().get())? 0 : 1);
 		sidField.setText(server.sid().get());
 		
 		server.name().bindBidirectional(nameField.textProperty());
@@ -232,12 +232,14 @@ public class ServerGridController {
 				server.indicateServiceName();
 			else 
 				server.indicateSID();
+			
+			System.out.println(newValue.intValue() + " " + server.usesSID());
 		});
 		
 		server.usesSid().addListener((arg, oldValue, newValue) -> {
-			if (newValue && sidCatChoiceBox.getSelectionModel().getSelectedIndex() != 1) {
+			if (newValue && sidCatChoiceBox.getSelectionModel().getSelectedIndex() != 0) {
 				sidCatChoiceBox.getSelectionModel().select(1);
-			} else if (sidCatChoiceBox.getSelectionModel().getSelectedIndex() != 0) {
+			} else if (sidCatChoiceBox.getSelectionModel().getSelectedIndex() != 1) {
 				sidCatChoiceBox.getSelectionModel().select(0);
 			}
 		});
@@ -264,6 +266,7 @@ public class ServerGridController {
 			ComponentGridController controller = loader.getController();
 			
 			controller.setComponent(component);
+			controller.setMain(main);
 			controller.initBindings();
 			componentGrid.setUserData(component);
 			componentsBox.getChildren().add(componentGrid);
