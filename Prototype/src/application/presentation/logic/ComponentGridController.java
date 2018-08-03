@@ -185,6 +185,19 @@ public class ComponentGridController {
 						change.getValueRemoved().alias().removeListener(aliasListener);
 				}
 			});
+			
+			component.version().addListener((arg, oldValue, newValue) -> {
+				if (mapping.containsKey(oldValue)) {
+					mapping.get(newValue).alias().removeListener(aliasListener);
+				}
+				
+				if (mapping.containsKey(newValue)) {
+					versionLabel.setText(mapping.get(newValue).getAlias());
+					
+					mapping.get(newValue).alias().addListener(aliasListener);
+				} else 
+					versionLabel.setText(newValue);
+			});
 		} else 
 			versionLabel.textProperty().bind(versionField.textProperty());
 		userLabel.textProperty().bind(userField.textProperty());
