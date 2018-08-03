@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import application.objects.entities.Component.ComponentType;
+import application.objects.entities.Collector;
+import application.objects.entities.Environment;
 import application.objects.entities.Server;
 import application.presentation.logic.DeviceGridController.TableType;
 import javafx.scene.layout.Region;
@@ -21,6 +23,73 @@ public class MainDataController extends DataController {
 	
 	public MainDataController() throws SQLException, ClassNotFoundException {
 		initSQLDB(IP_ADDRESS, USERNAME, PASSWORD, DATABASE_NAME);
+	}
+	
+	public List<Environment> loadEnvironments() throws SQLException {
+		List<Environment> result = new ArrayList<Environment>();
+		
+		List<List<Object>> records = executeQuery("EXEC EnvironmentDetails");
+		for (List<Object> record : records) {
+			Environment environment = new Environment((Integer) record.get(0), (String) record.get(1));
+			if (record.get(2) != null) {
+				environment.setCollector(new Collector((Integer) record.get(2), null, null, null, null, null, null, null, null, null));
+			}
+			
+			result.add(environment);
+		}
+		
+		return result;
+	}
+	
+	private void executeBatchUpdate(List<List<Object>> records, String stmtString) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement(stmtString);
+		
+		for(List<Object> record : records) {
+			for(int i = 0; i < record.size(); i++) {
+				stmt.setObject(i+1, record.get(i));
+			}
+			
+			stmt.addBatch();
+		}
+		
+		stmt.executeBatch();
+		
+		stmt.close();
+	}
+	
+	private List<List<Object>> executeQuery(String stmtString) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement(stmtString);
+		ResultSet set = stmt.executeQuery();
+		
+		ArrayList<List<Object>> results = new ArrayList<List<Object>>();
+		
+		int columnNum = set.getMetaData().getColumnCount();
+		while (set.next()) {
+			List<Object> fields = new ArrayList<Object>();
+			for (int j = 0; j < columnNum; j++) {
+				fields.add(set.getObject(j + 1));
+			}
+			results.add(fields);
+		}
+		stmt.close();
+		
+		return results;
+	}
+	
+	private int executeAddUpdate(List<Object> record, String stmtString) throws SQLException {
+		PreparedStatement stmt = db.generatePreparedSatement(stmtString);
+		
+		for(int i = 0; i < record.size(); i++) {
+			stmt.setObject(i+1, record.get(i));
+		}
+		ResultSet set = stmt.executeQuery();
+		
+		int id = -1;
+		while (set.next())
+			id = set.getInt(1);
+		
+		stmt.close();
+		return id;
 	}
 
 	public List<List<Object>> getEnvironmentConnectionParameters() throws SQLException {

@@ -8,7 +8,7 @@ import java.util.Map;
 import application.Main;
 import application.objects.entities.Component;
 import application.objects.entities.Component.ComponentType;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import application.objects.entities.Environment;
 import application.objects.entities.Server;
 import javafx.beans.property.ObjectProperty;
@@ -72,10 +72,13 @@ public class EnvironmentsTabController {
 	
 	private void search() {
 		for (TitledPane envPane : environmentsAccordion.getPanes()) {
-			if (ccVersionSearchField.getText() == null || ccVersionSearchField.getText().length() == 0 || (
-					((Environment) envPane.getUserData()).getCommandCenter() != null && 
-					((Environment) envPane.getUserData()).getCommandCenter().getVersion() != null &&
-					((Environment) envPane.getUserData()).getCommandCenter().getVersion().contains(ccVersionSearchField.getText()))) {
+			Component commandCenter = ((Environment) envPane.getUserData()).getCommandCenter();
+			String searchText = ccVersionSearchField.getText();
+			if (searchText == null || searchText.length() == 0 || (
+					commandCenter != null && commandCenter.getVersion() != null &&
+					(commandCenter.getVersion().contains(searchText) ||
+							(main.getObjectLayer().getAliasMapping().get(commandCenter.getVersion()) != null &&
+									main.getObjectLayer().getAliasMapping().get(commandCenter.getVersion()).getAlias().contains(searchText))))) {
 				envPane.setVisible(true);
 			} else {
 				envPane.setVisible(false);

@@ -4,7 +4,7 @@ import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
-public class Collector implements Entry {
+public class Collector implements Device {
 	
 	private int id;
 	private SimpleStringProperty ip;

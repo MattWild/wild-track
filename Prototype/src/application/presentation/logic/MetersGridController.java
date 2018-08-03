@@ -1,5 +1,5 @@
 package application.presentation.logic;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,78 +17,78 @@ public class MetersGridController extends DeviceGridController{
 	private GridPane metersGrid;
 	
 	@FXML
-	private TableView<Entry> metersTable;
+	private TableView<Device> metersTable;
 	
 	@FXML
-	private TableColumn<Entry,String> lanColumn;
+	private TableColumn<Device,String> lanColumn;
 	
 	@FXML 
 	private MenuButton lanFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> meterNameColumn;
+	private TableColumn<Device,String> meterNameColumn;
 	
 	@FXML
 	private MenuButton meterNameFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> meterTypeColumn;
+	private TableColumn<Device,String> meterTypeColumn;
 	
 	@FXML
 	private MenuButton meterTypeFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> netIdColumn;
+	private TableColumn<Device,String> netIdColumn;
 	
 	@FXML
 	private MenuButton networkIDFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> otherCRCsColumn;
+	private TableColumn<Device,String> otherCRCsColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> locColumn;
+	private TableColumn<Device,String> locColumn;
 	
 	@FXML
 	private MenuButton locationFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> socketColumn;
+	private TableColumn<Device,String> socketColumn;
 	
 	@FXML
 	private MenuButton socketFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> notesColumn;
+	private TableColumn<Device,String> notesColumn;
 	
 
 	
 	@FXML
-	private TableView<Entry> addMetersTable;
+	private TableView<Device> addMetersTable;
 	
 	@FXML
-	private TableColumn<Entry,String> addLanColumn;
+	private TableColumn<Device,String> addLanColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addMeterNameColumn;
+	private TableColumn<Device,String> addMeterNameColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addMeterTypeColumn;
+	private TableColumn<Device,String> addMeterTypeColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNetIdColumn;
+	private TableColumn<Device,String> addNetIdColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addOtherCRCsColumn;
+	private TableColumn<Device,String> addOtherCRCsColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addLocColumn;
+	private TableColumn<Device,String> addLocColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addSocketColumn;
+	private TableColumn<Device,String> addSocketColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNotesColumn;
+	private TableColumn<Device,String> addNotesColumn;
 	
 	@FXML
 	private Button addMeterButton;

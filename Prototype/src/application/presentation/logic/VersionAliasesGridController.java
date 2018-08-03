@@ -3,7 +3,7 @@ package application.presentation.logic;
 import java.sql.SQLException;
 
 import application.Main;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import application.objects.entities.VersionAlias;
 import application.presentation.PresentationLayer.EditingCell;
 import javafx.collections.FXCollections;

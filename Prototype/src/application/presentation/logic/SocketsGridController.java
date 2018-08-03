@@ -1,6 +1,6 @@
 package application.presentation.logic;
 
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,47 +16,47 @@ public class SocketsGridController extends DeviceGridController {
 	private GridPane socketsGrid;
 	
 	@FXML
-	private TableView<Entry> socketsTable;
+	private TableView<Device> socketsTable;
 	
 	@FXML
-	private TableColumn<Entry,String> idColumn;
+	private TableColumn<Device,String> idColumn;
 	
 	@FXML
 	private MenuButton idFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> formColumn;
+	private TableColumn<Device,String> formColumn;
 	
 	@FXML
 	private MenuButton formFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> nloadColumn;
+	private TableColumn<Device,String> nloadColumn;
 	
 	@FXML
 	private MenuButton nloadFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> locColumn;
+	private TableColumn<Device,String> locColumn;
 	
 	@FXML
 	private MenuButton locationFilter;
 	
 	
 	@FXML
-	private TableView<Entry> addSocketsTable;
+	private TableView<Device> addSocketsTable;
 	
 	@FXML
-	private TableColumn<Entry,String> addIdColumn;
+	private TableColumn<Device,String> addIdColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addFormColumn;
+	private TableColumn<Device,String> addFormColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNloadColumn;
+	private TableColumn<Device,String> addNloadColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addLocColumn;
+	private TableColumn<Device,String> addLocColumn;
 	
 	@FXML
 	private Button addSocketsButton;

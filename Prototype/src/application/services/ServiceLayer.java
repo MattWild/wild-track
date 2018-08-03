@@ -1,9 +1,13 @@
 package application.services;
 
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.rpc.ServiceException;
 
 import application.Main;
 import application.objects.entities.Component;
@@ -53,7 +57,12 @@ public class ServiceLayer {
 						}
 					}
 				} catch (Exception e) {
-					main.errorHandle(e);
+					String errorDetail = "";
+					
+					if (e instanceof SQLException)
+						errorDetail = ", sql query or queries failed";
+					
+					main.errorHandle("Could not retrieve device data from " + environment.getName() + errorDetail,e.getMessage());
 				}
 			}
 	}
@@ -69,7 +78,13 @@ public class ServiceLayer {
 							main.getMainDBController().updateComponents(service.getData());
 						}
 					} catch (Exception e) {
-						main.errorHandle(e);
+						String errorDetail = "";
+						if (e instanceof SQLException)
+							errorDetail = ", sql query or queries failed";
+						else if (e instanceof RemoteException || e instanceof ServiceException) 
+							errorDetail = ", component web service for " + component.getType().toString() + " not responding or failed";
+						
+						main.errorHandle("Could not retrieve device data from " + environment.getName() + errorDetail,e.getMessage());
 					}
 				}
 			}

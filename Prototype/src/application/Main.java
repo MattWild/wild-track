@@ -1,5 +1,6 @@
 package application;
 
+import java.applet.Applet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	private MainDataController mainController;
-	private List<EnvironmentDatabaseService> environmentControllers;
 	private PresentationLayer presentationLayer;
 	private ObjectLayer objectLayer;
 	private ServiceLayer serviceLayer;
@@ -47,7 +47,6 @@ public class Main extends Application {
 	@Override
 	public void init() throws Exception {
 		System.out.println("Setting up connection to main database.");
-		environmentControllers = new ArrayList<EnvironmentDatabaseService>();
 	}
 	
 	public void pullData() {
@@ -57,15 +56,6 @@ public class Main extends Application {
 			mainController.clearEnvironRelationships();
 		} catch (SQLException e) {
 			errorHandle(e);
-		}
-		for (EnvironmentDatabaseService controller : environmentControllers) {
-			System.out.println("Pulling data from environment with CRC=");
-			try {
-				mainController.updateTableFromEnvironment(TableType.Meters, controller.getData());
-				mainController.updateTableFromEnvironment(TableType.Routers, controller.getData());
-			} catch (SQLException e) {
-				errorHandle(e);
-			}
 		}
 	}
 	
@@ -77,15 +67,6 @@ public class Main extends Application {
 			mainController.close();
 		} catch (SQLException e) {
 			errorHandle(e);
-		}
-		
-		for (EnvironmentDatabaseService controller : environmentControllers) {
-			System.out.println("Closing connection to environment with CRC=");
-			try {
-				controller.close();
-			} catch (SQLException e) {
-				errorHandle(e);
-			}
 		}
 	}
 
@@ -109,5 +90,10 @@ public class Main extends Application {
 		e.printStackTrace();
 		if (presentationLayer != null)
 			presentationLayer.showError(e.toString(), e.getMessage());
+	}
+	
+	public void errorHandle(String errorTitle, String errorMessage) {
+		if (presentationLayer != null)
+			presentationLayer.showError(errorTitle, errorMessage);
 	}
 }

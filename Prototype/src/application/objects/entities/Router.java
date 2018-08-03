@@ -3,7 +3,7 @@ package application.objects.entities;
 import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Router implements Entry {
+public class Router implements Device {
 	
 	private int id;
 	private SimpleStringProperty lan;

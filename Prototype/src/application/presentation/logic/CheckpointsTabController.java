@@ -158,7 +158,7 @@ public class CheckpointsTabController {
 			else {
 				Node node = this.getChildren().remove(index);
 				
-				if (this.getAfter() != null) {
+				if (this.getAfter() != null && this.getAfter().remove(0) != null) {
 					this.getChildren().add(this.getAfter().remove(0));
 					if (this.getAfter().getChildren().size() == 0)
 						this.setAfter(null);

@@ -7,7 +7,7 @@ import application.Main;
 import application.objects.entities.Collector;
 import application.objects.entities.Component;
 import application.objects.entities.Component.ComponentType;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import application.objects.entities.Environment;
 import application.objects.entities.Server;
 import application.presentation.logic.DeviceGridController.TableType;
@@ -131,7 +131,7 @@ public class EnvironmentTableController {
 		
 		ObservableList<String> ips = collectorIPBox.getItems();
 		ips.add("--");
-		for (Entry entry : main.getObjectLayer().getDevices(TableType.Collectors)) {
+		for (Device entry : main.getObjectLayer().getDevices(TableType.Collectors)) {
 			ips.add(((Collector) entry).getIp());
 		}
 		
@@ -148,10 +148,10 @@ public class EnvironmentTableController {
 				environment.setCollector(null);
 		});
 		
-		main.getObjectLayer().getDevices(TableType.Collectors).addListener((Change<? extends Entry> change) -> {
+		main.getObjectLayer().getDevices(TableType.Collectors).addListener((Change<? extends Device> change) -> {
 			while (change.next()) 
 				if (change.wasAdded()) {
-					for (Entry entry : change.getAddedSubList()) {
+					for (Device entry : change.getAddedSubList()) {
 						String ip = ((Collector) entry).getIp();
 						ips.add(ip);
 						
@@ -163,7 +163,7 @@ public class EnvironmentTableController {
 							collectorIPBox.getSelectionModel().select(ip);
 					}
 				} else if (change.wasRemoved()) {
-					for (Entry entry : change.getRemoved()) {
+					for (Device entry : change.getRemoved()) {
 						ips.remove(((Collector) entry).getIp());
 					}
 				}
@@ -187,10 +187,10 @@ public class EnvironmentTableController {
 				typeLabel.setText(null);
 				radiosLabel.textProperty().unbind();
 				radiosLabel.setText(null);
-				userLabel.textProperty().unbindBidirectional(oldValue.username());
-				userLabel.setText(null);
-				passLabel.textProperty().unbindBidirectional(oldValue.password());
-				passLabel.setText(null);
+				userField.textProperty().unbindBidirectional(oldValue.username());
+				userField.setText(null);
+				passField.textProperty().unbindBidirectional(oldValue.password());
+				passField.setText(null);
 			}
 			
 			

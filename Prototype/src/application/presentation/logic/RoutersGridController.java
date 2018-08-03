@@ -1,6 +1,6 @@
 package application.presentation.logic;
 
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,60 +18,60 @@ public class RoutersGridController extends DeviceGridController {
 	
 	
 	@FXML
-	private TableView<Entry> routersTable;
+	private TableView<Device> routersTable;
 	
 	@FXML
-	private TableColumn<Entry,String> lanColumn;
+	private TableColumn<Device,String> lanColumn;
 	
 	@FXML 
 	private MenuButton lanFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> netIdColumn;
+	private TableColumn<Device,String> netIdColumn;
 	
 	@FXML
 	private MenuButton networkIDFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> otherCRCsColumn;
+	private TableColumn<Device,String> otherCRCsColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> typeColumn;
+	private TableColumn<Device,String> typeColumn;
 	
 	@FXML
 	private MenuButton radioTypeFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> locColumn;
+	private TableColumn<Device,String> locColumn;
 	
 	@FXML
 	private MenuButton locationFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> notesColumn;
+	private TableColumn<Device,String> notesColumn;
 	
 	
 	
 	@FXML
-	private TableView<Entry> addRoutersTable;
+	private TableView<Device> addRoutersTable;
 	
 	@FXML
-	private TableColumn<Entry,String> addLanColumn;
+	private TableColumn<Device,String> addLanColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNetIdColumn;
+	private TableColumn<Device,String> addNetIdColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addOtherCRCsColumn;
+	private TableColumn<Device,String> addOtherCRCsColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addTypeColumn;
+	private TableColumn<Device,String> addTypeColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addLocColumn;
+	private TableColumn<Device,String> addLocColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNotesColumn;
+	private TableColumn<Device,String> addNotesColumn;
 	
 	
 	

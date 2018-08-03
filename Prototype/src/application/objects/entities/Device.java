@@ -3,7 +3,7 @@ package application.objects.entities;
 import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
-public interface Entry {
+public interface Device {
 	
 	public int getId();
 	

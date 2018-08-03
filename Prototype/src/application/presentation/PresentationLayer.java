@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import application.Main;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import application.presentation.logic.RootLayoutController;
 import application.presentation.logic.SettingsLayoutController;
 import application.presentation.logic.DeviceGridController;
@@ -60,7 +60,6 @@ public class PresentationLayer {
 			controller.setUpCheckpointsTable();
 			for (TableType type : TableType.values())
 				controller.setUpTable(type);
-			
 			controller.initMenuBindings();
 		} catch (IOException e) {
 			e.printStackTrace();

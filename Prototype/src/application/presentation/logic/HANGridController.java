@@ -1,6 +1,6 @@
 package application.presentation.logic;
 
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,56 +16,56 @@ public class HANGridController extends DeviceGridController {
 	private GridPane hanGrid;
 	
 	@FXML
-	private TableView<Entry> hanTable;
+	private TableView<Device> hanTable;
 	
 	@FXML
-	private TableColumn<Entry,String> unitIdColumn;
+	private TableColumn<Device,String> unitIdColumn;
 	
 	@FXML
 	private MenuButton unitIdFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> nameColumn;
+	private TableColumn<Device,String> nameColumn;
 	
 	@FXML
 	private MenuButton deviceNameFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> installColumn;
+	private TableColumn<Device,String> installColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> macColumn;
+	private TableColumn<Device,String> macColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> locColumn;
+	private TableColumn<Device,String> locColumn;
 	
 	@FXML
 	private MenuButton locationFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> notesColumn;
+	private TableColumn<Device,String> notesColumn;
 	
 	
 	@FXML
-	private TableView<Entry> addHanTable;
+	private TableView<Device> addHanTable;
 	
 	@FXML
-	private TableColumn<Entry,String> addUnitIdColumn;
+	private TableColumn<Device,String> addUnitIdColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNameColumn;
+	private TableColumn<Device,String> addNameColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addInstallColumn;
+	private TableColumn<Device,String> addInstallColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addMacColumn;
+	private TableColumn<Device,String> addMacColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addLocColumn;
+	private TableColumn<Device,String> addLocColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNotesColumn;
+	private TableColumn<Device,String> addNotesColumn;
 	
 	
 	@FXML

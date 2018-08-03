@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import application.Main;
 import application.objects.entities.Checkpoint;
 import application.objects.entities.Component;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import application.objects.entities.Environment;
 import application.objects.entities.Server;
 import application.presentation.logic.DeviceGridController.TableType;
@@ -126,6 +126,7 @@ public class RootLayoutController {
 			
 			if (newTab == environmentsTab) {
 				addControl.setDisable(true);
+				addControl.setText("Add Environment");
 				
 				saveAllControl.setDisable(false);
 				saveAllControl.setVisible(true);
@@ -337,7 +338,7 @@ public class RootLayoutController {
 					
 					deleteControl.setDisable(false);
 					deleteControl.setOnAction(event -> {
-						Entry entry = ((TableView<Entry>) newNode).getSelectionModel().getSelectedItem();
+						Device entry = ((TableView<Device>) newNode).getSelectionModel().getSelectedItem();
 						
 						main.getObjectLayer().deleteDevice(entry.getType(), entry);
 					});

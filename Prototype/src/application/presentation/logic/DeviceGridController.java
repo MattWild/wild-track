@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.axis.wsdl.symbolTable.MessageEntry;
 
 import application.Main;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import application.presentation.PresentationLayer.EditingCell;
 import application.presentation.PresentationLayer.NonEditingCell;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -48,10 +48,10 @@ public abstract class DeviceGridController {
 	}
 
 	protected GridPane grid;
-	protected List<TableColumn<Entry, String>> columns;
-	protected TableView<Entry> table;
-	protected TableView<Entry> addTable;
-	protected List<TableColumn<Entry, String>> addColumns;
+	protected List<TableColumn<Device, String>> columns;
+	protected TableView<Device> table;
+	protected TableView<Device> addTable;
+	protected List<TableColumn<Device, String>> addColumns;
 	protected Button addButton;
 	protected Button cancelAddButton;
 	protected TextField searchField;
@@ -59,15 +59,15 @@ public abstract class DeviceGridController {
 	private TableType type;
 	protected Main main;
 	protected List<MenuButton> filters;
-	private FilteredList<Entry> entries;
+	private FilteredList<Device> devices;
 	private List<ObservableMap<String, SimpleIntegerProperty>> filterTracker;
 	private List<ObservableMap<String, CheckMenuItem>> filterSettings;
 	
 	public DeviceGridController(TableType type) {
 		this.type = type;
 		filters = new ArrayList<MenuButton>();
-		columns = new ArrayList<TableColumn<Entry, String>>();
-		addColumns = new ArrayList<TableColumn<Entry, String>>();
+		columns = new ArrayList<TableColumn<Device, String>>();
+		addColumns = new ArrayList<TableColumn<Device, String>>();
 		filterSettings = new ArrayList<ObservableMap<String, CheckMenuItem>>();
 		filterTracker = new ArrayList<ObservableMap<String, SimpleIntegerProperty>>();
 	}
@@ -94,7 +94,7 @@ public abstract class DeviceGridController {
 				search();
 		});
 		
-		entries = new FilteredList<Entry>(main.getObjectLayer().getDevices(type));
+		devices = new FilteredList<Device>(main.getObjectLayer().getDevices(type));
 		
 		for (int i = 0; i < filters.size(); i++) {
 			MenuButton filter = filters.get(i);
@@ -121,34 +121,34 @@ public abstract class DeviceGridController {
 			filterSettings.add(FXCollections.observableMap(new HashMap<String, CheckMenuItem>()));
 			filterTracker.get(i).addListener(filterMapListener(allOption, options, i));
 			
-			for (Entry entry : entries) {
-				if (filterTracker.get(i).containsKey(entry.getFieldProperty(i).get()))
-					filterTracker.get(i).get(entry.getFieldProperty(i).get()).set(filterTracker.get(i).get(entry.getFieldProperty(i).get()).get() + 1); 
+			for (Device device : devices) {
+				if (filterTracker.get(i).containsKey(device.getFieldProperty(i).get()))
+					filterTracker.get(i).get(device.getFieldProperty(i).get()).set(filterTracker.get(i).get(device.getFieldProperty(i).get()).get() + 1); 
 				else {
 					SimpleIntegerProperty countProp = new SimpleIntegerProperty(1);
-					countProp.addListener(countPropListener(entry.getFieldProperty(i).get(), i));
+					countProp.addListener(countPropListener(device.getFieldProperty(i).get(), i));
 					
-					filterTracker.get(i).put(entry.getFieldProperty(i).get(), countProp);
+					filterTracker.get(i).put(device.getFieldProperty(i).get(), countProp);
 				}
 				
-				entry.getFieldProperty(i).addListener(filterPropListener(i));
+				device.getFieldProperty(i).addListener(filterPropListener(i));
 			}
 			
 			allOption.fire();
 		}
 		
 		for (int i = 0; i < columns.size(); i++) {
-			TableColumn<Entry,String> column = columns.get(i);
-			TableColumn<Entry,String> addColumn = addColumns.get(i);
+			TableColumn<Device,String> column = columns.get(i);
+			TableColumn<Device,String> addColumn = addColumns.get(i);
 			final int index = i;
 			column.setCellValueFactory(cellData -> cellData.getValue().getFieldProperty(index));
 			addColumn.setCellValueFactory(cellData -> cellData.getValue().getFieldProperty(index));
 			optionalColumnSetup(i);
 			optionalAddColumnSetup(i);
 		}
-		table.setItems(entries);
+		table.setItems(devices);
 		
-		entries.getSource().addListener(entriesListener());
+		devices.getSource().addListener(entriesListener());
 		
 		hideAdd();
 	}
@@ -183,29 +183,29 @@ public abstract class DeviceGridController {
 		};
 	}
 	
-	private ListChangeListener<? super Entry> entriesListener() {
-		return (ListChangeListener.Change<? extends Entry> change) -> {
+	private ListChangeListener<? super Device> entriesListener() {
+		return (ListChangeListener.Change<? extends Device> change) -> {
 			while(change.next()) {
 				if (change.wasAdded()) {
-					for (Entry entry : change.getAddedSubList()) {
+					for (Device device : change.getAddedSubList()) {
 						for (int i = 0; i < filters.size(); i++) {
-							if (filterTracker.get(i).containsKey(entry.getFieldProperty(i).get()))
-								filterTracker.get(i).get(entry.getFieldProperty(i).get()).set(filterTracker.get(i).get(entry.getFieldProperty(i).get()).get() + 1); 
+							if (filterTracker.get(i).containsKey(device.getFieldProperty(i).get()))
+								filterTracker.get(i).get(device.getFieldProperty(i).get()).set(filterTracker.get(i).get(device.getFieldProperty(i).get()).get() + 1); 
 							else {
 								SimpleIntegerProperty countProp = new SimpleIntegerProperty(1);
-								countProp.addListener(countPropListener(entry.getFieldProperty(i).get(), i));
+								countProp.addListener(countPropListener(device.getFieldProperty(i).get(), i));
 								
-								filterTracker.get(i).put(entry.getFieldProperty(i).get(), countProp);
+								filterTracker.get(i).put(device.getFieldProperty(i).get(), countProp);
 								
-								entry.getFieldProperty(i).addListener(filterPropListener(i));
+								device.getFieldProperty(i).addListener(filterPropListener(i));
 							}
 						}
 					}
 				}
 				if (change.wasRemoved()) {
-					for (Entry entry : change.getRemoved()) {
+					for (Device device : change.getRemoved()) {
 						for (int i = 0; i < filters.size(); i++) {
-							filterTracker.get(i).get(entry.getFieldProperty(i).get()).set(filterTracker.get(i).get(entry.getFieldProperty(i).get()).get() - 1);;
+							filterTracker.get(i).get(device.getFieldProperty(i).get()).set(filterTracker.get(i).get(device.getFieldProperty(i).get()).get() - 1);;
 						}
 					}
 				}
@@ -236,13 +236,13 @@ public abstract class DeviceGridController {
 	}
 	
 	private void computeFilter(TableType type) {
-		entries.setPredicate(entry -> {
+		devices.setPredicate(device -> {
 			boolean result = true;
 			
 			for (int i = 0; i < filterSettings.size(); i++) {
 				result = result && (
 							((CheckMenuItem) filters.get(i).getItems().get(0)).isSelected() ||
-							filterSettings.get(i).get(entry.getFieldProperty(i).get()).isSelected()
+							filterSettings.get(i).get(device.getFieldProperty(i).get()).isSelected()
 						);
 			}
 			
@@ -269,17 +269,17 @@ public abstract class DeviceGridController {
 	}
 	
 	public void startAdd() {
-		Entry entry = main.getObjectLayer().createDevice(type);
-		ObservableList<Entry> temp = FXCollections.observableArrayList(entry);
+		Device device = main.getObjectLayer().createDevice(type);
+		ObservableList<Device> temp = FXCollections.observableArrayList(device);
 		addTable.setItems(temp);
 		
 		showAdd();
 	}
 	
 	public void finishAdd() {
-		Entry entry = addTable.getItems().get(0);
-		if (entry.identifierNotNull()) {
-			main.getObjectLayer().addDevice(type, entry);
+		Device device = addTable.getItems().get(0);
+		if (device.identifierNotNull()) {
+			main.getObjectLayer().addDevice(type, device);
 			addTable.setItems(null);
 			hideAdd();
 		} else {
@@ -333,28 +333,28 @@ public abstract class DeviceGridController {
 	protected abstract void initialize();
 	
 	protected void setupEditableColumn(int i) {
-		columns.get(i).setCellFactory((TableColumn<Entry, String> param) -> new EditingCell<Entry>());
+		columns.get(i).setCellFactory((TableColumn<Device, String> param) -> new EditingCell<Device>());
 		columns.get(i).setOnEditCommit(
-                (TableColumn.CellEditEvent<Entry, String> t) -> {
-                	Entry entry = (Entry) t.getTableView().getItems()
+                (TableColumn.CellEditEvent<Device, String> t) -> {
+                	Device device = (Device) t.getTableView().getItems()
                             .get(t.getTablePosition().getRow());
-                    entry.getFieldProperty(i).setValue(t.getNewValue());
-                    entry.indicateChanged();
+                    device.getFieldProperty(i).setValue(t.getNewValue());
+                    device.indicateChanged();
                 });
 	}
 	
 	protected void setupEditableAddColumn(int i) {
-		addColumns.get(i).setCellFactory((TableColumn<Entry, String> param) -> new EditingCell<Entry>());
+		addColumns.get(i).setCellFactory((TableColumn<Device, String> param) -> new EditingCell<Device>());
 		addColumns.get(i).setOnEditCommit(
-                (TableColumn.CellEditEvent<Entry, String> t) -> {
-                	Entry entry = (Entry) t.getTableView().getItems()
+                (TableColumn.CellEditEvent<Device, String> t) -> {
+                	Device device = (Device) t.getTableView().getItems()
                             .get(t.getTablePosition().getRow());
-                    entry.getFieldProperty(i).setValue(t.getNewValue());
-                    entry.indicateChanged();
+                    device.getFieldProperty(i).setValue(t.getNewValue());
+                    device.indicateChanged();
                 });
 	}
 	
 	protected void setupNonEditableAddColumn(int i) {
-		addColumns.get(i).setCellFactory((TableColumn<Entry, String> param) -> new NonEditingCell<Entry>());
+		addColumns.get(i).setCellFactory((TableColumn<Device, String> param) -> new NonEditingCell<Device>());
 	}
 }

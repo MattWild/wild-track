@@ -14,7 +14,7 @@ import application.objects.entities.Collector;
 import application.objects.entities.CollectorComponent;
 import application.objects.entities.Component;
 import application.objects.entities.Component.ComponentType;
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import application.objects.entities.Environment;
 import application.objects.entities.HANDevice;
 import application.objects.entities.Meter;
@@ -33,8 +33,8 @@ import javafx.collections.ObservableMap;
 
 public class ObjectLayer {
 	
-	private Map<TableType, ObservableList<Entry>> entries;
-	private Map<TableType, List<Entry>> deleteDeviceList;
+	private Map<TableType, ObservableList<Device>> entries;
+	private Map<TableType, List<Device>> deleteDeviceList;
 	private ObservableList<Environment> environments;
 	private List<Environment> deleteEnvironmentList;
 	private List<Environment> addEnvironmentList;
@@ -51,7 +51,7 @@ public class ObjectLayer {
 	
 	public ObjectLayer(Main main) {
 		this.main = main;
-		entries = new HashMap<TableType, ObservableList<Entry>>();
+		entries = new HashMap<TableType, ObservableList<Device>>();
 		environments = FXCollections.observableArrayList();
 		deleteEnvironmentList = new ArrayList<Environment>();
 		addEnvironmentList = new ArrayList<Environment>();
@@ -66,17 +66,17 @@ public class ObjectLayer {
 		addCheckpointLists = new HashMap<Environment, List<Checkpoint>>();
 		
 		for (TableType type : TableType.values()) {
-			ObservableList<Entry> list = FXCollections.observableArrayList();
+			ObservableList<Device> list = FXCollections.observableArrayList();
 			entries.put(type, list);
 		}
-		deleteDeviceList = new HashMap<TableType, List<Entry>>();
+		deleteDeviceList = new HashMap<TableType, List<Device>>();
 	}
 	
 	public ObservableList<Environment> getEnvironments() {
 		return environments;
 	}
 
-	public ObservableList<Entry> getDevices(TableType type) {
+	public ObservableList<Device> getDevices(TableType type) {
 		return entries.get(type);
 	}
 	
@@ -130,38 +130,31 @@ public class ObjectLayer {
 		environments.clear();
 		
 		try {
-			List<List<Object>> values = main.getMainDBController().getEnvironmentsData();
+			environments.addAll(main.getMainDBController().loadEnvironments());
 			
-			for (List<Object> record : values) {
-				Environment environment = new Environment((Integer) record.get(0), (String) record.get(1));
-				if (record.get(2) != null) {
-					environment.setCollector(new Collector((Integer) record.get(2), null, null, null, null, null, null, null, null, null));
-				}
-				
+			for (Environment environment : environments) {
 				entries.get(TableType.Collectors).addListener(collectorListener(environment));
 				loadServersFromEnvironment(environment);
 				loadCheckpointsFromEnvironments(environment);
-				
-				environments.add(environment);
 			}
 		} catch (Exception e) {
 			main.errorHandle(e);
 		}
 	}
 
-	private ListChangeListener<Entry> collectorListener(Environment environment) {
-		return (ListChangeListener.Change<? extends Entry> change) -> {
+	private ListChangeListener<Device> collectorListener(Environment environment) {
+		return (ListChangeListener.Change<? extends Device> change) -> {
 			if (environment.getCollector() != null && environment.getCollector().getId() != -1) 
 				while (change.next())
 					if (change.wasAdded()) {
-						for (Entry entry : change.getAddedSubList()) {
-							if (entry.getId() == environment.getCollector().getId()) {
-								environment.setCollector((Collector) entry);
+						for (Device device : change.getAddedSubList()) {
+							if (device.getId() == environment.getCollector().getId()) {
+								environment.setCollector((Collector) device);
 							}
 						}
 					} else if (change.wasRemoved()) {
-						for (Entry entry : change.getRemoved())
-							if (environment.getCollector() != null && entry.getId() == environment.getCollector().getId())
+						for (Device device : change.getRemoved())
+							if (environment.getCollector() != null && device.getId() == environment.getCollector().getId())
 								environment.setCollector(new Collector(environment.getCollector().getId(), null, null, null, null, null, null, null, null, null));
 					}
 		};
@@ -270,8 +263,8 @@ public class ObjectLayer {
 	}
 
 	public void loadCollectorComponent(CollectorComponent collectorComponent) {
-		for (Entry entry : entries.get(TableType.Collectors)) {
-			Collector collector = (Collector) entry;
+		for (Device device : entries.get(TableType.Collectors)) {
+			Collector collector = (Collector) device;
 			
 			if (collectorComponent.getId() == collector.getId()) collectorComponent.setCollector(collector);
 		}
@@ -403,6 +396,11 @@ public class ObjectLayer {
 	}
 
 	private void processSaveEnvironment(Environment environment) throws SQLException {
+		if (environment.getName() == null || environment.getName().length() == 0) {
+			main.errorHandle("Cannot save environment", "Environment name cannot be blank.");
+			return;
+		}
+		
 		List<Object> record = new ArrayList<Object>();
 		
 		record.add(environment.getId());
@@ -448,8 +446,13 @@ public class ObjectLayer {
 	}
 
 	private void processSaveServers(Environment environment) throws SQLException {
+		
 		List<List<Object>> records = new ArrayList<List<Object>>();
 		for(Server server : environment.getServers()) {
+			if (environment.getName() == null || environment.getName().length() == 0) {
+				main.errorHandle("Cannot save server", "Server name cannot be blank.");
+				continue;
+			}
 			List<Object> record = new ArrayList<Object>();
 			
 			record.add(server.getId());
@@ -517,13 +520,21 @@ public class ObjectLayer {
 	public void saveDevices(TableType type) throws SQLException {
 		List<List<Object>> internalNewValues = new ArrayList<List<Object>>();
 		
-		for (Entry entry : entries.get(type)) {
-			if (entry.isChanged()) {
+		for (Device device : entries.get(type)) {
+			if (device.isChanged()) {
 				List<Object> internalRecord = new ArrayList<Object>();
 				
 				switch (type) {
 				case Collectors:
-					Collector collector = (Collector) entry;
+					Collector collector = (Collector) device;
+					
+					if (collector.getNetId() != null) {
+						try {
+							Integer.parseInt(collector.getNetId());
+						} catch (NumberFormatException e) {
+							main.errorHandle("Cannot save collector", "Network ID must be valid integer or blank.");
+						}
+					}
 					
 					internalRecord.add(collector.getId());
 					internalRecord.add(collector.getIp());
@@ -535,10 +546,9 @@ public class ObjectLayer {
 					internalRecord.add(collector.getNote());
 					internalRecord.add(collector.getUsername());
 					internalRecord.add(collector.getPassword());
-					
 					break;
 				case HANDevices:
-					HANDevice han = (HANDevice) entry;
+					HANDevice han = (HANDevice) device;
 	
 					internalRecord.add(han.getId());
 					internalRecord.add(han.getUnitId());
@@ -549,7 +559,7 @@ public class ObjectLayer {
 					internalRecord.add(han.getNote());
 					break;
 				case Meters:
-					Meter meter = (Meter) entry;
+					Meter meter = (Meter) device;
 	
 					internalRecord.add(meter.getId());
 					internalRecord.add(meter.getLAN());
@@ -558,7 +568,7 @@ public class ObjectLayer {
 					internalRecord.add(meter.getNote());
 					break;
 				case Routers:
-					Router router = (Router) entry;
+					Router router = (Router) device;
 	
 					internalRecord.add(router.getId());
 					internalRecord.add(router.getLAN());
@@ -566,7 +576,7 @@ public class ObjectLayer {
 					internalRecord.add(router.getNote());
 					break;
 				case Sockets:
-					Socket socket = (Socket) entry;
+					Socket socket = (Socket) device;
 					
 					internalRecord.add(socket.getId());
 					internalRecord.add(socket.getIdProp());
@@ -581,7 +591,7 @@ public class ObjectLayer {
 				if ((Integer) internalRecord.get(0) == -1) {
 					internalRecord.remove(0);
 					
-					entry.setId(main.getMainDBController().addDevices(type, internalRecord));
+					device.setId(main.getMainDBController().addDevices(type, internalRecord));
 				} else {
 					if (type == TableType.Meters || type == TableType.Routers) internalRecord.remove(1);
 					internalNewValues.add(internalRecord);
@@ -591,8 +601,8 @@ public class ObjectLayer {
 		
 		List<Integer> deleteIds = new ArrayList<Integer>();
 		if (deleteDeviceList.get(type) != null) {
-			for (Entry entry : deleteDeviceList.get(type)) {
-				deleteIds.add(entry.getId());
+			for (Device device : deleteDeviceList.get(type)) {
+				deleteIds.add(device.getId());
 			}
 			
 			main.getMainDBController().delete(type, deleteIds);
@@ -737,7 +747,7 @@ public class ObjectLayer {
 		}
 	}
 
-	public Entry createDevice(TableType type) {
+	public Device createDevice(TableType type) {
 		switch (type) {
 		case Meters:
 			return new Meter(-1, null, null, null, null, null, null, null, null);
@@ -754,8 +764,8 @@ public class ObjectLayer {
 		}
 	}
 
-	public void addDevice(TableType type, Entry entry) {
-		entries.get(type).addAll(entry);
+	public void addDevice(TableType type, Device device) {
+		entries.get(type).addAll(device);
 	}
 	
 	public void deleteVersionAlias(VersionAlias versionAlias) {
@@ -871,12 +881,12 @@ public class ObjectLayer {
 		}
 	}
 
-	public void deleteDevice(TableType type, Entry entry) {
-		entries.get(type).remove(entry);
+	public void deleteDevice(TableType type, Device device) {
+		entries.get(type).remove(device);
 		
-		if (entry.getId() != -1) {
-			if (deleteDeviceList.get(type) == null) deleteDeviceList.put(type, new ArrayList<Entry>());
-			deleteDeviceList.get(type).add(entry);
+		if (device.getId() != -1) {
+			if (deleteDeviceList.get(type) == null) deleteDeviceList.put(type, new ArrayList<Device>());
+			deleteDeviceList.get(type).add(device);
 		}
 	}
 

@@ -3,7 +3,7 @@ package application.objects.entities;
 import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Socket implements Entry {
+public class Socket implements Device {
 	
 	private int id;
 	private SimpleStringProperty idProp;

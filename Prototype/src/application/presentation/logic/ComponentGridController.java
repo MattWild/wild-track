@@ -7,6 +7,7 @@ import application.objects.entities.VersionAlias;
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
@@ -68,6 +69,9 @@ public class ComponentGridController {
 	
 	private Component component;
 	private Main main;
+	private ChangeListener<? super String> aliasListener = (arg, oldValue, newValue) -> {
+		versionLabel.setText(newValue);
+	};
 	
 	public void setMain(Main main) {
 		this.main = main;
@@ -163,16 +167,23 @@ public class ComponentGridController {
 		if (component.getType() == ComponentType.COMMANDCENTER) {
 			ObservableMap<String, VersionAlias> mapping = main.getObjectLayer().getAliasMapping();
 			
-			if (mapping.containsKey(component.getVersion()))
+			if (mapping.containsKey(component.getVersion())) {
 				versionLabel.setText(mapping.get(component.getVersion()).getAlias());
-			else 
+				
+				mapping.get(component.getVersion()).alias().addListener(aliasListener);
+			} else 
 				versionLabel.setText(component.getVersion());
 			
 			mapping.addListener((MapChangeListener.Change<? extends String, ? extends VersionAlias> change) -> {
-				if (mapping.containsKey(component.getVersion()))
+				if (mapping.containsKey(component.getVersion())) {
 					versionLabel.setText(mapping.get(component.getVersion()).getAlias());
-				else 
+					mapping.get(component.getVersion()).alias().addListener(aliasListener);
+				} else {
 					versionLabel.setText(component.getVersion());
+					
+					if (change.wasRemoved() && change.getKey().compareTo(component.getVersion()) == 0)
+						change.getValueRemoved().alias().removeListener(aliasListener);
+				}
 			});
 		} else 
 			versionLabel.textProperty().bind(versionField.textProperty());

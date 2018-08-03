@@ -3,7 +3,7 @@ package application.objects.entities;
 import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Meter implements Entry {
+public class Meter implements Device {
 	
 	private int id;
 	private SimpleStringProperty lan;

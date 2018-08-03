@@ -1,6 +1,6 @@
 package application.presentation.logic;
 
-import application.objects.entities.Entry;
+import application.objects.entities.Device;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,69 +16,69 @@ public class CollectorsGridController extends DeviceGridController{
 	private GridPane collectorsGrid;
 
 	@FXML
-	private TableView<Entry> collectorsTable;
+	private TableView<Device> collectorsTable;
 	
 	@FXML
-	private TableColumn<Entry,String> ipColumn;
+	private TableColumn<Device,String> ipColumn;
 	
 	@FXML 
 	private MenuButton ipFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> radiosColumn;
+	private TableColumn<Device,String> radiosColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> netIdColumn;
+	private TableColumn<Device,String> netIdColumn;
 	
 	@FXML
 	private MenuButton networkIDFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> appColumn;
+	private TableColumn<Device,String> appColumn;
 	
 	@FXML
 	private MenuButton collectorAppFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> typeColumn;
+	private TableColumn<Device,String> typeColumn;
 	
 	@FXML
 	private MenuButton collectorTypeFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> locColumn;
+	private TableColumn<Device,String> locColumn;
 	
 	@FXML
 	private MenuButton locationFilter;
 	
 	@FXML
-	private TableColumn<Entry,String> notesColumn;
+	private TableColumn<Device,String> notesColumn;
 	
 	
 	
 	@FXML
-	private TableView<Entry> addCollectorsTable;
+	private TableView<Device> addCollectorsTable;
 	
 	@FXML
-	private TableColumn<Entry,String> addIpColumn;
+	private TableColumn<Device,String> addIpColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addRadiosColumn;
+	private TableColumn<Device,String> addRadiosColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNetIdColumn;
+	private TableColumn<Device,String> addNetIdColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addAppColumn;
+	private TableColumn<Device,String> addAppColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addTypeColumn;
+	private TableColumn<Device,String> addTypeColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addLocColumn;
+	private TableColumn<Device,String> addLocColumn;
 	
 	@FXML
-	private TableColumn<Entry,String> addNotesColumn;
+	private TableColumn<Device,String> addNotesColumn;
 	
 	
 	@FXML
