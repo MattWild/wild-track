@@ -1,4 +1,4 @@
-package application.objects.entities;
+package application.objects.settings;
 
 import javafx.beans.property.SimpleStringProperty;
 
@@ -8,18 +8,18 @@ public class VersionAlias {
 	private SimpleStringProperty raw;
 	private SimpleStringProperty alias;
 	
+	public VersionAlias() {
+		this(-1, "RAW", "ALIAS");
+	}
+
+	public VersionAlias(String raw, String alias) {
+		this(-1, raw, alias);
+	}
+
 	public VersionAlias(int id, String raw, String alias) {
 		this.id = id;
 		this.raw = new SimpleStringProperty(raw);
 		this.alias = new SimpleStringProperty(alias);
-	}
-	
-	public VersionAlias() {
-		this(-1, "RAW", "ALIAS");
-	}
-	
-	public VersionAlias(String raw, String alias) {
-		this(-1, raw, alias);
 	}
 	
 	public int getId() {

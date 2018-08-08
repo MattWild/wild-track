@@ -1,14 +1,12 @@
 package application.presentation.logic;
-import application.objects.entities.Device;
-import javafx.event.ActionEvent;
+import application.objects.hardware.Device;
+import application.objects.hardware.Device.DeviceType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
 public class MetersGridController extends DeviceGridController{
@@ -101,7 +99,7 @@ public class MetersGridController extends DeviceGridController{
 	private TextField searchMetersField;
 	
 	public MetersGridController() {
-		super(DeviceGridController.TableType.Meters);
+		super(DeviceType.METERS);
 	}
 	
 

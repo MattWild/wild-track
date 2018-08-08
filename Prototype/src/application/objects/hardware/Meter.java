@@ -1,51 +1,42 @@
-package application.objects.entities;
+package application.objects.hardware;
 
-import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Meter implements Device {
-	
-	private int id;
+public class Meter extends Device {
+
 	private SimpleStringProperty lan;
 	private SimpleStringProperty meterName;
 	private SimpleStringProperty meterType;
-	private SimpleStringProperty netId;
-	private SimpleStringProperty otherCRCs;
 	private SimpleStringProperty loc;
 	private SimpleStringProperty socket;
 	private SimpleStringProperty notes;
 	
-	private boolean changed;
-	
-	public Meter(int id, String lanString, String nameString, String typeString, Integer netIDvalue, String otherCRCsString, String locString, String socketString, String commentString) {
-		this.id = id;
+	public Meter(int id, String lanString, String nameString, String typeString, String locString, String socketString, String commentString) {
+		super(id);
 		
 		lan = new SimpleStringProperty(lanString);
 		meterName = new SimpleStringProperty(nameString);
 		meterType = new SimpleStringProperty(typeString);
-		netId = new SimpleStringProperty((netIDvalue == null)? null : netIDvalue.intValue() + "");
-		otherCRCs = new SimpleStringProperty(otherCRCsString);
 		loc = new SimpleStringProperty(locString);
 		socket = new SimpleStringProperty(socketString);
 		notes = new SimpleStringProperty(commentString);
 	}
 	
-	
 	@Override
-	public int getId() {
-		return id;
+	public DeviceType getType() {
+		return DeviceType.METERS;
 	}
 	
 	@Override
-	public void setId(int id) {
-		this.id = id;
+	public String getIdentifier() {
+		return lan.get();
 	}
 	
 	@Override
-	public TableType getType() {
-		return TableType.Meters;
+	public boolean identifierNotNull() {
+		return lan.get() != null;
 	}
-	
+
 	@Override
 	public SimpleStringProperty getFieldProperty(int i) {
 		switch (i) {
@@ -56,9 +47,9 @@ public class Meter implements Device {
 		case 2:
 			return meterType;		
 		case 3:
-			return netId;		
+			return crcProp;		
 		case 4:
-			return otherCRCs;		
+			return otherCRCsProp;		
 		case 5:
 			return loc;		
 		case 6:
@@ -69,36 +60,25 @@ public class Meter implements Device {
 			return null;
 		}
 	}
+	
 	@Override
-	public String getFilterValue(int i) {
+	public SimpleStringProperty getFilterProperty(int i) {
 		switch (i) {
 		case 0:
-			return lan.get();		
+			return lan;		
 		case 1:
-			return meterName.get();		
+			return meterName;		
 		case 2:
-			return meterType.get();		
+			return meterType;		
 		case 3:
-			return netId.get();			
+			return crcProp;			
 		case 4:
-			return loc.get();		
+			return loc;		
 		case 5:
-			return socket.get();
+			return socket;
 		default:
 			return null;
 		}
-	}
-
-
-	@Override
-	public void indicateChanged() {
-		changed = true;
-	}
-
-
-	@Override
-	public boolean isChanged() {
-		return changed;
 	}
 
 
@@ -114,17 +94,6 @@ public class Meter implements Device {
 
 	public String getSocket() {
 		return socket.get();
-	}
-
-
-	public int getCRC() {
-		return (netId.get() == null)? -1 : Integer.parseInt((netId.get()));
-	}
-
-
-	@Override
-	public boolean identifierNotNull() {
-		return lan.get() != null;
 	}
 
 

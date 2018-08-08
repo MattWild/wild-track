@@ -1,22 +1,18 @@
-package application.objects.entities;
+package application.objects.hardware;
 
-import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
-public class HANDevice implements Device {
-	
-	private int id;
+public class HANDevice extends Device {
+
 	private SimpleStringProperty unitId;
 	private SimpleStringProperty name;
 	private SimpleStringProperty install;
 	private SimpleStringProperty mac;
 	private SimpleStringProperty loc;
 	private SimpleStringProperty notes;
-	
-	private boolean changed;
 
 	public HANDevice(int id, String unitIDString, String deviceNameString, String installCodeString, String macAddressString,String locString, String commentString) {
-		this.id = id;
+		super(id);
 		
 		unitId = new SimpleStringProperty(unitIDString);
 		name = new SimpleStringProperty(deviceNameString);
@@ -27,18 +23,18 @@ public class HANDevice implements Device {
 	}
 
 	@Override
-	public TableType getType() {
-		return TableType.HANDevices;
-	}
-
-	@Override
-	public int getId() {
-		return id;
+	public DeviceType getType() {
+		return DeviceType.HAN_DEVICES;
 	}
 	
 	@Override
-	public void setId(int id) {
-		this.id = id;
+	public String getIdentifier() {
+		return unitId.get();
+	}
+
+	@Override
+	public boolean identifierNotNull() {
+		return unitId.get() != null;
 	}
 
 	@Override
@@ -62,27 +58,17 @@ public class HANDevice implements Device {
 	}
 
 	@Override
-	public String getFilterValue(int i) {
+	public SimpleStringProperty getFilterProperty(int i) {
 		switch(i) {
 		case 0:
-			return unitId.get();
+			return unitId;
 		case 1:
-			return name.get();
+			return name;
 		case 2:
-			return loc.get();
+			return loc;
 		default:
 			return null;
 		}
-	}
-
-	@Override
-	public void indicateChanged() {
-		changed = true;
-	}
-
-	@Override
-	public boolean isChanged() {
-		return changed;
 	}
 
 	public String getUnitId() {
@@ -108,11 +94,4 @@ public class HANDevice implements Device {
 	public String getNote() {
 		return notes.get();
 	}
-
-	@Override
-	public boolean identifierNotNull() {
-		return unitId.get() != null;
-	}
-
-	
 }

@@ -9,7 +9,7 @@ import javax.xml.rpc.ServiceException;
 import org.datacontract.schemas._2004._07.LandisGyr_AMI_Layers.KeyValueData;
 import org.tempuri.ControlRequestServiceLocator;
 
-import application.objects.entities.Component;
+import application.objects.environment.Component;
 
 public class ComponentRequestService extends ControlRequestServiceLocator implements DataService {
 

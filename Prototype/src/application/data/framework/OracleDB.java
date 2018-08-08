@@ -1,8 +1,8 @@
-package application.database;
+package application.data.framework;
 
 import java.sql.SQLException;
 
-public class OracleDB extends DatabaseServer {
+public class OracleDB extends Database {
 	private static final String DRIVER_PATH = "oracle.jdbc.driver.OracleDriver";
 	private String address;
 	private Integer port;
@@ -22,6 +22,11 @@ public class OracleDB extends DatabaseServer {
 	}
 
 	@Override
+	public boolean isSQL() {
+		return false;
+	}
+
+	@Override
 	public String generateURL() {
 		if (useSID)
 			return "jdbc:oracle:thin:@" + this.address +":" + this.port + ":" + this.sid;
@@ -32,11 +37,6 @@ public class OracleDB extends DatabaseServer {
 	@Override
 	protected String getDriverClassName() {
 		return DRIVER_PATH;
-	}
-
-	@Override
-	public boolean isSQL() {
-		return false;
 	}
 
 }

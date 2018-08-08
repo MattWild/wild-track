@@ -4,25 +4,22 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import application.Main;
-import application.objects.entities.Checkpoint;
-import application.objects.entities.Component;
-import application.objects.entities.Device;
-import application.objects.entities.Environment;
-import application.objects.entities.Server;
-import application.presentation.logic.DeviceGridController.TableType;
-import application.objects.entities.Component.ComponentType;
+import application.objects.environment.Checkpoint;
+import application.objects.environment.Component;
+import application.objects.environment.Environment;
+import application.objects.environment.Server;
+import application.objects.environment.Component.ComponentType;
+import application.objects.hardware.Device;
+import application.objects.hardware.Device.DeviceType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
@@ -92,13 +89,23 @@ public class RootLayoutController {
 		});
 		
 		pullAllDeviceDataControl.setOnAction(event -> {
+			disableDeviceGrids();
 			try {
 				//main.getMainDBController().clearEnvironRelationships();
 				for (Environment environment : main.getObjectLayer().getEnvironments()) {
 					main.getServiceLayer().processDeviceServices(environment);
 				}
-				for (TableType type : TableType.values())
-					main.getObjectLayer().loadDevices(type);
+				main.getObjectLayer().loadDeviceDetails();
+			} catch (SQLException e) {
+				main.errorHandle(e);
+			}
+			enableDeviceGrids();
+		});
+		
+
+		saveAllControl.setOnAction(event -> {
+			try {
+				main.getObjectLayer().saveAllEnvironments();
 			} catch (SQLException e) {
 				main.errorHandle(e);
 			}
@@ -130,13 +137,6 @@ public class RootLayoutController {
 				
 				saveAllControl.setDisable(false);
 				saveAllControl.setVisible(true);
-				saveAllControl.setOnAction(event -> {
-					try {
-						main.getObjectLayer().saveAllEnvironments();
-					} catch (SQLException e) {
-						main.errorHandle(e);
-					}
-				});
 				
 				pullAllComponentDataControl.setVisible(true);
 				pullAllComponentDataControl.setDisable(false);
@@ -152,7 +152,7 @@ public class RootLayoutController {
 				
 				saveControl.setOnAction(event -> {
 					try {
-						main.getObjectLayer().saveCheckpoints();
+						main.getObjectLayer().saveAllEnvironments();
 					} catch (SQLException e) {
 						main.errorHandle(e);
 					}
@@ -174,7 +174,7 @@ public class RootLayoutController {
 			}
 		});
 		
-		((EnvironmentsTabController) environmentsTab.getUserData()).selectedEnvironmentProperty().addListener((envArg, oldEnv, newEnv) -> {
+		((EnvironmentsTabController) environmentsTab.getUserData()).selectedEnvPaneProp().addListener((envArg, oldEnv, newEnv) -> {
 			if (newEnv == null || newEnv.getUserData() == null) {
 				saveControl.setDisable(true);
 				pullComponentDataControl.setDisable(true);
@@ -198,13 +198,14 @@ public class RootLayoutController {
 				
 				pullDeviceDataControl.setDisable(false);
 				pullDeviceDataControl.setOnAction(event -> {
+					disableDeviceGrids();
 					try {
 						main.getServiceLayer().processDeviceServices(environment);
-						for (TableType type : TableType.values())
-							main.getObjectLayer().loadDevices(type);
+						main.getObjectLayer().loadDeviceDetails();
 					} catch (SQLException e) {
 						main.errorHandle(e);
 					}
+					enableDeviceGrids();
 				});
 			}
 		});
@@ -232,7 +233,14 @@ public class RootLayoutController {
 					pullDeviceDataControl.setVisible(true);
 					pullDeviceDataControl.setDisable(false);
 					pullDeviceDataControl.setOnAction(event -> {
-						main.getServiceLayer().processDeviceServices(environment);
+						disableDeviceGrids();
+						try {
+							main.getServiceLayer().processDeviceServices(environment);
+							main.getObjectLayer().loadDeviceDetails();
+						} catch (SQLException e) {
+							main.errorHandle(e);
+						}
+						enableDeviceGrids();
 					});
 	
 					addComponentMenu.setVisible(false);
@@ -259,7 +267,14 @@ public class RootLayoutController {
 					pullDeviceDataControl.setVisible(true);
 					pullDeviceDataControl.setDisable(false);
 					pullDeviceDataControl.setOnAction(event -> {
-						main.getServiceLayer().processDeviceServices(server.getParent());
+						disableDeviceGrids();
+						try {
+							main.getServiceLayer().processDeviceServices(server.getParent());
+							main.getObjectLayer().loadDeviceDetails();
+						} catch (SQLException e) {
+							main.errorHandle(e);
+						}
+						enableDeviceGrids();
 					});
 					
 					deleteControl.setDisable(false);
@@ -284,7 +299,14 @@ public class RootLayoutController {
 					pullDeviceDataControl.setVisible(true);
 					pullDeviceDataControl.setDisable(false);
 					pullDeviceDataControl.setOnAction(event -> {
-						main.getServiceLayer().processDeviceServices(component.getParent().getParent());
+						disableDeviceGrids();
+						try {
+							main.getServiceLayer().processDeviceServices(component.getParent().getParent());
+							main.getObjectLayer().loadDeviceDetails();
+						} catch (SQLException e) {
+							main.errorHandle(e);
+						}
+						enableDeviceGrids();
 					});
 					
 					deleteControl.setDisable(false);
@@ -338,7 +360,7 @@ public class RootLayoutController {
 					
 					deleteControl.setDisable(false);
 					deleteControl.setOnAction(event -> {
-						Device entry = ((TableView<Device>) newNode).getSelectionModel().getSelectedItem();
+						Device entry = (Device) ((TableView<?>) newNode).getSelectionModel().getSelectedItem();
 						
 						main.getObjectLayer().deleteDevice(entry.getType(), entry);
 					});
@@ -349,28 +371,28 @@ public class RootLayoutController {
 		});
 	}
 
-	public void setUpTable(DeviceGridController.TableType type) {
+	public void setupDeviceTable(DeviceType type) {
 		try {
 			String fxmlPath = null;
 			Tab tab = null;
 			switch (type) {
-			case Collectors:
+			case COLLECTORS:
 				fxmlPath = "presentation/view/CollectorsGrid.fxml";
 				tab = collectorsTab;
 				break;
-			case HANDevices:
+			case HAN_DEVICES:
 				fxmlPath = "presentation/view/HANGrid.fxml";
 				tab = hanTab;
 				break;
-			case Meters:
+			case METERS:
 				fxmlPath = "presentation/view/MetersGrid.fxml";
 				tab = metersTab;
 				break;
-			case Routers:
+			case ROUTERS:
 				fxmlPath = "presentation/view/RoutersGrid.fxml";
 				tab = routersTab;
 				break;
-			case Sockets:
+			case SOCKETS:
 				fxmlPath = "presentation/view/SocketsGrid.fxml";
 				tab = socketsTab;
 				break;
@@ -381,34 +403,34 @@ public class RootLayoutController {
 			
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource(fxmlPath));
-			AnchorPane table = (AnchorPane) loader.load();
+			AnchorPane deviceGrid = (AnchorPane) loader.load();
 			
-			((ScrollPane)((AnchorPane) tab.getContent()).getChildren().get(0)).setContent(table);
-			DeviceGridController tableController = loader.getController();
-			tableController.setMain(main);
-			tableController.populateTable();
-			tab.setUserData(tableController);
-		} catch (IOException | SQLException e) {
+			((ScrollPane)((AnchorPane) tab.getContent()).getChildren().get(0)).setContent(deviceGrid);
+			DeviceGridController deviceGridController = loader.getController();
+			deviceGridController.setMain(main);
+			deviceGridController.enableTable();
+			tab.setUserData(deviceGridController);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void setUpEnvironmentTable() {
+
+	public void setupEnvironmentTable() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("presentation/view/EnvironmentsTab.fxml"));
 			BorderPane table = (BorderPane) loader.load();
 			
 			((AnchorPane) environmentsTab.getContent()).getChildren().add(table);
-			EnvironmentsTabController tableController = loader.getController();
-			tableController.setMain(main);
-			tableController.populateTable();
-			environmentsTab.setUserData(tableController);
+			EnvironmentsTabController environmentsTabController = loader.getController();
+			environmentsTabController.setMain(main);
+			environmentsTabController.setupTable();
+			environmentsTab.setUserData(environmentsTabController);
 		} catch (IOException e) {
 			main.errorHandle(e);
 		}
 	}
-	
+
 	public void setUpCheckpointsTable() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -416,15 +438,30 @@ public class RootLayoutController {
 			BorderPane table = (BorderPane) loader.load();
 			
 			((AnchorPane) checkpointsTab.getContent()).getChildren().add(table);
-			CheckpointsTabController tableController = loader.getController();
-			tableController.setMain(main);
-			tableController.populateTable();
-			checkpointsTab.setUserData(tableController);
+			CheckpointsTabController checkpointsTabController = loader.getController();
+			checkpointsTabController.setMain(main);
+			checkpointsTabController.setupTable();
+			checkpointsTab.setUserData(checkpointsTabController);
 		} catch (IOException e) {
 			main.errorHandle(e);
 		}
 	}
-	
+
+	private void enableDeviceGrids() {
+		((DeviceGridController) metersTab.getUserData()).enableTable();
+		((DeviceGridController) routersTab.getUserData()).enableTable();
+	}
+
+	private void disableDeviceGrids() {
+		((DeviceGridController) metersTab.getUserData()).disableTable();
+		((DeviceGridController) routersTab.getUserData()).disableTable();
+	}
+
+	@FXML
+	private void showSettings() {
+		main.getPresentationLayer().showSettings();
+	}
+
 	@FXML 
 	private void addCommandCenter() {
 		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.COMMANDCENTER);
@@ -483,10 +520,5 @@ public class RootLayoutController {
 	@FXML 
 	private void addM2M() {
 		main.getObjectLayer().addComponent((Server) ((Node) main.getPresentationLayer().focusedProperty().get()).getUserData(), ComponentType.M2M);
-	}
-	
-	@FXML
-	private void showSettings() {
-		main.getPresentationLayer().showSettings();
 	}
 }

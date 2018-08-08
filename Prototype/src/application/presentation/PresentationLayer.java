@@ -1,15 +1,11 @@
 package application.presentation;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import application.Main;
-import application.objects.entities.Device;
+import application.objects.hardware.Device.DeviceType;
 import application.presentation.logic.RootLayoutController;
 import application.presentation.logic.SettingsLayoutController;
-import application.presentation.logic.DeviceGridController;
-import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -32,12 +28,10 @@ public class PresentationLayer {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private Map<TableType,DeviceGridController> grids;
 	private Main main;
 
 	public PresentationLayer(Main main) {
 		this.main = main;
-		grids = new HashMap<TableType, DeviceGridController>();
 	}
 
 	public void showMain(Stage stage) {
@@ -56,10 +50,10 @@ public class PresentationLayer {
 			
 			RootLayoutController controller = loader.getController();
 			controller.setMain(main);
-			controller.setUpEnvironmentTable();
+			controller.setupEnvironmentTable();
 			controller.setUpCheckpointsTable();
-			for (TableType type : TableType.values())
-				controller.setUpTable(type);
+			for (DeviceType type : DeviceType.values())
+				controller.setupDeviceTable(type);
 			controller.initMenuBindings();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -86,10 +80,6 @@ public class PresentationLayer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void setGrid(TableType type, DeviceGridController controller) {
-		grids.put(type, controller);
 	}
 	
 	public void showError(String errorTitle, String errorMsg) {

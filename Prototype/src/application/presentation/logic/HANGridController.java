@@ -1,7 +1,7 @@
 package application.presentation.logic;
 
-import application.objects.entities.Device;
-import javafx.event.ActionEvent;
+import application.objects.hardware.Device;
+import application.objects.hardware.Device.DeviceType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
@@ -78,7 +78,7 @@ public class HANGridController extends DeviceGridController {
 	private TextField searchHANField;
 	
 	public HANGridController() {
-		super(DeviceGridController.TableType.HANDevices);
+		super(DeviceType.HAN_DEVICES);
 	}
 	
 

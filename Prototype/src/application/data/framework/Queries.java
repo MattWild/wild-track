@@ -1,4 +1,4 @@
-package application.database;
+package application.data.framework;
 
 public class Queries {
 
@@ -26,14 +26,13 @@ public class Queries {
 			"	cross join GridStreamNtwrks\r\n" + 
 			") as result where rn = 1";*/
 	
-	private static final String SQL_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate from (\r\n" + 
-			"	select Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
+	private static final String SQL_METERS = "select meterNo, meterName, meterType, latestValueDate from (\r\n" + 
+			"	select Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
 			"	inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
 			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
 			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
 			"	left join RFEndpointProperties on RFEndpointProperties.endpointId = Endpoints.endPointId\r\n" + 
 			"	left join MeterModels on RFEndpointProperties.meterModelId = MeterModels.meterModelId\r\n" + 
-			"	cross join GridStreamNtwrks\r\n" + 
 			") as result where rn = 1";
 	
 	/*private static final String ORACLE_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate, custom1, custom2, notes from (\r\n" + 
@@ -48,15 +47,13 @@ public class Queries {
 			") result where rn = 1";
 	 */
 	
-	private static final String ORACLE_METERS = "select meterNo, meterName, meterType, CRC, latestValueDate from (\r\n" + 
-			"	select Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
+	private static final String ORACLE_METERS = "select meterNo, meterName, meterType, latestValueDate from (\r\n" + 
+			"	select Meters.meterNo, MeterModels.name as meterName, MeterTypes.name as meterType, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
 			"   inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
 			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
 			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
 			"	left join RFEndpointProperties on RFEndpointProperties.endpointId = Endpoints.endPointId\r\n" + 
 			"	left join MeterModels on RFEndpointProperties.meterModelId = MeterModels.meterModelId\r\n" + 
-			"   left join (select endpointID, LISTAGG(note, '; ') WITHIN GROUP (ORDER BY NULL) notes from EndpointNotes GROUP BY endpointID) Notes on Notes.endpointID = Endpoints.ENDPOINTID\r\n" + 
-			"	cross join GridStreamNtwrks\r\n" + 
 			") result where rn = 1";
 	
 	/*private static final String SQL_ROUTERS = 
@@ -86,13 +83,12 @@ public class Queries {
 			") as result where rn = 1";
 	 */
 	private static final String SQL_ROUTERS = 
-			"select meterNo, routerName, CRC, latestValueDate from (\r\n" + 
-			"	select distinct Meters.meterNo, EndpointModels.name as routerName, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
+			"select meterNo, routerName, latestValueDate from (\r\n" + 
+			"	select distinct Meters.meterNo, EndpointModels.name as routerName, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn  from Endpoints \r\n" + 
 			"	inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
 			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
 			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
 			"	left join EndPointModels on endpointmodels.endPointModelId = endpoints.endPointModelId\r\n" + 
-			"	cross join GridStreamNtwrks\r\n" + 
 			"	where MeterTypes.MeterTypeID in (4,5)\r\n" +
 			") as result where rn = 1";
 	
@@ -109,13 +105,12 @@ public class Queries {
 			") result where rn = 1";
 	 */
 	
-	private static final String ORACLE_ROUTERS = "select meterNo, routerName, CRC, latestValueDate from (\r\n" + 
-			"	select distinct Meters.meterNo, EndpointModels.name as routerName, GridStreamNtwrks.gridStreamNtwrkQT as CRC, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
+	private static final String ORACLE_ROUTERS = "select meterNo, routerName, latestValueDate from (\r\n" + 
+			"	select distinct Meters.meterNo, EndpointModels.name as routerName, IDReadingLatestValues.latestValueDate, ROW_NUMBER() OVER (PARTITION BY Meters.meterNo ORDER BY IDReadingLatestValues.latestValueDate DESC) rn from Endpoints \r\n" + 
 			"   inner join Meters on Meters.meterId = Endpoints.meterId\r\n" + 
 			"	inner join MeterTypes on Meters.meterTypeId = MeterTypes.meterTypeId\r\n" + 
 			"	left join IDReadingLatestValues on IDReadingLatestValues.endpointId = EndPoints.endPointId\r\n" + 
 			"	left join EndPointModels on endpointmodels.endPointModelId = endpoints.endPointModelId\r\n" + 
-			"   cross join GridStreamNtwrks\r\n" + 
 			"	where MeterTypes.meterTypeID in (4,5)\r\n" + 
 			") result where rn = 1";
 	
@@ -186,6 +181,10 @@ public class Queries {
 	private static final String ORACLE_CCVERSIONINFO = "SELECT version FROM (\r\n" + 
 			"    SELECT * FROM VERSIONHISTORY ORDER BY versionId DESC)\r\n" + 
 			"WHERE rownum = 1";
+
+	private static final String SQL_CRC = "SELECT gridStreamNtwrkQT FROM GridStreamNtwrks";
+
+	private static final String ORCALE_CRC = "SELECT gridStreamNtwrkQT FROM GridStreamNtwrks";
 	
 	/*private static final String SQL_ADDNOTEENVIRONMENT = "DECLARE @endpointID int;\r\n" + 
 			"\r\n" + 
@@ -299,6 +298,14 @@ public class Queries {
 			return SQL_CCVERSIONINFO;
 		} else {
 			return ORACLE_CCVERSIONINFO;
+		}
+	}
+
+	public static String ccCRCQuery(boolean sql) {
+		if (sql) {
+			return SQL_CRC;
+		} else {
+			return ORCALE_CRC;
 		}
 	}
 }

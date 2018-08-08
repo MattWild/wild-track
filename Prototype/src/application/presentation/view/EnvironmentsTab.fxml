@@ -21,6 +21,8 @@
                      <children>
                         <Label text="Search CC Version :   " />
                         <TextField fx:id="ccVersionSearchField" />
+                        <Label text="Search CRC :   " />
+                        <TextField fx:id="crcSearchField" />
                      </children>
                   </HBox>
               		</children>

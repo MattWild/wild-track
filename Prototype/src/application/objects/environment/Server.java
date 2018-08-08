@@ -1,12 +1,6 @@
-package application.objects.entities;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+package application.objects.environment;
 
-import application.database.DataController;
-import application.objects.entities.Component.ComponentType;
+import application.objects.environment.Component.ComponentType;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Server {
+	
 	private int id;
 	private Environment parentEnvironment;
 	private ObservableList<Component> components;
@@ -30,7 +25,6 @@ public class Server {
 	private SimpleStringProperty sid;
 	private SimpleBooleanProperty usesSID;
 	private SimpleIntegerProperty port;
-	private DataController dbController;
 	
 	
 	public Server(Environment environment) {
@@ -72,162 +66,6 @@ public class Server {
 		this.parentEnvironment = environment;
 	}
 	
-	public SimpleStringProperty ip() {
-		return ip;
-	}
-	
-	public String getIp() {
-		return ip.get();
-	}
-	
-	public void setIp(String ip) {
-		this.ip.set(ip);
-	}
-	
-	public SimpleStringProperty name() {
-		return name;
-	}
-	
-	public String getName() {
-		return name.get();
-	}
-	
-	public void setName(String name) {
-		this.name.set(name);
-	}
-	
-	public SimpleStringProperty fqdn() {
-		return fqdn;
-	}
-	
-	public String getFqdn() {
-		return fqdn.get();
-	}
-	
-	public void setFqdn(String fqdn) {
-		this.fqdn.set(fqdn);
-	}
-	
-	public SimpleStringProperty type() {
-		return type;
-	}
-	
-	public String getType() {
-		return type.get();
-	}
-	
-	public void setType(String type) {
-		this.type.set(type);
-	}
-	
-	public SimpleBooleanProperty hasDB() {
-		return hasDB;
-	}
-	
-	public boolean getHasDB() {
-		return hasDB.get();
-	}
-	
-	public void setHasDB(boolean value) {
-		this.hasDB.set(value);
-	}
-	
-	public SimpleStringProperty dbType() {
-		return dbType;
-	}
-	
-	public String getDBType() {
-		return dbType.get();
-	}
-	
-	public void setDBType(String dbType) {
-		this.dbType.set(dbType);
-	}
-	
-	public SimpleStringProperty sysUser() {
-		return sysUser;
-	}
-	
-	public String getSysUser() {
-		return sysUser.get();
-	}
-	
-	public void setSysUser(String sysUser) {
-		this.sysUser.set(sysUser);
-	}
-	
-	public SimpleStringProperty sysPass() {
-		return sysPass;
-	}
-	
-	public String getSysPass() {
-		return sysPass.get();
-	}
-	
-	public void setSysPass(String sysPass) {
-		this.sysPass.set(sysPass);
-	}
-	
-	public SimpleIntegerProperty port( ) {
-		return port;
-	}
-	
-	public Integer getPort() {
-		return port.get();
-	}
-	
-	public void setPort(Integer port) {
-		this.port.set((port == null)? -1 : port);
-	}
-	
-	public SimpleStringProperty sid() {
-		return sid;
-	}
-	
-	public String getSID() {
-		return sid.get();
-	}
-	
-	public void setSID(String sid) {
-		this.sid.set(sid);
-	}
-	
-	public SimpleBooleanProperty isSQL() {
-		return isSQL;
-	}
-	
-	public Boolean getIsSQL() {
-		return isSQL.get();
-	}
-	
-	public void setIsSQL(boolean value) {
-		this.isSQL.set(value);
-	}
-	
-	public SimpleBooleanProperty usesSid() {
-		return usesSID;
-	}
-	
-	public Boolean usesSID() {
-		return usesSID.get();
-	}
-	
-	public void indicateSID() {
-		this.usesSID.set(true);
-	}
-	
-	public void indicateServiceName() {
-		this.usesSID.set(false);
-	}
-	
-	public DataController getDbController() {
-		return dbController;
-	}
-	
-	public void setDbController(DataController dbController) {
-		this.dbController = dbController;
-	}
-
 	public ObservableList<Component> getComponents() {
 		return components;
 	}
@@ -257,5 +95,152 @@ public class Server {
 		
 		components.remove(component);
 	}
+
+	public String getIp() {
+		return ip.get();
+	}
 	
+	public void setIp(String ip) {
+		this.ip.set(ip);
+	}
+	
+	public SimpleStringProperty ip() {
+		return ip;
+	}
+
+	public String getName() {
+		return name.get();
+	}
+	
+	public void setName(String name) {
+		this.name.set(name);
+	}
+	
+	public SimpleStringProperty name() {
+		return name;
+	}
+
+	public String getFqdn() {
+		return fqdn.get();
+	}
+	
+	public void setFqdn(String fqdn) {
+		this.fqdn.set(fqdn);
+	}
+	
+	public SimpleStringProperty fqdn() {
+		return fqdn;
+	}
+
+	public String getType() {
+		return type.get();
+	}
+	
+	public void setType(String type) {
+		this.type.set(type);
+	}
+	
+	public SimpleStringProperty type() {
+		return type;
+	}
+
+	public boolean getHasDB() {
+		return hasDB.get();
+	}
+	
+	public void setHasDB(boolean value) {
+		this.hasDB.set(value);
+	}
+	
+	public SimpleBooleanProperty hasDB() {
+		return hasDB;
+	}
+
+	public String getDBType() {
+		return dbType.get();
+	}
+	
+	public void setDBType(String dbType) {
+		this.dbType.set(dbType);
+	}
+	
+	public SimpleStringProperty dbType() {
+		return dbType;
+	}
+
+	public String getSysUser() {
+		return sysUser.get();
+	}
+	
+	public void setSysUser(String sysUser) {
+		this.sysUser.set(sysUser);
+	}
+	
+	public SimpleStringProperty sysUser() {
+		return sysUser;
+	}
+
+	public String getSysPass() {
+		return sysPass.get();
+	}
+	
+	public void setSysPass(String sysPass) {
+		this.sysPass.set(sysPass);
+	}
+	
+	public SimpleStringProperty sysPass() {
+		return sysPass;
+	}
+
+	public Integer getPort() {
+		return port.get();
+	}
+	
+	public void setPort(Integer port) {
+		this.port.set((port == null)? -1 : port);
+	}
+	
+	public SimpleIntegerProperty port( ) {
+		return port;
+	}
+
+	public String getSID() {
+		return sid.get();
+	}
+	
+	public void setSID(String sid) {
+		this.sid.set(sid);
+	}
+	
+	public SimpleStringProperty sid() {
+		return sid;
+	}
+
+	public Boolean getIsSQL() {
+		return isSQL.get();
+	}
+	
+	public void setIsSQL(boolean value) {
+		this.isSQL.set(value);
+	}
+	
+	public SimpleBooleanProperty isSQL() {
+		return isSQL;
+	}
+
+	public SimpleBooleanProperty usesSid() {
+		return usesSID;
+	}
+	
+	public Boolean getUsesSid() {
+		return usesSID.get();
+	}
+	
+	public void indicateSID() {
+		this.usesSID.set(true);
+	}
+	
+	public void indicateServiceName() {
+		this.usesSID.set(false);
+	}
 }

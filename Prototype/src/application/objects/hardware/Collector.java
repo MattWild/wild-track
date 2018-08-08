@@ -1,12 +1,9 @@
-package application.objects.entities;
+package application.objects.hardware;
 
-import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 
-public class Collector implements Device {
-	
-	private int id;
+public class Collector extends Device {
+
 	private SimpleStringProperty ip;
 	private SimpleStringProperty radios;
 	private SimpleStringProperty netId;
@@ -16,11 +13,9 @@ public class Collector implements Device {
 	private SimpleStringProperty notes;
 	private SimpleStringProperty username;
 	private SimpleStringProperty password;
-	
-	private boolean changed;
 
 	public Collector(int id, String ipString, String radiosString, String netIDString, String appString, String typeString, String locString, String commentString, String userString, String passString) {
-		this.id = id;
+		super(id);
 		
 		ip = new SimpleStringProperty(ipString);
 		radios = new SimpleStringProperty(radiosString);
@@ -33,45 +28,21 @@ public class Collector implements Device {
 		password = new SimpleStringProperty(passString);
 	}
 	
-	public SimpleStringProperty username() {
-		return username;
-	}
-	
-	public String getUsername() {
-		return username.get();
-	}
-	
-	public void setUsername(String username) {
-		this.username.set(username);
-	}
-	
-	public SimpleStringProperty password() {
-		return password;
-	}
-	
-	public String getPassword() {
-		return password.get();
-	}
-	
-	public void setPassword(String password) {
-		this.password.set(password);
-	}
-	
 	@Override
-	public TableType getType() {
-		return TableType.Collectors;
+	public DeviceType getType() {
+		return DeviceType.COLLECTORS;
 	}
-	
+
 	@Override
-	public int getId() {
-		return id;
+	public String getIdentifier() {
+		return ip.get();
 	}
-	
+
 	@Override
-	public void setId(int id) {
-		this.id = id;
+	public boolean identifierNotNull() {
+		return ip.get() != null;
 	}
-	
+
 	@Override
 	public SimpleStringProperty getFieldProperty(int i) {
 		switch (i) {
@@ -93,34 +64,25 @@ public class Collector implements Device {
 			return null;
 		}
 	}
-	
+
 	@Override
-	public String getFilterValue(int i) {
+	public SimpleStringProperty getFilterProperty(int i) {
 		switch(i) {
 		case 0:
-			return ip.get();
+			return ip;
 		case 1:
-			return netId.get();
+			return netId;
 		case 2:
-			return app.get();
+			return app;
 		case 3:
-			return type.get();
+			return type;
 		case 4:
-			return loc.get();
+			return loc;
 		default:
 			return null;
 		}
 	}
-	@Override
-	public void indicateChanged() {
-		changed = true;
-	}
-	
-	@Override
-	public boolean isChanged() {
-		return changed;
-	}
-	
+
 	public String getIp() {
 		return ip.get();
 	}
@@ -129,10 +91,18 @@ public class Collector implements Device {
 		return radios.get();
 	}
 	
+	public SimpleStringProperty radios() {
+		return radios;
+	}
+
 	public String getNetId() {
 		return netId.get();
 	}
 	
+	public SimpleStringProperty netId() {
+		return netId;
+	}
+
 	public String getApp() {
 		return app.get();
 	}
@@ -144,23 +114,36 @@ public class Collector implements Device {
 	public String getNote() {
 		return notes.get();
 	}
+	
 	public String getCollectorType() {
 		return type.get();
 	}
-	@Override
-	public boolean identifierNotNull() {
-		return ip.get() != null;
-	}
-
-	public SimpleStringProperty netId() {
-		return netId;
-	}
-
-	public SimpleStringProperty type() {
+	
+	public SimpleStringProperty collectorType() {
 		return type;
 	}
 
-	public SimpleStringProperty radios() {
-		return radios;
+	public String getUsername() {
+		return username.get();
+	}
+
+	public void setUsername(String username) {
+		this.username.set(username);
+	}
+
+	public SimpleStringProperty username() {
+		return username;
+	}
+
+	public String getPassword() {
+		return password.get();
+	}
+
+	public void setPassword(String password) {
+		this.password.set(password);
+	}
+
+	public SimpleStringProperty password() {
+		return password;
 	}
 }

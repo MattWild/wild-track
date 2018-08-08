@@ -1,19 +1,13 @@
 package application.presentation.logic;
 
 import java.io.IOException;
-import java.io.StringBufferInputStream;
 
 import application.Main;
-import application.objects.entities.Collector;
-import application.objects.entities.Component;
-import application.objects.entities.Component.ComponentType;
-import application.objects.entities.Device;
-import application.objects.entities.Environment;
-import application.objects.entities.Server;
-import application.presentation.logic.DeviceGridController.TableType;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ListChangeListener;
+import application.objects.environment.Environment;
+import application.objects.environment.Server;
+import application.objects.hardware.Collector;
+import application.objects.hardware.Device;
+import application.objects.hardware.Device.DeviceType;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,9 +21,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.util.converter.IntegerStringConverter;
 
 public class EnvironmentTableController {
 	
@@ -48,6 +40,12 @@ public class EnvironmentTableController {
 	@FXML
 	private Label crcLabel;
 	
+	@FXML
+	private Label notesLabel;
+	
+	@FXML
+	private TextField notesField;
+	
 	@FXML 
 	private Label typeLabel;
 	
@@ -65,157 +63,23 @@ public class EnvironmentTableController {
 	
 	@FXML
 	private TextField passField;
-	
-	@FXML
-	public void fieldEnterPressed(KeyEvent event) {
-		if (event.getCode() == KeyCode.ENTER) {
-			((Node) event.getSource()).setVisible(false);
-		}
-	}
-	
-	@FXML
-	public void setNameFocus(MouseEvent event) {
-		if (event.getClickCount() == 1) {
-			Node node = ((Node) event.getSource());
-			if(node.getUserData() == null) node.setUserData(environment);
-			node.requestFocus();
-		} else {
-			nameField.setVisible(true);
-			nameField.requestFocus();
-		}
-	}
-	
-	@FXML
-	public void setUserFocus(MouseEvent event) {
-		if (environment.getCollector() != null) {
-			userField.setVisible(true);
-			userField.requestFocus();
-		}
-	}
-	
-	@FXML
-	public void setPassFocus(MouseEvent event) {
-		if (environment.getCollector() != null) {
-			passField.setVisible(true);
-			passField.requestFocus();
-		}
-	}
+
+	private Main main;
 	
 	private Environment environment;
-	private Main main;
+
+	public void setMain(Main main) {
+		this.main = main;
+	}
 
 	public void setEnvironment(Environment environment) {
 		this.environment = environment;
 		
 		initBindings();
 	}
-	
-	private void initBindings() {
-		
-		userLabel.textProperty().bind(userField.textProperty());
-		userField.focusedProperty().addListener((arg, oldValue, newValue)-> {
-			if (!newValue) userField.setVisible(false);
-		});
-		
-		passLabel.textProperty().bind(passField.textProperty());
-		passField.focusedProperty().addListener((arg, oldValue, newValue)-> {
-			if (!newValue) passField.setVisible(false);
-		});
-		
-		nameField.focusedProperty().addListener((arg, oldValue, newValue)-> {
-			if (!newValue) nameField.setVisible(false);
-		});
-		
-		nameField.textProperty().bindBidirectional(environment.name());
-		nameLabel.textProperty().bind(environment.name());
-		
-		ObservableList<String> ips = collectorIPBox.getItems();
-		ips.add("--");
-		for (Device entry : main.getObjectLayer().getDevices(TableType.Collectors)) {
-			ips.add(((Collector) entry).getIp());
-		}
-		
-		if (environment.getCollector() != null) {
-			collectorIPBox.getSelectionModel().select(environment.getCollector().getIp());
-		} else {
-			collectorIPBox.getSelectionModel().select(0);
-		}
-		
-		collectorIPBox.getSelectionModel().selectedIndexProperty().addListener((arg, oldValue, newValue) -> {
-			if (newValue.intValue() > 0 && newValue != oldValue)
-				environment.setCollector((Collector) main.getObjectLayer().getDevices(TableType.Collectors).get(newValue.intValue() - 1));
-			else if (newValue.intValue() == 0)
-				environment.setCollector(null);
-		});
-		
-		main.getObjectLayer().getDevices(TableType.Collectors).addListener((Change<? extends Device> change) -> {
-			while (change.next()) 
-				if (change.wasAdded()) {
-					for (Device entry : change.getAddedSubList()) {
-						String ip = ((Collector) entry).getIp();
-						ips.add(ip);
-						
-						
-						if (collectorIPBox.getSelectionModel().isEmpty() && 
-								environment.getCollector() != null && 
-								environment.getCollector().getIp() != null && 
-								environment.getCollector().getIp().compareTo(ip) == 0)
-							collectorIPBox.getSelectionModel().select(ip);
-					}
-				} else if (change.wasRemoved()) {
-					for (Device entry : change.getRemoved()) {
-						ips.remove(((Collector) entry).getIp());
-					}
-				}
-		});
-		
-		if (environment.getCollector() != null) {
-			Collector collector = environment.getCollector();
-			
-			crcLabel.textProperty().bind(collector.netId());
-			typeLabel.textProperty().bind(collector.type());
-			radiosLabel.textProperty().bind(collector.radios());
-			userField.textProperty().bindBidirectional(collector.username());
-			passField.textProperty().bindBidirectional(collector.password());
-		}
-		
-		environment.collector().addListener((arg, oldValue, newValue) -> {
-			if (oldValue != null) {
-				crcLabel.textProperty().unbind();
-				crcLabel.setText(null);
-				typeLabel.textProperty().unbind();
-				typeLabel.setText(null);
-				radiosLabel.textProperty().unbind();
-				radiosLabel.setText(null);
-				userField.textProperty().unbindBidirectional(oldValue.username());
-				userField.setText(null);
-				passField.textProperty().unbindBidirectional(oldValue.password());
-				passField.setText(null);
-			}
-			
-			
-			if (newValue != null) {
-				if (newValue.getIp() == null) {
-					collectorIPBox.getSelectionModel().clearSelection();
-				} else {
-					collectorIPBox.getSelectionModel().select(newValue.getIp());
-					
-					crcLabel.textProperty().bind(newValue.netId());
-					typeLabel.textProperty().bind(newValue.type());
-					radiosLabel.textProperty().bind(newValue.radios());
-					userField.textProperty().bindBidirectional(newValue.username());
-					passField.textProperty().bindBidirectional(newValue.password());
-				}
-			}
-		});
-	}
-	
-	public void setMain(Main main) {
-		this.main = main;
-	}
 
 	@SuppressWarnings("unlikely-arg-type")
-	public void setUpTable() {
+	public void setupTable() {
 		grid.getColumnConstraints().add(new ColumnConstraints());
 		for (Server server : environment.getServers()) {
 			buildServerGrid(server);
@@ -241,7 +105,117 @@ public class EnvironmentTableController {
 			}
 		});
 	}
-	
+
+	private void initBindings() {
+		
+		userLabel.textProperty().bind(userField.textProperty());
+		userField.focusedProperty().addListener((arg, oldValue, newValue)-> {
+			if (!newValue) userField.setVisible(false);
+		});
+		
+		passLabel.textProperty().bind(passField.textProperty());
+		passField.focusedProperty().addListener((arg, oldValue, newValue)-> {
+			if (!newValue) passField.setVisible(false);
+		});
+		
+		nameField.focusedProperty().addListener((arg, oldValue, newValue)-> {
+			if (!newValue) nameField.setVisible(false);
+		});
+		nameField.textProperty().bindBidirectional(environment.name());
+		nameLabel.textProperty().bind(environment.name());
+		
+		crcLabel.setText((environment.getCRC() == 0)? null : "" + environment.getCRC());
+		environment.crc().addListener((arg, oldValue, newValue) -> {
+			if (newValue.intValue() == 0) 
+				crcLabel.setText("");
+			else
+				crcLabel.setText("" + newValue.intValue());
+		});
+		
+		notesField.focusedProperty().addListener((arg, oldValue, newValue) -> {
+			if (!newValue) notesField.setVisible(false);
+		});
+		notesField.textProperty().bindBidirectional(environment.notes());
+		notesLabel.textProperty().bind(environment.notes());
+		
+		
+		ObservableList<String> ips = collectorIPBox.getItems();
+		ips.add("--");
+		for (Device entry : main.getObjectLayer().getDevices(DeviceType.COLLECTORS)) {
+			ips.add(((Collector) entry).getIp());
+		}
+		
+		if (environment.getCollector() != null) {
+			collectorIPBox.getSelectionModel().select(environment.getCollector().getIp());
+		} else {
+			collectorIPBox.getSelectionModel().select(0);
+		}
+		
+		collectorIPBox.getSelectionModel().selectedIndexProperty().addListener((arg, oldValue, newValue) -> {
+			if (newValue.intValue() > 0 && newValue != oldValue)
+				environment.setCollector((Collector) main.getObjectLayer().getDevices(DeviceType.COLLECTORS).get(newValue.intValue() - 1));
+			else if (newValue.intValue() == 0)
+				environment.setCollector(null);
+		});
+		
+		main.getObjectLayer().getDevices(DeviceType.COLLECTORS).addListener((Change<? extends Device> change) -> {
+			while (change.next()) 
+				if (change.wasAdded()) {
+					for (Device entry : change.getAddedSubList()) {
+						String ip = ((Collector) entry).getIp();
+						ips.add(ip);
+						
+						
+						if (collectorIPBox.getSelectionModel().isEmpty() && 
+								environment.getCollector() != null && 
+								environment.getCollector().getIp() != null && 
+								environment.getCollector().getIp().compareTo(ip) == 0)
+							collectorIPBox.getSelectionModel().select(ip);
+					}
+				} else if (change.wasRemoved()) {
+					for (Device entry : change.getRemoved()) {
+						ips.remove(((Collector) entry).getIp());
+					}
+				}
+		});
+		
+		if (environment.getCollector() != null) {
+			Collector collector = environment.getCollector();
+			
+			typeLabel.textProperty().bind(collector.collectorType());
+			radiosLabel.textProperty().bind(collector.radios());
+			userField.textProperty().bindBidirectional(collector.username());
+			passField.textProperty().bindBidirectional(collector.password());
+		}
+		
+		environment.collector().addListener((arg, oldValue, newValue) -> {
+			if (oldValue != null) {
+				typeLabel.textProperty().unbind();
+				typeLabel.setText(null);
+				radiosLabel.textProperty().unbind();
+				radiosLabel.setText(null);
+				userField.textProperty().unbindBidirectional(oldValue.username());
+				userField.setText(null);
+				passField.textProperty().unbindBidirectional(oldValue.password());
+				passField.setText(null);
+			}
+			
+			
+			if (newValue != null) {
+				if (newValue.getIp() == null) {
+					collectorIPBox.getSelectionModel().clearSelection();
+				} else {
+					collectorIPBox.getSelectionModel().select(newValue.getIp());
+					
+					typeLabel.textProperty().bind(newValue.collectorType());
+					radiosLabel.textProperty().bind(newValue.radios());
+					userField.textProperty().bindBidirectional(newValue.username());
+					passField.textProperty().bindBidirectional(newValue.password());
+				}
+			}
+		});
+	}
+
 	private void buildServerGrid(Server server) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -251,11 +225,9 @@ public class EnvironmentTableController {
 			
 			serverGrid.setUserData(server);
 			serverController.setMain(main);
-			serverController.setServer(server);
-			serverController.initBindings();
 			serverController.setUpGrid();
 			
-			grid.add(serverGrid, environment.getServers().indexOf(server), 2);
+			grid.add(serverGrid, environment.getServers().indexOf(server), 3);
 			ColumnConstraints col = new ColumnConstraints();
 			col.setHgrow(Priority.NEVER);
 			grid.getColumnConstraints().add(0,col);
@@ -264,4 +236,44 @@ public class EnvironmentTableController {
 		}
 	}
 
+	@FXML
+	private void fieldEnterPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			((Node) event.getSource()).setVisible(false);
+		}
+	}
+	
+	@FXML
+	private void setNameFocus(MouseEvent event) {
+		if (event.getClickCount() == 1) {
+			Node node = ((Node) event.getSource());
+			if(node.getUserData() == null) node.setUserData(environment);
+			node.requestFocus();
+		} else {
+			nameField.setVisible(true);
+			nameField.requestFocus();
+		}
+	}
+	
+	@FXML
+	private void setNotesFocus(MouseEvent event) {
+		notesField.setVisible(true);
+		notesField.requestFocus();
+	}
+	
+	@FXML
+	private void setUserFocus(MouseEvent event) {
+		if (environment.getCollector() != null) {
+			userField.setVisible(true);
+			userField.requestFocus();
+		}
+	}
+	
+	@FXML
+	private void setPassFocus(MouseEvent event) {
+		if (environment.getCollector() != null) {
+			passField.setVisible(true);
+			passField.requestFocus();
+		}
+	}
 }

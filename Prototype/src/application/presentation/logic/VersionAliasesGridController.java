@@ -3,12 +3,9 @@ package application.presentation.logic;
 import java.sql.SQLException;
 
 import application.Main;
-import application.objects.entities.Device;
-import application.objects.entities.VersionAlias;
+import application.objects.settings.VersionAlias;
 import application.presentation.PresentationLayer.EditingCell;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -35,6 +32,7 @@ public class VersionAliasesGridController {
 		this.main = main;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void populateTable() {
 		addButton.setOnAction(event -> {
 			main.getObjectLayer().addVersionAlias();

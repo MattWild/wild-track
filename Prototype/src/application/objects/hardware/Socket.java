@@ -1,20 +1,16 @@
-package application.objects.entities;
+package application.objects.hardware;
 
-import application.presentation.logic.DeviceGridController.TableType;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Socket implements Device {
-	
-	private int id;
+public class Socket extends Device {
+
 	private SimpleStringProperty idProp;
 	private SimpleStringProperty form;
 	private SimpleStringProperty nload;
 	private SimpleStringProperty loc;
-	
-	private boolean changed;
 
 	public Socket(int id, Integer idNum, String formString, String nloadString, String locString) {
-		this.id = id;
+		super(id);
 		
 		idProp = new SimpleStringProperty(idNum.toString());
 		form = new SimpleStringProperty(formString);
@@ -23,18 +19,18 @@ public class Socket implements Device {
 	}
 
 	@Override
-	public TableType getType() {
-		return TableType.Sockets;
-	}
-
-	@Override
-	public int getId() {
-		return id;
+	public DeviceType getType() {
+		return DeviceType.SOCKETS;
 	}
 	
 	@Override
-	public void setId(int id) {
-		this.id = id;
+	public String getIdentifier() {
+		return idProp.get();
+	}
+
+	@Override
+	public boolean identifierNotNull() {
+		return idProp.get() != null;
 	}
 
 	@Override
@@ -54,29 +50,19 @@ public class Socket implements Device {
 	}
 
 	@Override
-	public String getFilterValue(int i) {
+	public SimpleStringProperty getFilterProperty(int i) {
 		switch (i) {
 		case 0:
-			return idProp.get();
+			return idProp;
 		case 1:
-			return form.get();
+			return form;
 		case 2:
-			return nload.get();
+			return nload;
 		case 3:
-			return loc.get();
+			return loc;
 		default:
 			return null;
 		}
-	}
-
-	@Override
-	public void indicateChanged() {
-		changed = true;
-	}
-
-	@Override
-	public boolean isChanged() {
-		return changed;
 	}
 
 	public String getIdProp() {
@@ -93,10 +79,5 @@ public class Socket implements Device {
 
 	public String getLocation() {
 		return loc.get();
-	}
-
-	@Override
-	public boolean identifierNotNull() {
-		return idProp.get() != null;
 	}
 }

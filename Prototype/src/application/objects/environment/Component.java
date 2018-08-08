@@ -1,4 +1,4 @@
-package application.objects.entities;
+package application.objects.environment;
 
 import javafx.beans.property.SimpleStringProperty;
 
@@ -16,17 +16,7 @@ public class Component {
 		M2M,
 		SBS,
 		NMS,
-		PANA;
-		
-		private int id;
-		
-		public void setId(int id) {
-			this.id = id;
-		}
-		
-		public int getValue() {
-			return id;
-		}
+		PANA
 	}
 	
 	private int id;
@@ -78,12 +68,20 @@ public class Component {
 		this.version.set(version);
 	}
 
+	public SimpleStringProperty version() {
+		return version;
+	}
+
 	public String getUser() {
 		return user.get();
 	}
 
 	public void setUser(String user) {
 		this.user.set(user);
+	}
+
+	public SimpleStringProperty user() {
+		return user;
 	}
 
 	public String getPass() {
@@ -94,14 +92,6 @@ public class Component {
 		this.pass.set(pass);
 	}
 
-	public SimpleStringProperty version() {
-		return version;
-	}
-	
-	public SimpleStringProperty user() {
-		return user;
-	}
-	
 	public SimpleStringProperty pass() {
 		return pass;
 	}

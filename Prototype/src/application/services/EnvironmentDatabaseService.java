@@ -1,5 +1,6 @@
 package application.services;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,13 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import application.database.DataController;
-import application.database.Queries;
-import application.objects.entities.Component;
-import application.objects.entities.Component.ComponentType;
-import application.objects.entities.Environment;
-import application.objects.entities.Server;
-import application.presentation.logic.DeviceGridController.TableType;
+import application.data.framework.DataController;
+import application.data.framework.Queries;
+import application.objects.environment.Component;
+import application.objects.environment.Environment;
+import application.objects.environment.Server;
+import application.objects.environment.Component.ComponentType;
+import application.objects.hardware.Device.DeviceType;
 
 public class EnvironmentDatabaseService extends DataController implements DataService {
 	
@@ -30,8 +31,7 @@ public class EnvironmentDatabaseService extends DataController implements DataSe
 			if (targetServer.getIsSQL()) {
 				initSQLDB(targetServer.getIp(), target.getUser(), target.getPass(), "CentralServices");
 			} else {
-				System.out.println(targetServer.getIp() + " "+ target.getUser() + " "+ target.getPass() + " " + targetServer.getPort() + " " + targetServer.getSID() + " " + targetServer.usesSID());
-				initOracleDB(targetServer.getIp(), target.getUser(), target.getPass(), targetServer.getPort(), targetServer.getSID(), targetServer.usesSID());
+				initOracleDB(targetServer.getIp(), target.getUser(), target.getPass(), targetServer.getPort(), targetServer.getSID(), targetServer.getUsesSid());
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			this.target = null;
@@ -46,35 +46,23 @@ public class EnvironmentDatabaseService extends DataController implements DataSe
 
 	@Override
 	public List<List<Object>> getData() throws SQLException {
-		PreparedStatement stmt = null;
 		List<List<Object>> newValues = new ArrayList<List<Object>>();
-		ResultSet set = null;
+		List<List<Object>> tempValues;
 		
-		stmt = db.generatePreparedSatement(Queries.getMetersDataQuery(db.isSQL()));
-		set = stmt.executeQuery();
+		tempValues = executeQuery(Queries.getMetersDataQuery(dbIsSQL()));
+		for (List<Object> record : tempValues) {
+			record.add(0, DeviceType.METERS);
+			record.add(target.getParent().getParent().getId());
+		}
+		newValues.addAll(tempValues);
+		tempValues.clear();
 		
-		while (set.next()) {
-			List<Object> record = new ArrayList<Object>();
-			record.add(TableType.Meters);
-			
-			for (int i = 0 ; i < set.getMetaData().getColumnCount(); i++) {
-				record.add(set.getObject(i+1));
-			}
-			newValues.add(record);
+		tempValues = executeQuery(Queries.getRoutersDataQuery(dbIsSQL()));
+		for (List<Object> record : tempValues) {
+			record.add(0, DeviceType.ROUTERS);	
+			record.add(target.getParent().getParent().getId());
 		}
-			
-		stmt = db.generatePreparedSatement(Queries.getRoutersDataQuery(db.isSQL()));
-		set = stmt.executeQuery();
-
-		while (set.next()) {
-			List<Object> record = new ArrayList<Object>();
-			record.add(TableType.Routers);
-			
-			for (int i = 0 ; i < set.getMetaData().getColumnCount(); i++) {
-				record.add(set.getObject(i+1));
-			}
-			newValues.add(record);
-		}
+		newValues.addAll(tempValues);
 		
 		return newValues;
 	}
@@ -82,5 +70,10 @@ public class EnvironmentDatabaseService extends DataController implements DataSe
 	@Override 
 	public boolean isValid() {
 		return (target != null);
+	}
+	
+	@Override
+	protected SQLException generateConnectionError() {
+		return new SQLException("Database connection for environment : " + target.getParent().getParent().getName() + " was broken.");
 	}
 }

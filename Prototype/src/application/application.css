@@ -13,6 +13,12 @@
 	-fx-pref-height: 20;
 }
 
+.bigger_label_holder {
+	-fx-border-color: black;
+	-fx-background-color: white;
+	-fx-pref-height: 35;
+}
+
 .server_label_holder {
 	-fx-border-color: black;
 	-fx-background-color: bbffbb;
@@ -53,6 +59,18 @@
 	-fx-max-height: 20;
 	-fx-background-insets: 0 -5 0 0;
 	-fx-padding: 0 -5 0 0;	
+}
+
+.bigger_label_holder TextField {
+	-fx-min-height: 35;
+	-fx-pref-height: 35;
+	-fx-max-height: 35;
+	-fx-background-insets: 0 0 0 -5;
+	-fx-padding: 0 0 0 -1;	
+}
+
+.bigger_label_holder Label {
+	-fx-font-size: 14;
 }
 
 .server_label_holder Label {

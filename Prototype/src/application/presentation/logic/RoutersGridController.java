@@ -1,7 +1,7 @@
 package application.presentation.logic;
 
-import application.objects.entities.Device;
-import javafx.event.ActionEvent;
+import application.objects.hardware.Device;
+import application.objects.hardware.Device.DeviceType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
@@ -86,7 +86,7 @@ public class RoutersGridController extends DeviceGridController {
 	private TextField searchRoutersField;
 	
 	public RoutersGridController() {
-		super(DeviceGridController.TableType.Routers);
+		super(DeviceType.ROUTERS);
 	}
 	
 

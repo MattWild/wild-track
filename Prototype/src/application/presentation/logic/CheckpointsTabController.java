@@ -1,23 +1,18 @@
 package application.presentation.logic;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import application.Main;
-import application.objects.entities.Checkpoint;
-import application.objects.entities.Environment;
+import application.objects.environment.Checkpoint;
+import application.objects.environment.Environment;
 import javafx.collections.ListChangeListener.Change;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
@@ -32,18 +27,21 @@ public class CheckpointsTabController {
 	
 	private Main main;
 	private CheckpointListBox curr;
+	private SortedList<Environment> sortedEnvironments;
 
 	public void setMain(Main main) {
 		this.main = main;
+		sortedEnvironments = new SortedList<Environment>(main.getObjectLayer().getEnvironments(), (env1, env2) -> {
+			return env1.getName().compareTo(env2.getName());
+		});
 	}
 
-
-	public void populateTable() {
-		for (Environment environment : main.getObjectLayer().getEnvironments()) {
+	public void setupTable() {
+		for (Environment environment : sortedEnvironments) {
 			buildCheckpointList(environment);
 		}
 		
-		main.getObjectLayer().getEnvironments().addListener((Change<? extends Environment> change) -> {
+		sortedEnvironments.addListener((Change<? extends Environment> change) -> {
 			while (change.next()) {
 				if (change.wasAdded()) {
 					for (Environment environment : change.getAddedSubList()) {
@@ -107,16 +105,16 @@ public class CheckpointsTabController {
 			
 			controller.setMain(main);
 			controller.setEnvironment(environment);
-			controller.setUpTable();
+			controller.setupTable();
 			
 			if (curr == null) {
-				curr = new CheckpointListBox(null);
+				curr = new CheckpointListBox();
 				grid.add(curr, 0, 0);
 			}
 			curr.getChildren().add(listTable);
 			
 			if (curr.isFull()) {
-				CheckpointListBox temp = new CheckpointListBox(curr);
+				CheckpointListBox temp = new CheckpointListBox();
 				curr.setAfter(temp);
 				curr = temp;
 				grid.add(curr, 0, grid.getRowConstraints().size());
@@ -128,20 +126,16 @@ public class CheckpointsTabController {
 	}
 	
 	private class CheckpointListBox extends HBox {
-		
-		private CheckpointListBox beforeBox;
 		private CheckpointListBox afterBox;
 		
-		public CheckpointListBox(CheckpointListBox before) {
-			beforeBox = before;
+		public CheckpointListBox() {
+			super();
+			
+			this.setPadding(new Insets(0, 0, 20, 0));
 		}
 		
 		public boolean isFull() {
 			return this.getChildren().size() > 4;
-		}
-		
-		public CheckpointListBox getBefore() {
-			return beforeBox;
 		}
 		
 		public void setAfter(CheckpointListBox after) {

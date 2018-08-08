@@ -15,6 +15,7 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
@@ -29,7 +30,7 @@
                   <String fx:value="focusable" />
                </styleClass>
             </StackPane>
-            <VBox GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <VBox GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
                <children>
                   <GridPane>
                     <columnConstraints>
@@ -78,17 +79,17 @@
                         <HBox spacing="5.0" GridPane.columnIndex="2">
                            <children>
                               <Label text="SBS Username :" />
-                              <StackPane onMouseClicked="#setUserFocus" minWidth="20">
+                              <StackPane minWidth="20" onMouseClicked="#setUserFocus">
                               	<children>
-                              		<Label fx:id="userLabel"/>
-                              		<TextField fx:id="userField" visible="false"/>
+                              		<Label fx:id="userLabel" />
+                              		<TextField fx:id="userField" visible="false" />
                               	</children>
                               </StackPane>
                               <Label text="SBS Password :" />
-                              <StackPane onMouseClicked="#setPassFocus" minWidth="20">
+                              <StackPane minWidth="20" onMouseClicked="#setPassFocus">
                               	<children>
-                              		<Label fx:id="passLabel"/>
-                              		<TextField fx:id="passField" visible="false"/>
+                              		<Label fx:id="passLabel" />
+                              		<TextField fx:id="passField" visible="false" />
                               	</children>
                               </StackPane>
                            </children>
@@ -101,6 +102,47 @@
                   </GridPane>
                </children>
             </VBox>
+            <GridPane GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="458.0" minWidth="60.0" prefWidth="107.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="782.0" minWidth="10.0" prefWidth="735.0" />
+                  <ColumnConstraints hgrow="NEVER" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label text="CRC : " />
+                        <StackPane minWidth="20" prefWidth="50.0">
+                           <children>
+                              <Label fx:id="crcLabel" />
+                           </children>
+                        </StackPane>
+                     </children>
+                     <styleClass>
+                        <String fx:value="bigger_label_holder" />
+                        <String fx:value="left_label_holder" />
+                     </styleClass>
+                  </HBox>
+                  <HBox spacing="5.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label text="Notes : " />
+                        <StackPane onMouseClicked="#setNotesFocus" prefWidth="600.0" styleClass="left_label_holder">
+                           <children>
+                              <Label fx:id="notesLabel" />
+                              <TextField fx:id="notesField" onKeyPressed="#fieldEnterPressed" visible="false" />
+                           </children>
+                        </StackPane>
+                     </children>
+                     <styleClass>
+                        <String fx:value="bigger_label_holder" />
+                        <String fx:value="left_label_holder" />
+                     </styleClass>
+                  </HBox>
+               </children>
+            </GridPane>
          </children>
       </GridPane>
    </children>

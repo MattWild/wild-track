@@ -1,19 +1,14 @@
 package application.presentation.logic;
 
 import application.Main;
-import application.objects.entities.Component;
-import application.objects.entities.Component.ComponentType;
-import application.objects.entities.VersionAlias;
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
+import application.objects.environment.Component;
+import application.objects.environment.Component.ComponentType;
+import application.objects.settings.VersionAlias;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -21,7 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 
 public class ComponentGridController {
 	
@@ -52,29 +46,16 @@ public class ComponentGridController {
 	@FXML
 	private TextField passField;
 	
-	@FXML
-	private void initialize() {
-		versionField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
-			if (newValue == false) versionField.setVisible(false);
-		});
-		
-		userField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
-			if (newValue == false) userField.setVisible(false);
-		});
-		
-		passField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
-			if (newValue == false) passField.setVisible(false);
-		});
-	}
-	
-	private Component component;
 	private Main main;
+	private Component component;
 	private ChangeListener<? super String> aliasListener = (arg, oldValue, newValue) -> {
 		versionLabel.setText(newValue);
 	};
 	
 	public void setMain(Main main) {
 		this.main = main;
+		
+		initBindings();
 	}
 	
 	public void setComponent(Component component) {
@@ -132,30 +113,11 @@ public class ComponentGridController {
 		componentLabelBox.setUserData(component);
 	}
 	
-	private void hideVersion() {
-		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 1);
-	}
-	
-	private void hideUsername() {
-		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 2);
-	}
-	
-	private void hidePassword() {
-		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 3);
-	}
-	
 	public Component getComponent() {
 		return component;
 	}
 	
-	@FXML
-	private void componentBoxClicked(MouseEvent event) {
-		componentLabelBox.requestFocus();
-		System.out.println(grid.getHeight() + " " + grid.getMaxHeight() + grid.getPrefHeight());
-	}
-	
-	
-	public void initBindings() {
+	private void initBindings() {
 		versionField.setText(component.version().get());
 		userField.setText(component.user().get());
 		passField.setText(component.pass().get());
@@ -204,8 +166,42 @@ public class ComponentGridController {
 		passLabel.textProperty().bind(passField.textProperty());
 	}
 
+	private void hideVersion() {
+		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 1);
+	}
+
+	private void hideUsername() {
+		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 2);
+	}
+
+	private void hidePassword() {
+		grid.getChildren().removeIf(child -> GridPane.getRowIndex(child) != null && GridPane.getRowIndex(child) == 3);
+	}
+
 	@FXML
-	public void versionLabelClick(MouseEvent event) {
+	private void initialize() {
+		versionField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
+			if (newValue == false) versionField.setVisible(false);
+		});
+		
+		userField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
+			if (newValue == false) userField.setVisible(false);
+		});
+		
+		passField.focusedProperty().addListener((arg0, oldValue, newValue) -> {
+			if (newValue == false) passField.setVisible(false);
+		});
+	}
+
+	@FXML
+	private void fieldEnterPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			((Node) event.getSource()).setVisible(false);
+		}
+	}
+
+	@FXML
+	private void versionLabelClick(MouseEvent event) {
 		if (!(component.getType() == ComponentType.COMMANDCENTER ||
 				component.getType() == ComponentType.SBS ||
 				component.getType() == ComponentType.ANSI ||
@@ -217,23 +213,22 @@ public class ComponentGridController {
 			versionField.requestFocus();
 		}
 	}
-	
+
 	@FXML
-	public void userLabelClick(MouseEvent event) {
+	private void userLabelClick(MouseEvent event) {
 		userField.setVisible(true);
 		userField.requestFocus();
 	}
-	
+
 	@FXML
-	public void passLabelClick(MouseEvent event) {
+	private void passLabelClick(MouseEvent event) {
 		passField.setVisible(true);
 		passField.requestFocus();
 	}
-	
+
 	@FXML
-	public void fieldEnterPressed(KeyEvent event) {
-		if (event.getCode() == KeyCode.ENTER) {
-			((Node) event.getSource()).setVisible(false);
-		}
+	private void componentBoxClicked(MouseEvent event) {
+		componentLabelBox.requestFocus();
+		System.out.println(grid.getHeight() + " " + grid.getMaxHeight() + grid.getPrefHeight());
 	}
 }

@@ -1,7 +1,6 @@
 package application.presentation.logic;
 
-import application.Main;
-import application.objects.entities.Checkpoint;
+import application.objects.environment.Checkpoint;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -22,22 +21,8 @@ public class CheckpointBoxController {
 	@FXML
 	private StackPane versionLabelHolder;
 	
-	private Main main;
 	private Checkpoint checkpoint;
 	
-	@FXML
-	private void initialize() {
-		versionField.setVisible(false);
-		
-		versionField.focusedProperty().addListener((arg, oldValue, newValue) -> {
-			if (newValue == false) versionField.setVisible(false);
-		});
-	}
-	
-	public void setMain(Main main) {
-		this.main = main;
-	}
-
 	public void setCheckpoint(Checkpoint checkpoint) {
 		this.checkpoint = checkpoint;
 		
@@ -52,6 +37,15 @@ public class CheckpointBoxController {
 		versionLabelHolder.setUserData(checkpoint);
 	}
 	
+	@FXML
+	private void initialize() {
+		versionField.setVisible(false);
+		
+		versionField.focusedProperty().addListener((arg, oldValue, newValue) -> {
+			if (newValue == false) versionField.setVisible(false);
+		});
+	}
+
 	@FXML
 	private void versionLabelClicked(MouseEvent event) {
 		if (event.getClickCount() == 1) {

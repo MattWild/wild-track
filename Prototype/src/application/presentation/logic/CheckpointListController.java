@@ -1,30 +1,19 @@
 package application.presentation.logic;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import application.Main;
-import application.objects.entities.Checkpoint;
-import application.objects.entities.Component;
-import application.objects.entities.Component.ComponentType;
-import application.objects.entities.Environment;
-import application.objects.entities.Server;
-import javafx.beans.property.SimpleBooleanProperty;
+import application.objects.environment.Checkpoint;
+import application.objects.environment.Component;
+import application.objects.environment.Environment;
+import application.objects.environment.Server;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -41,13 +30,11 @@ public class CheckpointListController {
 	private Label nameLabel;
 	
 	@FXML
-	private Label isSQLLabel;
+	private Label versionLabel;
 	
 	@FXML
-	private void environmentLabelClicked(MouseEvent event) {
-		((Node) event.getSource()).requestFocus();
-	}
-
+	private Label isSQLLabel;
+	
 	private Main main;
 	private Environment environment;
 	private final ChangeListener<? super Boolean> sqlListener = (arg, oldValue, newValue) -> {
@@ -68,8 +55,41 @@ public class CheckpointListController {
 		initBindings();
 	}
 
+	public void setupTable() {
+		for (Checkpoint checkpoint : environment.getCheckpoints()) {
+			buildCheckpointBox(checkpoint);
+		}
+		
+		environment.getCheckpoints().addListener((Change<? extends Checkpoint> change) -> {
+			while (change.next()) {
+				if (change.wasAdded()) {
+					for (Checkpoint checkpoint : change.getAddedSubList()) {
+						buildCheckpointBox(checkpoint);
+					}
+				} else if (change.wasRemoved()) {
+					for (Checkpoint checkpoint : change.getRemoved()) {
+						grid.getChildren().removeIf(child -> ((Node) child).getUserData() == checkpoint);
+					}
+				}
+			}
+		});
+	}
+
 	private void initBindings() {
 		nameLabel.textProperty().bind(environment.name());
+		
+		if (environment.getCommandCenter() != null) {
+			versionLabel.textProperty().bind(environment.getCommandCenter().version());
+		}
+		
+		environment.commandCenter().addListener((arg, oldValue, newValue) -> {
+			versionLabel.textProperty().unbind();
+			if (newValue != null) {
+				versionLabel.textProperty().bind(newValue.version());
+			} else {
+				versionLabel.setText("");
+			}
+		});
 		
 		if (environment.getCentralServices() != null) {
 			Component centralServices = environment.getCentralServices();
@@ -119,6 +139,22 @@ public class CheckpointListController {
 		environmentLabelBox.setUserData(environment);
 	}
 	
+	private void buildCheckpointBox(Checkpoint checkpoint) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("presentation/view/CheckpointBox.fxml"));
+			StackPane box = (StackPane) loader.load();
+			box.setUserData(checkpoint);
+			CheckpointBoxController controller = loader.getController();
+			
+			controller.setCheckpoint(checkpoint);
+			
+			grid.add(box, 0, grid.getChildren().size());
+		} catch (IOException e) {
+			main.errorHandle(e);
+		}
+	}
+
 	private ChangeListener<? super Boolean> hasDBListener(Server server) {
 		return (arg, oldValue, newValue) -> {
 			if (newValue) {
@@ -136,41 +172,9 @@ public class CheckpointListController {
 		};
 	}
 
-	public void setUpTable() {
-		for (Checkpoint checkpoint : environment.getCheckpoints()) {
-			buildCheckpointBox(checkpoint);
-		}
-		
-		environment.getCheckpoints().addListener((Change<? extends Checkpoint> change) -> {
-			while (change.next()) {
-				if (change.wasAdded()) {
-					for (Checkpoint checkpoint : change.getAddedSubList()) {
-						buildCheckpointBox(checkpoint);
-					}
-				} else if (change.wasRemoved()) {
-					for (Checkpoint checkpoint : change.getRemoved()) {
-						grid.getChildren().removeIf(child -> ((Node) child).getUserData() == checkpoint);
-					}
-				}
-			}
-		});
-	}
-	
-	private void buildCheckpointBox(Checkpoint checkpoint) {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("presentation/view/CheckpointBox.fxml"));
-			StackPane box = (StackPane) loader.load();
-			box.setUserData(checkpoint);
-			CheckpointBoxController controller = loader.getController();
-			
-			controller.setMain(main);
-			controller.setCheckpoint(checkpoint);
-			
-			grid.add(box, 0, grid.getChildren().size());
-		} catch (IOException e) {
-			main.errorHandle(e);
-		}
+	@FXML
+	private void environmentLabelClicked(MouseEvent event) {
+		((Node) event.getSource()).requestFocus();
 	}
 
 }

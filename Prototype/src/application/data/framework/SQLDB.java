@@ -1,8 +1,8 @@
-package application.database;
+package application.data.framework;
 
 import java.sql.SQLException;
 
-public class SQLDB extends DatabaseServer {
+public class SQLDB extends Database {
 	private static final String DRIVER_PATH = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	
 	private String address;
@@ -17,6 +17,11 @@ public class SQLDB extends DatabaseServer {
 	}
 
 	@Override
+	public boolean isSQL() {
+		return true;
+	}
+
+	@Override
 	public String generateURL() {
 		return "jdbc:sqlserver://" + this.address +";databaseName=" + this.dbName;
 	}
@@ -24,11 +29,6 @@ public class SQLDB extends DatabaseServer {
 	@Override
 	protected String getDriverClassName() {
 		return DRIVER_PATH;
-	}
-
-	@Override
-	public boolean isSQL() {
-		return true;
 	}
 
 }

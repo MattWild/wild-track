@@ -1,7 +1,7 @@
 package application.presentation.logic;
 
-import application.objects.entities.Device;
-import javafx.event.ActionEvent;
+import application.objects.hardware.Device;
+import application.objects.hardware.Device.DeviceType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
@@ -92,7 +92,7 @@ public class CollectorsGridController extends DeviceGridController{
 	
 	
 	public CollectorsGridController() {
-		super(DeviceGridController.TableType.Collectors);
+		super(DeviceType.COLLECTORS);
 	}
 	
 
