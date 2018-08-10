@@ -6,6 +6,7 @@ import application.Main;
 import application.objects.environment.Component;
 import application.objects.environment.Environment;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -29,47 +30,56 @@ public class EnvironmentsTabController {
 	
 	private Main main;
 	private SortedList<Environment> sortedEnvironments;
+	
+	private ListChangeListener<Environment> environmentListener = (Change<? extends Environment> change) -> {
+		while (change.next()) {
+			if (change.wasAdded()) {
+				for (Environment environment : change.getAddedSubList()) {
+					buildEnvironmentPane(environment);
+				}
+			} else if (change.wasRemoved()) {
+				for (Environment environment : change.getRemoved()) {
+					for (TitledPane environmentPane : environmentsAccordion.getPanes()) {
+						if (environmentPane.getUserData() == environment) {
+							environmentsAccordion.getPanes().remove(environmentPane);
+							break;
+						}
+					}
+				}
+			}
+		}
+	};
 
 	public void setMain(Main main) {
 		this.main = main;
-		sortedEnvironments = new SortedList<Environment>(main.getObjectLayer().getEnvironments(), (env1, env2) -> {
-			return env1.getName().compareTo(env2.getName());
-		});
 	}
 
-	public void setupTable() {
-		ccVersionSearchField.setOnKeyPressed(event -> {
-			if (event.getCode() == KeyCode.ENTER)
-				search();
-		});
-		
-		crcSearchField.setOnKeyPressed(event -> {
-			if (event.getCode() == KeyCode.ENTER)
-				search();
+	public void enableTable() {
+		sortedEnvironments = new SortedList<Environment>(main.getObjectLayer().getEnvironments(), (env1, env2) -> {
+			if (env1.getName() == null) {
+				if (env2.getName() == null)
+					return 0;
+				else
+					return -1;
+			}
+			
+			if (env2.getName() == null)
+				return 1;
+			
+			return env1.getName().compareTo(env2.getName());
 		});
 		
 		for (Environment environment : sortedEnvironments) {
 			buildEnvironmentPane(environment);
 		}
 		
-		sortedEnvironments.addListener((Change<? extends Environment> change) -> {
-			while (change.next()) {
-				if (change.wasAdded()) {
-					for (Environment environment : change.getAddedSubList()) {
-						buildEnvironmentPane(environment);
-					}
-				} else if (change.wasRemoved()) {
-					for (Environment environment : change.getRemoved()) {
-						for (TitledPane environmentPane : environmentsAccordion.getPanes()) {
-							if (environmentPane.getUserData() == environment) {
-								environmentsAccordion.getPanes().remove(environmentPane);
-								break;
-							}
-						}
-					}
-				}
-			}
-		});
+		sortedEnvironments.addListener(environmentListener);
+	}
+	
+	public void disableTable() {
+		environmentsAccordion.getPanes().clear();
+		
+		sortedEnvironments.removeListener(environmentListener);
 	}
 	
 	public Environment getSelectedEnvironment() {
@@ -130,5 +140,18 @@ public class EnvironmentsTabController {
 		} catch (IOException e) {
 			main.errorHandle(e);
 		}
+	}
+	
+	@FXML
+	private void initialize() {
+		ccVersionSearchField.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER)
+				search();
+		});
+		
+		crcSearchField.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER)
+				search();
+		});
 	}
 }

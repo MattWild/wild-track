@@ -225,6 +225,8 @@ public class EnvironmentTableController {
 			
 			serverGrid.setUserData(server);
 			serverController.setMain(main);
+			serverController.setServer(server);
+			serverController.initBindings();
 			serverController.setUpGrid();
 			
 			grid.add(serverGrid, environment.getServers().indexOf(server), 3);

@@ -37,7 +37,7 @@ public class PresentationLayer {
 	public void showMain(Stage stage) {
 		try {
 			primaryStage = stage;
-			primaryStage.setTitle("L3 Asset Manager: Prototype");
+			primaryStage.setTitle("WildTrack");
 			
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("presentation/view/RootLayout.fxml"));

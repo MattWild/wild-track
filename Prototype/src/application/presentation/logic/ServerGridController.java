@@ -100,36 +100,13 @@ public class ServerGridController {
 	
 	public void setMain(Main main) {
 		this.main = main;
-		
-		initBindings();
 	}
 	
-	public void setUpGrid() {
-		for (Component component : server.getComponents()) {
-			buildComponentGrid(component);
-		}
-		
-		server.getComponents().addListener((Change<? extends Component> change) -> {
-			while (change.next()) {
-				if (change.wasAdded()) {
-					for (Component component : change.getAddedSubList()) {
-						buildComponentGrid(component);
-					}
-				} else if (change.wasRemoved()) {
-					for (Component component : change.getRemoved()) {
-						for (Node node : componentsBox.getChildren()) {
-							if (node.getUserData() == component) {
-								componentsBox.getChildren().remove(node);
-								break;
-							}
-						}
-					}
-				}
-			}
-		});
+	public void setServer(Server server) {
+		this.server = server;
 	}
 	
-	private void initBindings() {
+	public void initBindings() {
 		nameField.setText(server.name().get());
 		ipField.setText(server.ip().get());
 		fqdnField.setText(server.fqdn().get());
@@ -182,6 +159,31 @@ public class ServerGridController {
 		portLabel.textProperty().bind(portField.textProperty());
 		sidCatLabel.textProperty().bind(sidCatChoiceBox.getSelectionModel().selectedItemProperty());
 		sidLabel.textProperty().bind(sidField.textProperty());
+	}
+
+	public void setUpGrid() {
+		for (Component component : server.getComponents()) {
+			buildComponentGrid(component);
+		}
+		
+		server.getComponents().addListener((Change<? extends Component> change) -> {
+			while (change.next()) {
+				if (change.wasAdded()) {
+					for (Component component : change.getAddedSubList()) {
+						buildComponentGrid(component);
+					}
+				} else if (change.wasRemoved()) {
+					for (Component component : change.getRemoved()) {
+						for (Node node : componentsBox.getChildren()) {
+							if (node.getUserData() == component) {
+								componentsBox.getChildren().remove(node);
+								break;
+							}
+						}
+					}
+				}
+			}
+		});
 	}
 	
 	private void buildComponentGrid(Component component) {

@@ -1,11 +1,6 @@
 package application.objects.hardware;
 
-import java.util.Comparator;
-
-import application.objects.environment.DeviceEnvironmentRelationship;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.transformation.SortedList;
 
 public class Router extends Device {
 	
@@ -21,31 +16,6 @@ public class Router extends Device {
 		type = new SimpleStringProperty(typeString);
 		loc = new SimpleStringProperty(locString);
 		notes = new SimpleStringProperty(commentString);
-		
-		environmentRelationships = new SortedList<DeviceEnvironmentRelationship>(FXCollections.observableArrayList(), new Comparator<DeviceEnvironmentRelationship>() {
-			@Override
-			public int compare(DeviceEnvironmentRelationship o1, DeviceEnvironmentRelationship o2) {
-				
-				if (o1 == null || o1.getLatestReadDate() == null) 
-					if (o2  == null || o2.getLatestReadDate() == null)
-						return 0;
-					else
-						return -1;
-				else
-					if (o2 == null || o2.getLatestReadDate() == null)
-						return 1;
-					else {
-						int value = o1.getLatestReadDate().compareTo(o2.getLatestReadDate());
-				
-						if (value == 0)
-							return 0;
-						else if (value < 0)
-							return -1;
-						else
-							return 1;
-					}
-			}
-		});
 	}
 
 	@Override

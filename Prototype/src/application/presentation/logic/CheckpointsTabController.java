@@ -5,6 +5,7 @@ import java.io.IOException;
 import application.Main;
 import application.objects.environment.Checkpoint;
 import application.objects.environment.Environment;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -28,73 +29,62 @@ public class CheckpointsTabController {
 	private Main main;
 	private CheckpointListBox curr;
 	private SortedList<Environment> sortedEnvironments;
+	
+	private ListChangeListener<Environment> environmentListener = (Change<? extends Environment> change) -> {
+		while (change.next()) {
+			if (change.wasAdded()) {
+				for (Environment environment : change.getAddedSubList()) {
+					buildCheckpointList(environment);
+				}
+			} else if (change.wasRemoved()) {
+				CheckpointListBox temp = (CheckpointListBox) grid.getChildren().get(0);
+				
+				while (temp != null) {
+					for (int i = 0; i < temp.getChildren().size(); i++) {
+						Node node = temp.getChildren().get(i);
+						if (change.getRemoved().contains(node.getUserData())) {
+							temp.remove(i);
+						}
+					}
+					
+					temp = temp.getAfter();
+				}
+			}
+		}
+	};
 
 	public void setMain(Main main) {
 		this.main = main;
-		sortedEnvironments = new SortedList<Environment>(main.getObjectLayer().getEnvironments(), (env1, env2) -> {
-			return env1.getName().compareTo(env2.getName());
-		});
 	}
 
-	public void setupTable() {
+	public void enableTable() {
+		sortedEnvironments = new SortedList<Environment>(main.getObjectLayer().getEnvironments(), (env1, env2) -> {
+			if (env1.getName() == null) {
+				if (env2.getName() == null)
+					return 0;
+				else
+					return -1;
+			}
+			
+			if (env2.getName() == null)
+				return 1;
+			
+			return env1.getName().compareTo(env2.getName());
+		});
+		
 		for (Environment environment : sortedEnvironments) {
 			buildCheckpointList(environment);
 		}
 		
-		sortedEnvironments.addListener((Change<? extends Environment> change) -> {
-			while (change.next()) {
-				if (change.wasAdded()) {
-					for (Environment environment : change.getAddedSubList()) {
-						buildCheckpointList(environment);
-					}
-				} else if (change.wasRemoved()) {
-					CheckpointListBox temp = (CheckpointListBox) grid.getChildren().get(0);
-					
-					while (temp != null) {
-						for (int i = 0; i < temp.getChildren().size(); i++) {
-							Node node = temp.getChildren().get(i);
-							if (change.getRemoved().contains(node.getUserData())) {
-								temp.remove(i);
-							}
-						}
-						
-						temp = temp.getAfter();
-					}
-				}
-			}
-		});
-		
-		versionSearchField.setOnKeyPressed(event -> {
-			if (event.getCode() == KeyCode.ENTER)
-				search();
-		});
+		sortedEnvironments.addListener(environmentListener);
 	}
 	
-	private void search() {
-		CheckpointListBox temp = (CheckpointListBox) grid.getChildren().get(0);
+	public void disableTable() {
+		grid.getChildren().clear();
 		
-		while (temp != null) {
-			for (Node node : temp.getChildren()) {
-				if (versionSearchField.getText() == null || versionSearchField.getText().length() == 0)
-					node.setVisible(true);
-				else {
-					Environment environment = (Environment) node.getUserData();
-					boolean visible = false;
-					
-					for (Checkpoint checkpoint : environment.getCheckpoints()) {
-						if (checkpoint.getVersion().contains(versionSearchField.getText()))
-							visible = true;
-					}
-					
-					node.setVisible(visible);
-				}
-			}
-			
-			temp = temp.getAfter();
-		}
+		sortedEnvironments.removeListener(environmentListener);
 	}
-
-
+	
 	private void buildCheckpointList(Environment environment) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -124,7 +114,32 @@ public class CheckpointsTabController {
 			main.errorHandle(e);
 		}
 	}
-	
+
+	private void search() {
+		CheckpointListBox temp = (CheckpointListBox) grid.getChildren().get(0);
+		
+		while (temp != null) {
+			for (Node node : temp.getChildren()) {
+				if (versionSearchField.getText() == null || versionSearchField.getText().length() == 0)
+					node.setVisible(true);
+				else {
+					Environment environment = (Environment) node.getUserData();
+					boolean visible = false;
+					
+					for (Checkpoint checkpoint : environment.getCheckpoints()) {
+						if (checkpoint.getVersion().contains(versionSearchField.getText()))
+							visible = true;
+					}
+					
+					node.setVisible(visible);
+				}
+			}
+			
+			temp = temp.getAfter();
+		}
+	}
+
+
 	private class CheckpointListBox extends HBox {
 		private CheckpointListBox afterBox;
 		
@@ -163,4 +178,11 @@ public class CheckpointsTabController {
 		}
 	}
 
+	@FXML
+	private void initialize() {
+		versionSearchField.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER)
+				search();
+		});
+	}
 }

@@ -1,18 +1,13 @@
 package application.services;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import application.data.framework.DataController;
 import application.data.framework.Queries;
 import application.objects.environment.Component;
-import application.objects.environment.Environment;
 import application.objects.environment.Server;
 import application.objects.environment.Component.ComponentType;
 

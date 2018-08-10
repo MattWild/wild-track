@@ -248,28 +248,6 @@ public class DataLayer extends DataController {
 				break;
 			}
 		}
-		
-		/*if (type == DeviceType.Meters || type == DeviceType.Routers) {
-			for (Device device : result) {
-				List<Object> temp = new ArrayList<Object>();
-				temp.add(device.getId());
-				
-				switch (type) {
-				case Meters:
-					values = executeQueryWithParam(temp, "EXEC GetMeterEnvironmentRelationships ?");
-					break;
-				case Routers:
-					values = executeQueryWithParam(temp, "EXEC GetRouterEnvironmentRelationships ?");
-					break;
-				}
-				
-				for (List<Object> record : values) {
-					//Set dummy environment
-					Environment environment = new Environment((Integer) record.get(0), null);
-					device.addEnvironmentRelationship(new DeviceEnvironmentRelationship(environment, device, (Timestamp) record.get(1)));
-				}
-			}
-		}*/
 		return result;
 	}
 	

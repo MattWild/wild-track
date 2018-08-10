@@ -203,6 +203,42 @@ public class ObjectLayer {
 		}
 	}
 	
+	public void loadDeviceDetails(DeviceType type) {
+		try {
+			Map<Integer, Environment> environmentIdMap = new HashMap<Integer, Environment>();
+			
+			for (Environment environment : environments) {
+				for (DeviceEnvironmentRelationship deviceEnvironmentRelationship : environment.getDeviceRelationships()) {
+					environments.removeListener(deviceEnvironmentRelationship.getEnvironmentRelationshipListener());
+					devices.get(deviceEnvironmentRelationship.getDevice().getType()).removeListener(deviceEnvironmentRelationship.getDeviceRelationshipListener());;
+				}
+				environment.getDeviceRelationships().removeIf(relationship -> relationship.getDevice().getType() == type);
+				
+				environmentIdMap.put(environment.getId(), environment);
+			}
+			
+			List<DeviceEnvironmentRelationship> deviceEnvironmentRelationships = main.getDataLayer().loadDeviceEnvironmentRelations();
+			for (DeviceEnvironmentRelationship deviceEnvironmentRelationship : deviceEnvironmentRelationships) {
+				if (deviceEnvironmentRelationship.getDevice().getType() == type) {
+					environments.addListener(deviceEnvironmentRelationship.getEnvironmentRelationshipListener());
+					devices.get(type).addListener(deviceEnvironmentRelationship.getDeviceRelationshipListener());
+					
+					if (environmentIdMap.containsKey(deviceEnvironmentRelationship.getEnvironment().getId())) {
+						environmentIdMap.get(deviceEnvironmentRelationship.getEnvironment().getId()).addDeviceRelationship(deviceEnvironmentRelationship);
+						deviceEnvironmentRelationship.setEnvironment(environmentIdMap.get(deviceEnvironmentRelationship.getEnvironment().getId()));
+					}
+				}
+			}
+			
+			devices.get(type).clear();
+			List<Device> devicesList = main.getDataLayer().loadDevices(type);
+		
+			devices.get(type).addAll(devicesList);
+		} catch (SQLException e) {
+			main.errorHandle(e);
+		}
+	}
+
 	public void saveVersionAliases() throws SQLException {
 		List<VersionAlias> saveVersionAliasList = new ArrayList<VersionAlias>();
 		List<VersionAlias> addVersionAliasList = new ArrayList<VersionAlias>();

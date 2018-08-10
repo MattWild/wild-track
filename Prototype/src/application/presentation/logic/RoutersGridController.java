@@ -127,6 +127,7 @@ public class RoutersGridController extends DeviceGridController {
 		case 4:
 		case 5:
 			setupEditableColumn(i);
+			break;
 		}
 	}
 

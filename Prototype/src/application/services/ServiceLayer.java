@@ -13,7 +13,6 @@ import application.Main;
 import application.objects.environment.Component;
 import application.objects.environment.Environment;
 import application.objects.environment.Server;
-import application.objects.environment.Component.ComponentType;
 import application.objects.hardware.Device.DeviceType;
 
 public class ServiceLayer {

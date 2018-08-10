@@ -73,11 +73,12 @@
             <items>
               <MenuItem fx:id="saveAllControl" mnemonicParsing="false" text="Save All" />
                   <MenuItem fx:id="saveControl" mnemonicParsing="false" text="Save" />
+                  <MenuItem fx:id="refreshControl" mnemonicParsing="false" text="Refresh" />
                   <MenuItem fx:id="pullAllDeviceDataControl" mnemonicParsing="false" text="Pull All Device Data" />
                   <MenuItem fx:id="pullDeviceDataControl" mnemonicParsing="false" text="Pull Device Data" />
                   <MenuItem fx:id="pullAllComponentDataControl" mnemonicParsing="false" text="Pull All Component Data" />
                   <MenuItem fx:id="pullComponentDataControl" mnemonicParsing="false" text="Pull Component Data" />
-                  <MenuItem onAction="#showSettings" mnemonicParsing="false" text="Preferences" />
+                  <MenuItem mnemonicParsing="false" onAction="#showSettings" text="Preferences" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">

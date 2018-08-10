@@ -52,13 +52,6 @@ public class ComponentRequestService extends ControlRequestServiceLocator implem
 		return locationString != null;
 	}
 	
-	private String getVersion() throws RemoteException, ServiceException {
-		if(locationString != null) 
-			for (KeyValueData data : getBasicHttpBinding_IControlRequests().getVersion())
-				if (data.getKeyName().compareTo("version") == 0) return data.getValue();
-		return null;
-	}
-
 	private void generateLocationString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("http://");
@@ -97,6 +90,13 @@ public class ComponentRequestService extends ControlRequestServiceLocator implem
 		}
 		
 		locationString = sb.toString();
+	}
+
+	private String getVersion() throws RemoteException, ServiceException {
+		if(locationString != null) 
+			for (KeyValueData data : getBasicHttpBinding_IControlRequests().getVersion())
+				if (data.getKeyName().compareTo("version") == 0) return data.getValue();
+		return null;
 	}
 	
 	

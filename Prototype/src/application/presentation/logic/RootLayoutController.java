@@ -34,6 +34,9 @@ public class RootLayoutController {
 	private MenuItem saveAllControl;
 	
 	@FXML
+	private MenuItem refreshControl;
+	
+	@FXML
 	private MenuItem addControl;
 	
 	@FXML
@@ -138,6 +141,15 @@ public class RootLayoutController {
 				saveAllControl.setDisable(false);
 				saveAllControl.setVisible(true);
 				
+				refreshControl.setOnAction(event -> {
+					((CheckpointsTabController) checkpointsTab.getUserData()).disableTable();
+					((EnvironmentsTabController) environmentsTab.getUserData()).disableTable();
+					main.getObjectLayer().loadEnvironmentDetails();
+					((EnvironmentsTabController) environmentsTab.getUserData()).enableTable();
+					((CheckpointsTabController) checkpointsTab.getUserData()).enableTable();
+					
+				});
+				
 				pullAllComponentDataControl.setVisible(true);
 				pullAllComponentDataControl.setDisable(false);
 				
@@ -149,6 +161,15 @@ public class RootLayoutController {
 			} else if (newTab == checkpointsTab) {
 				addControl.setDisable(true);
 				addControl.setText("Add Checkpoint");
+				
+				refreshControl.setOnAction(event -> {
+					((CheckpointsTabController) checkpointsTab.getUserData()).disableTable();
+					((EnvironmentsTabController) environmentsTab.getUserData()).disableTable();
+					main.getObjectLayer().loadEnvironmentDetails();
+					((EnvironmentsTabController) environmentsTab.getUserData()).enableTable();
+					((CheckpointsTabController) checkpointsTab.getUserData()).enableTable();
+					
+				});
 				
 				saveControl.setOnAction(event -> {
 					try {
@@ -162,6 +183,13 @@ public class RootLayoutController {
 				addControl.setText("Add");
 				addControl.setOnAction(event -> {
 					((DeviceGridController) newTab.getUserData()).startAdd();;
+				});
+				
+				refreshControl.setOnAction(event -> {
+					((DeviceGridController) newTab.getUserData()).disableTable();
+					main.getObjectLayer().loadDeviceDetails(((DeviceGridController) newTab.getUserData()).getType());
+					((DeviceGridController) newTab.getUserData()).enableTable();
+					
 				});
 				
 				saveControl.setOnAction(event -> {
@@ -424,7 +452,7 @@ public class RootLayoutController {
 			((AnchorPane) environmentsTab.getContent()).getChildren().add(table);
 			EnvironmentsTabController environmentsTabController = loader.getController();
 			environmentsTabController.setMain(main);
-			environmentsTabController.setupTable();
+			environmentsTabController.enableTable();
 			environmentsTab.setUserData(environmentsTabController);
 		} catch (IOException e) {
 			main.errorHandle(e);
@@ -440,7 +468,7 @@ public class RootLayoutController {
 			((AnchorPane) checkpointsTab.getContent()).getChildren().add(table);
 			CheckpointsTabController checkpointsTabController = loader.getController();
 			checkpointsTabController.setMain(main);
-			checkpointsTabController.setupTable();
+			checkpointsTabController.enableTable();
 			checkpointsTab.setUserData(checkpointsTabController);
 		} catch (IOException e) {
 			main.errorHandle(e);

@@ -155,6 +155,15 @@ public abstract class DeviceGridController {
 
 	public void enableTable() {
 		devices = new FilteredList<Device>(new SortedList<Device>(main.getObjectLayer().getDevices(type), (d1, d2) -> {
+			if (d1.getIdentifier() == null)
+				if (d2.getIdentifier() == null)
+					return 0;
+				else
+					return -1;
+			
+			if (d2.getIdentifier() == null) 
+				return 1;
+			
 			return d1.getIdentifier().compareTo(d2.getIdentifier());
 		}));
 		
